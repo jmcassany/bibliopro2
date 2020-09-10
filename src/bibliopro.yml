@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+
+  bibliopro:
+    image: registry.io.imim.cloud/bibliopro_web:latest
+    volumes:
+      - /nfs/bibliopro/biblioproapp:/var/www/html
+    depends_on:
+      - biblioprodb
+    deploy:
+      labels:
+        - traefik.port=80        
+        - traefik.frontend.rule=Host:www.bibliopro.org,bibliopro.org
+    networks:
+      - apps
+
+  biblioprodb:
+    image: mysql:5.7
+    volumes:
+      - /nfs/bibliopro/db.new:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: VeptOmriga
+      MYSQL_DATABASE: bibliopro
+      MYSQL_USER: deploy
+      MYSQL_PASSWORD: VeptOmriga
+    networks:
+      - apps
+
+  biblioprobackupdb:
+    image: jmcarbo/mysql-backup
+    environment:
+      CRON_TIME: "1 23 * * *" 
+      INIT_BACKUP: "false" 
+      MINIO_ACCESS_KEY: "Y0LM0AQYM5BYY10VRRP0" 
+      MINIO_SECRET_KEY: "lwUksfgPbwHkLo0xFS0zNmuWc799uSAt2GfRbqfj" 
+      MINIO_HOST: myminio 
+      MINIO_HOST_URL: https://minio.io.imim.cloud 
+      MINIO_BUCKET: biblioprodb 
+      MYSQL_USER: deploy 
+      MYSQL_PASS: VeptOmriga 
+      MYSQL_HOST: biblioprodb 
+      MYSQL_PORT: 3306 
+      RESTIC_FORGET: "-l 3" 
+      MAX_BACKUPS: 4 
+    volumes:
+      - /nfs/bibliopro/backupdb:/backup
+    networks:
+      - apps
+    depends_on:
+      - biblioprodb
+
+networks:
+  apps:
+    external: true

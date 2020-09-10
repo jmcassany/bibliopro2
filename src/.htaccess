@@ -1,0 +1,84 @@
+RewriteEngine On
+##RewriteCond %{HTTP_HOST} !^www.antaviana.cat$ [NC]
+#RewriteRule ^(.*)$ http://www.antaviana.cat/$1 [R=301,L]
+RewriteRule ^sitemap.xml$ sitemap.php [QSA,L]
+
+RewriteRule ^resultats-cerca/page/([0-9]+)/keyword/(.*?)$ cercador.html?pag=$1&text-cerca=$2 [QSA,L]
+RewriteRule ^resultados-busqueda/page/([0-9]+)/keyword/(.*?)$ es_cercador.html?pag=$1&text-cerca=$2 [QSA,L]
+RewriteRule ^search-results/page/([0-9]+)/keyword/(.*?)$ en_cercador.html?pag=$1&text-cerca=$2 [QSA,L]
+
+####Impedir acces a zones no publiques
+<Files ~ "(\.(inc|tpl|sql|config\.php))$">
+	order deny,allow
+	deny from all
+	Satisfy all
+</Files>
+
+####Activa la compresió per servidor, necessita el mod_deflate
+#AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript
+
+####Utilitzar codificació utf8
+AddDefaultCharset UTF-8
+
+####obligar al php a utilitzar utf-8
+php_value mbstring.internal_encoding UTF-8
+php_value default_charset UTF-8
+php_value mbstring.detect_order UTF-8
+#php_value mbstring.func_overload 7
+
+####desactivar llistat fitxers
+Options -Indexes
+Options +FollowSymLinks
+
+####personalitzar els errors
+#ErrorDocument 404 /404.html
+
+####Parsejar tots els fitxers
+DirectoryIndex index.html index.htm index.php
+
+####Configuracio del php
+##establir nou path
+#php_value include_path			".:/----/media/php"
+##activa els errors per desemvolupament
+php_value error_reporting		2047
+php_value display_errors		1
+##desactiva els errors per explotacio
+# php_value error_reporting		0
+# php_value display_errors		1
+
+##desactivar registrar les variables globals
+php_value register_globals		1
+
+##desactiva la opció de globals llarges
+php_value register_long_arrays	0
+
+##desactiva tags curts
+php_value short_open_tag		0
+php_value asp_tags				0
+
+##desactiva substitució de carecters a l'entrada
+php_value magic_quotes_gpc		0
+php_value magic_quotes_runtime	0
+php_value magic_quotes_sybase	0
+
+php_value arg_separator.output	"&amp;"
+php_value date.timezone 'Europe/Madrid'
+
+# parsejar els fitxer html com a php
+AddType application/x-httpd-php .htm .html
+
+# cache
+<IfModule mod_headers.c>
+	# 1 year
+	<FilesMatch "\.(ico|gif|jpg|jpeg|png|flv|pdf)$">
+		Header set Cache-Control "max-age=29030400"
+	</FilesMatch>
+	# 1 week
+	<FilesMatch "\.(js|css|swf)$">
+		Header set Cache-Control "max-age=604800"
+	</FilesMatch>
+	# 45 min
+	<FilesMatch "\.(html|htm|txt)$">
+		Header set Cache-Control "max-age=2700"
+	</FilesMatch>
+</IfModule>

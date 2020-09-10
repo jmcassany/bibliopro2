@@ -1,0 +1,61 @@
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="|CONFIG_SITENAME|" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - |CONFIG_SITENAME|</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - |CONFIG_SITENAME|"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="|CONFIG_SITENAME|" />
+			<meta property="og:url" content="|CONFIG_URLBASE|'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="|CONFIG_URLBASE|'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>|METAS_TITLE||CONFIG_SITENAME|</title>
+		<meta name="description" content="|METAS_DESCRIPTION|" />
+		<meta name="Keywords" content="|METAS_KEYWORDS|" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="|CONFIG_NOMCARPETA|/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="|CONFIG_URLBASE|" title="|CONFIG_SITENAME|" />
+		<link href="|CONFIG_NOMCARPETA|/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="|CONFIG_NOMCARPETA|/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '|CONFIG_NOMCARPETA|';
+		</script>
+		<script type="text/javascript" src="|CONFIG_NOMCARPETA|/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="|CONFIG_NOMCARPETA|/media/js/base.js"></script>
+		<script type="text/javascript" src="|CONFIG_NOMCARPETA|/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>

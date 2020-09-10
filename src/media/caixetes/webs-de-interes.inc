@@ -1,0 +1,1 @@
+<p class="image"><img src="/media/caixetes//img/webs_de_interes2.jpg" alt="" /></p>

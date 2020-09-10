@@ -1,0 +1,536 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver a la página anterior</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.messages_es.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#donationForm').validate();
+			});
+		</script>
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$userInfo = getUserInfo($taula_usuaris);
+
+	}
+	else { $userInfo = false; }
+
+	// si s'ha enviat el formulari, processem donació
+	if (isset($_POST['METODO_PAGO'])) {
+
+		if (
+			!empty($_POST['METODO_PAGO'])
+			and !empty($_POST['TOTAL'])
+			and is_numeric($_POST['TOTAL'])
+		) {
+
+			if (empty($userInfo['ID'])) { $userInfo['ID'] = rand(); }
+
+			// número d'albarà
+			$numAlbara = date('Y-m-d') . '-DONA-' . time() . '-' . $userInfo['ID'];
+
+			// canaries, ceuta, melilla?
+			if (isset($_POST['FACTURACION_OTRO_PAIS'])) {
+				$_POST['FACTURACION_OTRO_PAIS'] = 1;
+			}
+			else {
+				$_POST['FACTURACION_OTRO_PAIS'] = 0;
+			}
+
+			// empresa o profesional?
+			if (isset($_POST['FACTURACION_PROFESIONAL'])) {
+				$_POST['FACTURACION_PROFESIONAL'] = 1;
+			}
+			else {
+				$_POST['FACTURACION_PROFESIONAL'] = 0;
+			}
+
+			$euros = round($_POST['TOTAL'], 2);
+
+			// procedim segons el mètode de pagament indicat
+			switch ($_POST['METODO_PAGO']) {
+
+				// tarja crèdit
+				case 1:
+
+					// dades pagament
+					$order = '4' . rand(0, 9) . date('mdHis');
+					$amount = $euros * 100;
+					$urlOK = '|CONFIG_URLBASE|/mbp/pagook.html';
+					$urlKO = '|CONFIG_URLBASE|/mbp/pagoko.html';
+					$merchantURL = '|CONFIG_URLBASE|/mbp/pago.html';
+					$producto = 'BiblioPRO - Donación';
+
+					// introduïm el pagament a la base de dades, inactiu fins que es comprovi
+					$downloadQuery = db_query("
+						INSERT INTO `$taula_donacions`
+						SET
+							ID_USUARIO = $userInfo[ID],
+							IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+							FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+							FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+							FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+							FACTURACION_PROFESIONAL = '" . mysql_real_escape_string($_POST['FACTURACION_PROFESIONAL']) . "',
+							FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+							FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+							FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+							FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+							FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+							FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+							TOTAL = $euros,
+							ID_TPV = '$order',
+							METODO_PAGO = $_POST[METODO_PAGO],
+							SOLICITA_FACTURA = " . (isset($_POST['SOLICITA_FACTURA']) ? 1 : 0) . ",
+							NUM_ALBARAN = '$numAlbara',
+							STATUS = 0,
+							FECHA_SOLICITUD = NOW(),
+							CREATION = NOW(),
+							USUARICREAR = 'admin'
+					");
+
+?>
+						<div class="broken border clearfix">
+							|Missatge pagament targeta|
+							<p>Cantidad de la donación: <strong><?php echo number_format($euros, 2, ',', '.'); ?>€</strong></p>
+						</div>
+<?php
+
+/*
+ * Establim els paràmetres de pagament per al formulari per TPV
+*/
+
+$pagamentImport = $euros;
+$pagamentDescripcio = htmlspecialchars($producto);
+$tpv->setUrlConfirmCallback($merchantURL);
+$tpv->setUrlOk($urlOK);
+$tpv->setUrlError($urlKO);
+$form = $tpv->getFormPagament($order, $pagamentImport, $pagamentDescripcio, array('value="Realizar donación"', 'class="buttonSubmit send"'), $idioma);
+
+echo $form;
+
+					break;
+
+				// transferència bancària
+				case 2:
+
+					// introduïm el pagament a la base de dades, inactiu fins que es comprovi
+					$downloadQuery = db_query("
+						INSERT INTO `$taula_donacions`
+						SET
+							ID_USUARIO = $userInfo[ID],
+							IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+							FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+							FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+							FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+							FACTURACION_PROFESIONAL = '" . mysql_real_escape_string($_POST['FACTURACION_PROFESIONAL']) . "',
+							FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+							FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+							FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+							FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+							FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+							FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+							FACTURACION_FAX = '" . mysql_real_escape_string($_POST['FACTURACION_FAX']) . "',
+							TOTAL = $euros,
+							METODO_PAGO = $_POST[METODO_PAGO],
+							IBAN = '" . mysql_real_escape_string($IBAN) . "',
+							SWIFT = '" . mysql_real_escape_string($SWIFT) . "',
+							SOLICITA_FACTURA = " . (isset($_POST['SOLICITA_FACTURA']) ? 1 : 0) . ",
+							NUM_ALBARAN = '$numAlbara',
+							STATUS = 0,
+							FECHA_SOLICITUD = NOW(),
+							CREATION = NOW(),
+							USUARICREAR = 'admin'
+					");
+
+					$destinatari =
+						!empty($_POST['FACTURACION_EMAIL'])
+						? $_POST['FACTURACION_EMAIL']
+						: (
+							!empty($userInfo['EMAIL'])
+							? $userInfo['EMAIL']
+							: false
+						);
+
+					if (!empty($destinatari)) {
+
+						// enviem email amb dades per realitzar la transferència
+						include_once ("mail.php");
+						$cos = '
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Donación en BiblioPRO</title>
+	</head>
+	<body>
+		<h1>Donación en BiblioPRO</h1>
+		<p>Usted ha solicitado realizar una donación a BiblioPRO</p>
+		<hr />
+		<h2>Datos para realizar la transferencia</h2>
+		<ul>
+			<li>Cantidad de la donación: <strong>' . number_format($euros, 2, ',', '.') . '€</strong></li>
+			<li>Referencia: <strong>' . $numAlbara . '</strong></li>
+			<li>Entidad bancaria: <strong>' . htmlspecialchars($bankName) . '</strong></li>
+			<li>Cuenta bancaria: <strong>' . htmlspecialchars($bankAccountNumber) . '</strong></li>
+		</ul>
+		<hr />
+		|Missatge pagament transferencia bancaria|
+		<hr />
+		<p>Si usted no ha realizado ninguna donación en el sitio web de BiblioPRO, por favor ignore este mensaje.</p>
+	</body>
+</html>';
+						$from = '"BiblioPRO" <bibliopro@imim.es>';
+						$assumpte = 'Información para realizar el pago de donación a BiblioPRO';
+						// $cos = utf8_decode($cos);
+						// $assumpte = utf8_decode($assumpte);
+						// enviem el correu
+						sendMail($destinatari, $assumpte, $cos, $from, null, true);
+
+					}
+
+?>
+					<div class="broken border clearfix">
+						<div class="ok">
+							|Missatge pagament transferencia bancaria|
+							<h5>Datos para realizar la transferencia</h5>
+							<ul>
+								<li>Cantidad de la donación: <strong><?php echo number_format($euros, 2, ',', '.'); ?>€</strong></li>
+								<li>Referencia: <strong><?php echo $numAlbara; ?></strong></li>
+								<li>Entidad bancaria: <strong><?php echo htmlspecialchars($bankName); ?></strong></li>
+								<li>Cuenta bancaria: <strong><?php echo htmlspecialchars($bankAccountNumber); ?></strong></li>
+							</ul>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+												break;
+
+											default:
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge error forma pagament|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+												break;
+
+										}
+
+		}
+		else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge error dades|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+		}
+
+	}
+	// si no s'ha enviat, mostrem el formulari
+	else {
+
+?>
+					|Text|
+
+					<form action="" method="post" enctype="multipart/form-data" accept-charset="UTF-8" id="donationForm">
+
+						<div class="broken border clearfix">
+							<!-- cantidad -->
+							<label for="TOTAL">
+								<span>Importe de la donación</span>
+								<input type="text" name="TOTAL" id="TOTAL" class="required petit" maxlength="10" value="10" /> <strong>€</strong>
+							</label>
+						</div>
+
+						<div class="broken border clearfix">
+							<!-- forma pago -->
+							<label for="METODO_PAGO">
+								<span>Forma de pago</span>
+								<select name="METODO_PAGO" id="METODO_PAGO" class="required">
+									<option value="1">Tarjeta de crédito</option>
+									<option value="2">Transferencia bancaria</option>
+								</select>
+							</label>
+						</div>
+
+<?php
+
+		if (accessGetLogin() != '') {
+
+?>
+						<div class="broken border clearfix">
+							<!-- ¿solicita factura? -->
+							<label for="SOLICITA_FACTURA" class="checkbox">
+								<input type="checkbox" name="SOLICITA_FACTURA" id="SOLICITA_FACTURA" />
+								<span>Deseo poder descargar la factura en formato <acronym title="Portable Document Format">PDF</acronym></span>
+							</label>
+						</div>
+<?php
+
+		}
+
+?>
+
+						<div class="broken border clearfix">
+							<h3>Datos de facturación</h3>
+							<p><strong>Importante:</strong> rellene estos datos únicamente si desea que su donación no sea anónima o desea disponer de su factura.</p>
+							<!-- nombre -->
+							<label for="FACTURACION_NOMBRE">
+								<span>Nombre y apellidos</span>
+								<input
+									type="text"
+									name="FACTURACION_NOMBRE"
+									id="FACTURACION_NOMBRE"
+									maxlength="255"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_NOMBRE']); ?>"
+								/>
+							</label>
+							<!-- cif -->
+							<label for="FACTURACION_CIF">
+								<span>CIF/NIF/VAT</span>
+								<input
+									type="text"
+									name="FACTURACION_CIF"
+									id="FACTURACION_CIF"
+									class="petit"
+									maxlength="20"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_CIF']); ?>"
+								/>
+							</label>
+							<!-- empresario o profesional? -->
+							<label for="FACTURACION_PROFESIONAL" class="radio checkbox clearfix">
+<?php
+
+			if ($userInfo['FACTURACION_PROFESIONAL'] == 1) {
+
+?>
+								<input type="checkbox" name="FACTURACION_PROFESIONAL" id="FACTURACION_PROFESIONAL" value="1" checked="checked" />
+<?php
+
+			}
+			else {
+
+?>
+								<input type="checkbox" name="FACTURACION_PROFESIONAL" id="FACTURACION_PROFESIONAL" value="1" />
+<?php
+
+			}
+
+?>
+								<span>Empresa o profesional</span>
+							</label>
+							<!-- dirección -->
+							<label for="FACTURACION_DIRECCION">
+								<span>Dirección</span>
+								<input
+									type="text"
+									name="FACTURACION_DIRECCION"
+									id="FACTURACION_DIRECCION"
+									class="gran"
+									maxlength="255"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_DIRECCION']); ?>"
+								/>
+							</label>
+							<!-- código postal -->
+							<label for="FACTURACION_CP">
+								<span>Código postal</span>
+								<input
+									type="text"
+									name="FACTURACION_CP"
+									id="FACTURACION_CP"
+									class="petit"
+									maxlength="16"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_CP']); ?>"
+								/>
+							</label>
+							<!-- ciudad -->
+							<label for="FACTURACION_CIUDAD">
+								<span>Población</span>
+								<input
+									type="text"
+									name="FACTURACION_CIUDAD"
+									id="FACTURACION_CIUDAD"
+									maxlength="128"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_CIUDAD']); ?>"
+								/>
+							</label>
+							<!-- país -->
+							<label for="FACTURACION_PAIS">
+								<span>País</span>
+								<select name="FACTURACION_PAIS" id="FACTURACION_PAIS">
+<?php
+
+			$countriesQuery = db_query("SELECT ID, PAIS FROM `$taula_paisos` ORDER BY PAIS ASC");
+			if (db_num_rows($countriesQuery) > 0) {
+
+				while ($countriesRow = db_fetch_array($countriesQuery)) {
+
+					if (!empty($userInfo) and $countriesRow['ID'] == $userInfo['FACTURACION_PAIS']) {
+
+?>
+									<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>" selected="selected"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+					}
+					else {
+
+?>
+									<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+					}
+
+				}
+
+			}
+
+?>
+								</select>
+							</label>
+							<!-- otro país -->
+							<label for="FACTURACION_OTRO_PAIS" class="radio checkbox clearfix">
+<?php
+
+			if ($userInfo	['FACTURACION_OTRO_PAIS'] == 1) {
+
+?>
+								<input type="checkbox" name="FACTURACION_OTRO_PAIS" id="FACTURACION_OTRO_PAIS" value="1" checked="checked" />
+<?php
+
+			}
+			else {
+
+?>
+								<input type="checkbox" name="FACTURACION_OTRO_PAIS" id="FACTURACION_OTRO_PAIS" value="1" />
+<?php
+
+			}
+
+?>
+								<span>¿Canarias, Ceuta o Melilla? <em>(sólo en caso de que su país sea España)</em></span>
+							</label>
+							<!-- telefono -->
+							<label for="FACTURACION_TELEFONO">
+								<span>Teléfono</span>
+								<input
+									type="text"
+									name="FACTURACION_TELEFONO"
+									id="FACTURACION_TELEFONO"
+									class="petit"
+									maxlength="16"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_TELEFONO']); ?>"
+								/>
+							</label>
+							<!-- telefono -->
+							<label for="FACTURACION_FAX">
+								<span>Fax</span>
+								<input
+									type="text"
+									name="FACTURACION_FAX"
+									id="FACTURACION_FAX"
+									class="petit"
+									maxlength="16"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_FAX']); ?>"
+								/>
+							</label>
+							<!-- email -->
+							<label for="FACTURACION_EMAIL">
+								<span>Correo electrónico</span>
+								<input
+									type="text"
+									name="FACTURACION_EMAIL"
+									id="FACTURACION_EMAIL"
+									maxlength="255"
+									value="<?php if (!empty($userInfo)) echo htmlspecialchars($userInfo['FACTURACION_EMAIL']); ?>"
+								/>
+							</label>
+						</div>
+
+						<div><input type="submit" value="Hacer donación" class="send" /></div>
+
+					</form>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

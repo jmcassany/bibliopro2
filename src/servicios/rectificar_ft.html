@@ -1,0 +1,424 @@
+<?php
+require_once("/var/www/html//media/php/formmail.php");
+gestionaFormulari("Rectificación de Ficha Técnica en BiblioPRO", "bibliopro@imim.es", "/respuesta.html");
+?><?php
+require_once('/var/www/html//config.php');
+$id = '22';
+$idioma = 'es';
+$pare = '3';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '/servicios/index.html' , 'title' => 'Servicios' , 'nom' => 'Servicios') , 2 => array('link' => '' , 'title' => 'Rectificación de Ficha Técnica en BiblioPRO' , 'nom' => 'Rectificación de Ficha Técnica en BiblioPRO'));
+$folderArray = array(3 => 'servicios');
+$folderIds = array(0 => 3);
+$folderUrl = '/servicios/rectificar_ft.html';
+$pageUrl = '/servicios/rectificar_ft.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><?php
+
+	$envia = "Enviar";
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Rectificación de Ficha Técnica en BiblioPRO - BiblioPRO</title>
+		<meta name="description" content="" />
+		<meta name="Keywords" content="BiblioPRO, servicios, biblioteca, informacion básica, distribución, materiales de ayuda, cómo funciona, entrada de datos, newsletter, noticias, preguntas frecuentes" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// fill and hide simple captcha
+				var sum1 = <?php echo $captcha['sum1']; ?>;
+				var sum2 = <?php echo $captcha['sum2']; ?>;
+				var captcha = $('#captchaContainer');
+				captcha.find('input[type="text"]').val(sum1 + sum2);
+				captcha.hide();
+			});
+		</script>
+
+	</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="broken border clearfix">
+					<h2>Rectificación de Ficha Técnica en BiblioPRO</h2>
+					
+				</div>
+
+				<form action="rectificar_ft.html" method="post" id="form1" enctype="multipart/form-data">
+
+					<div class="broken border clearfix">
+		<label for="x01">
+			<span>---IDENTIFICACION DEL INSTRUMENTO A RECTIFICAR---</span>
+			<input type="text" name="x01" id="x01" value="Siglas y nombre del instrumento" class="formulari normal"  tabindex="1"  />
+		</label>
+
+		<label for="x02_link">
+			<span>---Link</span>
+			<input type="text" name="x02_link" id="x02_link" value="Enlace al instrumento en la web de BiblioPRO (opcional)" class="formulari normal"  tabindex="2"  />
+		</label>
+
+		<label for="x03_revisor">
+			<span>---Formulario completado por...</span>
+			<input type="text" name="x03_revisor" id="x03_revisor" value="-tu nombre-" class="formulari petit"  tabindex="3"  />
+		</label>
+
+		<p class="textFormulari">--- En los campos que aparecen a continuación, consignar UNICAMENTE datos A CAMBIAR ---</p>
+		
+		<label for="nombre_cast">
+			<span>[---VERSION ESPAÑOLA DEL INSTRUMENTO---]</span>
+			<input type="text" name="nombre_cast" id="nombre_cast" value="" class="formulari normal"  tabindex="4"  />
+		</label>
+
+		<label for="autor_cast">
+			<span>Autor(es) versión española</span>
+			<input type="text" name="autor_cast" id="autor_cast" value="" class="formulari normal"  tabindex="5"  />
+		</label>
+
+		<label for="ref_cast">
+			<span>Referencia versión española</span>
+			<input type="text" name="ref_cast" id="ref_cast" value="" class="formulari normal"  tabindex="6"  />
+		</label>
+
+		<label for="corresp_cast">
+			<span>Correspondencia versión española</span>
+			<input type="text" name="corresp_cast" id="corresp_cast" value="" class="formulari normal"  tabindex="7"  />
+		</label>
+
+		<label for="email_cast">
+			<span>Email del autor de la versión española</span>
+			<input type="text" name="email_cast" id="email_cast" value="" class="formulari normal"  tabindex="8"  />
+		</label>
+
+		<p class="textFormulari">-</p>
+		
+		<label for="nombre_orig">
+			<span>[          ---VERSION ORIGINAL DEL INSTRUMENTO---          ]</span>
+			<input type="text" name="nombre_orig" id="nombre_orig" value="" class="formulari normal"  tabindex="9"  />
+		</label>
+
+		<label for="autor_orig">
+			<span>Autor(es) versión original</span>
+			<input type="text" name="autor_orig" id="autor_orig" value="" class="formulari normal"  tabindex="10"  />
+		</label>
+
+		<label for="ref_orig">
+			<span>Referencia versión original</span>
+			<input type="text" name="ref_orig" id="ref_orig" value="" class="formulari normal"  tabindex="11"  />
+		</label>
+
+		<label for="corresp_orig">
+			<span>Correspondencia versión original</span>
+			<input type="text" name="corresp_orig" id="corresp_orig" value="" class="formulari normal"  tabindex="12"  />
+		</label>
+
+		<label for="email_orig">
+			<span>Email del autor de la versión original</span>
+			<input type="text" name="email_orig" id="email_orig" value="" class="formulari normal"  tabindex="13"  />
+		</label>
+
+		<p class="textFormulari">-</p>
+		
+		<label for="conceptos"><span>[---CARACTERISTICAS---]</span>
+			<select name="conceptos" id="conceptos"   tabindex="14">
+
+			<option value="--conceptos medidos--">--conceptos medidos--</option>
+			<option value="Ambiental">Ambiental</option>
+			<option value="Apoyo social">Apoyo social</option>
+			<option value="Calidad de vida">Calidad de vida</option>
+			<option value="Constructos rel. con tto.(adherencia/expectativas/...)">Constructos rel. con tto.(adherencia/expectativas/...)</option>
+			<option value="Escala de síntomas">Escala de síntomas</option>
+			<option value="Escala funcional o actividades de vida diaria">Escala funcional o actividades de vida diaria</option>
+			<option value="Resilencia">Resilencia</option>
+			<option value="Satisfacción con asistencia o tratamiento">Satisfacción con asistencia o tratamiento</option>
+			<option value="Otros">Otros</option>
+			</select>
+		</label>
+
+		<label for="enfermedades">
+			<span>Enfermedades</span>
+			<input type="text" name="enfermedades" id="enfermedades" value="" class="formulari gran"  tabindex="15"  />
+		</label>
+
+		<label for="pob_gender"><span>Población(gender)</span>
+			<select name="pob_gender" id="pob_gender"   tabindex="16">
+
+			<option value=""></option>
+			<option value="Hombres">Hombres</option>
+			<option value="Mujeres">Mujeres</option>
+			<option value="Ambos">Ambos</option>
+			</select>
+		</label>
+
+		<label for="pob_edades">
+			<span>Población(edades)</span>
+			<input type="text" name="pob_edades" id="pob_edades" value="" class="formulari normal"  tabindex="17"  />
+		</label>
+
+		<p class="textFormulari">(p.ej.: Niños / Adolescentes / Adultos / Ancianos / Todos las edades)</p>
+		
+		<label for="enfoque"><span>Enfoque</span>
+			<select name="enfoque" id="enfoque"   tabindex="18">
+
+			<option value=""></option>
+			<option value="Psícometrico">Psícometrico</option>
+			<option value="Clinimetrico">Clinimetrico</option>
+			<option value="Econometrico">Econometrico</option>
+			<option value="Otro">Otro</option>
+			</select>
+		</label>
+
+		<label for="n_items">
+			<span>número de ítems</span>
+			<input type="text" name="n_items" id="n_items" value="" class="formulari petit"  tabindex="19"  />
+		</label>
+
+		<label for="dimensiones">
+			<span>DIMENSIONES  [  NombreDIM(n.items) ... ]</span>
+			<input type="text" name="dimensiones" id="dimensiones" value="" class="formulari gran"  tabindex="20"  />
+		</label>
+
+		<label for="keywords">
+			<span>Palabras clave</span>
+			<input type="text" name="keywords" id="keywords" value="" class="formulari normal"  tabindex="21"  />
+		</label>
+
+		<div class="textarea">
+			<label for="obs"><span>Observaciones</span></label>
+			<textarea cols="40" rows="12" name="obs" id="obs" class=""   tabindex="22"></textarea>
+		</div>
+</div>
+
+					<div id="captchaContainer" class="clearfix">
+						<label for="captcha">
+							<span>¿Cuánto suman <?php echo $captcha['sum1']; ?> + <?php echo $captcha['sum2']; ?>?</span>
+							<input type="text" id="captcha" name="captcha" class="required" />
+						</label>
+						<input type="hidden" name="timestamp" id="timestamp" value="<?php echo $captcha['timestamp']; ?>" />
+					</div>
+
+					<div><input type="submit" name="enviar" value="<?php echo $envia; ?>" class="buttonSubmit send" /></div>
+
+				</form>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

@@ -1,0 +1,320 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver atrás</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/mbp">Ir a Mi BiblioPRO</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+	setlocale(LC_ALL, 'es_ES.UTF-8', 'es_ES', 'es');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+<?php
+
+	// si l'usuari està identificat, mostrem la plana
+	if (accessGetLogin() != '') {
+
+		$userInfo = getUserInfo($taula_usuaris);
+
+?>
+					<div class="broken border clearfix">
+						|Introduccio|
+					</div>
+
+<?php
+
+		// obtenim les subllicències de l'usuari
+		/*$sublicencesQuery = db_query("
+			SELECT *
+			FROM `$taula_subllicencies_pagaments`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+				AND FECHA_VALIDEZ >= NOW()
+			ORDER BY
+				FECHA_VALIDEZ ASC
+		");*/
+
+		$sublicencesQuery = db_query("
+			SELECT *
+			FROM `$taula_subllicencies_pagaments`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+			ORDER BY
+				FECHA_VALIDEZ ASC
+		");
+		if (db_num_rows($sublicencesQuery) > 0) {
+
+?>
+					<ul class="faqs">
+<?php
+
+			while ($sublicencesRow = db_fetch_array($sublicencesQuery)) {
+
+				// obtenim info qüestionari
+				$qQuery = db_query("
+					SELECT NOM_CAST, ID
+					FROM `$taula_questionaris`
+					WHERE ID = $sublicencesRow[ID_CUEST]
+				");
+				$qRow = db_fetch_array($qQuery);
+
+				// finançament per entitat
+				switch ($sublicencesRow['FINANCIACION_ENTIDAD']) {
+
+					case 1: $finan = 'Con ánimo de lucro'; break;
+					case 2: $finan = 'Sin ánimo de lucro'; break;
+					case 3: $finan = 'Académica'; break;
+					default: $finan = 'Desconocida'; break;
+
+				}
+
+				// estat / otorgament
+				if (!empty($sublicencesRow['STATUS'])) {
+
+					switch ($sublicencesRow['OTORGADA']) {
+
+						case 0: $status = 'Pendiente de otorgación'; break;
+						case 1: $status = 'Pendiente de terceros'; break;
+						case 2: $status = 'Otorgada el ' . strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_OTORGADA'])); break;
+						case 3: $status = 'Denegada'; $sublicencesRow['FECHA_VALIDEZ'] = 'Denegada'; break;
+						default: $status = 'Desconocido'; break;
+
+					}
+
+				}
+				else {
+
+					$status = 'Inactiva';
+
+				}
+
+				// factura
+				if (empty($sublicencesRow['FACTURA'])) {
+
+					$sublicencesRow['FACTURA'] = $billDate = $billLink = 'No emitida';
+
+				}
+				else {
+
+					if (
+						!empty($sublicencesRow['FECHA_FACTURA'])
+						and $sublicencesRow['FECHA_FACTURA'] != '0000-00-00 00:00:00'
+					) {
+						$billDate = strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_FACTURA']));
+					}
+					else {
+						$billDate = 'No indicada';
+					}
+					if (!empty($sublicencesRow['FICHERO_FACTURA'])) {
+						$billLink = '<a href="|CONFIG_NOMCARPETA|/media/upload/pdf/facturas/'. htmlspecialchars($sublicencesRow['FICHERO_FACTURA']) . '">Descargar</a>';
+					}
+					else {
+						$billLink = 'No suministrada';
+					}
+
+				}
+
+				// estat pagament
+				if (
+					(
+						empty($sublicencesRow['FECHA_COBRO'])
+						or $sublicencesRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+					)
+				) {
+
+					$paymentStatus = 'Pendiente';
+
+				}
+				else {
+
+					$paymentStatus = 'Confirmado el ' . strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_COBRO']));
+
+				}
+
+?>
+						<li class="element clearfix">
+							<h4 class="big"><?php echo $qRow['NOM_CAST']; ?></h4>
+							<p><strong>Estado de la sublicencia:</strong> <?php echo $status; ?></p>
+							<p><strong>Válida hasta:</strong> <?php echo strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_VALIDEZ'])); ?> <?php echo ($sublicencesRow['OTORGADA'] != 2 ? '<em>(No definitiva)</em>' : ''); ?></p>
+<?php
+
+				// si està otorgada i té document, mostrem enllaç
+				if (
+					$sublicencesRow['OTORGADA'] == 2
+					and is_file('|CONFIG_PATHBASE|/media/upload/pdf/sublicencias-atorgadas/' . $sublicencesRow['NUM_ALBARAN'] . '.pdf')
+				) {
+
+?>
+							<p><a href="|CONFIG_NOMCARPETA|/media/upload/pdf/sublicencias-atorgadas/<?php echo $sublicencesRow['NUM_ALBARAN']; ?>.pdf"><strong>Descargar documento de otorgación</strong></a></p>
+<?php
+
+				}
+
+?>
+							<div class="answer">
+								<h5>Información sobre el pago</h5>
+								<ul>
+									<li>
+										<strong>Precio de la sublicencia:</strong>
+										<ul>
+											<li><strong>Base imponible:</strong> <?php echo $sublicencesRow['PRECIO']; ?>€</li>
+											<li><strong>IVA:</strong> <?php echo $sublicencesRow['TIPO_IVA']; ?>% (<?php echo $sublicencesRow['IVA']; ?>€)</li>
+											<li><strong>Total:</strong> <?php echo $sublicencesRow['TOTAL']; ?>€</li>
+										</ul>
+									</li>
+									<li><strong>Estado del pago:</strong> <?php echo $paymentStatus; ?></li>
+									<li><strong>Número de la factura:</strong> <?php echo $sublicencesRow['FACTURA']; ?></li>
+									<li><strong>Fecha de la factura:</strong> <?php echo $billDate; ?></li>
+									<li><strong>Factura en PDF:</strong> <?php echo $billLink; ?></li>
+									<li><strong>Número de albarán interno:</strong> <?php echo $sublicencesRow['NUM_ALBARAN']; ?></li>
+								</ul>
+								<h5>Información sobre la sublicencia</h5>
+								<ul>
+									<li><strong>Fecha de solicitud:</strong> <?php echo strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_SOLICITUD'])); ?></li>
+									<li><strong>Número de administraciones:</strong> <?php echo htmlspecialchars($sublicencesRow['NUM_ADMINISTRACIONES']); ?></li>
+									<li><strong>Financiación mayoritaria por una entidad:</strong> <?php echo $finan; ?></li>
+								</ul>
+								<h5>Información sobre el estudio</h5>
+								<ul>
+									<li><strong>Nombre:</strong> <?php echo htmlspecialchars($sublicencesRow['TITULO']); ?></li>
+									<li><strong>Uso:</strong> <?php echo htmlspecialchars($sublicencesRow['USO']); ?></li>
+									<li><strong>Ojetivos:</strong> <?php echo htmlspecialchars($sublicencesRow['OBJETIVOS']); ?></li>
+									<li><strong>Período:</strong> <?php echo htmlspecialchars($sublicencesRow['FECHA_INICIO']); ?> - <?php echo htmlspecialchars($sublicencesRow['FECHA_FINAL']); ?></li>
+									<li><strong>Diseño:</strong> <?php echo htmlspecialchars($sublicencesRow['DISENO_ESTUDIO']); ?></li>
+									<li><strong>Población:</strong> <?php echo htmlspecialchars($sublicencesRow['POBLACION']); ?></li>
+									<li><strong>Modo de administración:</strong> <?php echo htmlspecialchars($sublicencesRow['MODO_ADMIN']); ?></li>
+									<li><strong>Soporte técnico:</strong> <?php echo htmlspecialchars($sublicencesRow['SOPORTE_TECNICO']); ?></li>
+								</ul>
+								<h5>Datos de facturación indicados</h5>
+								<ul>
+									<li><strong>Razón social:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_NOMBRE']); ?></li>
+									<li><strong>CIF:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_CIF']); ?></li>
+									<li><strong>Dirección:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_DIRECCION']); ?></li>
+									<li><strong>Código postal:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_CP']); ?></li>
+									<li><strong>Población:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_CIUDAD']); ?></li>
+									<li><strong>País:</strong> <?php echo htmlspecialchars(getCountryName($sublicencesRow['FACTURACION_PAIS'], $taula_paisos)); ?></li>
+									<li><strong>Teléfono:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_TELEFONO']); ?></li>
+									<li><strong>Correo electrónico:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_EMAIL']); ?></li>
+								</ul>
+							</div>
+<?php
+
+				// si el pagament no s'ha realitzat, permetre fer-lo
+				if (
+					$sublicencesRow['STATUS'] == 0
+					and (
+						empty($sublicencesRow['FECHA_COBRO'])
+						or $sublicencesRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+					)
+				) {
+
+?>
+							<p class="right pay"><a href="|CONFIG_NOMCARPETA|/mbp/pago.html?tipo=2&amp;ID=<?php echo $sublicencesRow['ID']; ?>"><strong>Realizar o modificar pago</strong></a></p>
+<?php
+
+				}
+
+?>
+							<p class="primer"><a href="|CONFIG_NOMCARPETA|/buscador/ver.html?ID=<?php echo $qRow['ID']; ?>">Ir al cuestionario</a></p>
+						</li>
+<?php
+
+			}
+
+?>
+					</ul>
+					<p class="top"><a href="#content">Subir</a></p>
+<?php
+
+		}
+		// si l'usuari no té cap subllicència, mostrem missatge
+		else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge no disposa de subllicencies|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+		}
+
+	}
+	// si l'usuari no està identificat, mostrem error
+	else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge usuari no identificat|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

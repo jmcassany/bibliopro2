@@ -1,0 +1,695 @@
+/* dom */
+html { font-size: 100%; } /* WinIE text resize correction */
+body {
+	margin: 0;
+	padding: 0;
+	color: #333;
+	font-family: verdana, helvetica, sans-serif;
+	font-size: 0.75em; /* 12 px */
+	line-height: 1.4em;
+	background: #e8e8e8;
+}
+* { margin: 0; border: none; padding: 0; }
+a { /* 	outline: 0; */ color: #0e449a; text-decoration :none; }
+	a:hover { color: #061f47; text-decoration: underline; }
+p { margin: 0 0 1em 0; line-height: 1.2em; }
+ul { list-style: none inside; }
+/* esquerra i dreta */
+div.left { display: inline; /* ie6fh */ clear: left; float: left; width: 49%; }
+div.right { display: inline; /* ie6fh */ clear: right; float: right; width: 49%; }
+.center { text-align: center; }
+/* clearfix */
+.clearfix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+	.clearfix { display:inline-block; }
+	/* hide from mac IE \*/
+	.clearfix { display:block; }
+
+/* menú accessibilitat (ocult) */
+#acc {
+	position: absolute;
+	top: -999em;
+}
+
+/* wrapper */
+#page {
+	margin: 0 auto;
+	width: 1000px;
+	background: #fff url("img/fons.jpg") repeat-x;
+}
+	#page #top {
+		color: #fff;
+		font-size: .917em; /* 11px */
+		background: #171717 url('img/bg_top.jpg') repeat-x;
+	}
+		#page #top a {
+			color: #fff;
+		}
+		#page #top img {
+			float: left;
+			margin: 8px 0 8px 3em;
+		}
+		#page #top span {
+			display: inline; /* ie6fh */
+			float: left;
+			margin: 5px 1em;
+			padding: .2em 0;
+		}
+			#page #top span.user {
+				border-left: 1px dotted #858585;
+				padding: .2em 0 .2em 34px;
+				color: #f3d347;
+				font-weight: bold;
+				background: url('img/icon_clau.png') 12px .3em no-repeat;
+			}
+		#page #top ul {
+			float: right;
+			margin: 5px 3em 5px 1em;
+		}
+			#page #top ul li {
+				display: inline;
+			}
+				#page #top ul li a {
+					float: left;
+					margin-left: 1em;
+					border-left: 1px dotted #858585;
+					padding: .2em 0 .2em 34px;
+					background: url('img/icon_web.png') 12px 50% no-repeat;
+				}
+					#page #top ul li a#logout {
+						background-image: url('img/icon_logout.png');
+					}
+	/* capçalera + menú principal */
+	#page #header {
+		background: #497cbb url('img/bg_cap.jpg') repeat-x 0 100%;
+	}
+		#page #header a {
+			color: #fff;
+		}
+		#page #header h1 {
+			display: inline; /* ie6fh */
+			float: left;
+			margin: 0 60px 0 36px;
+		}
+		#page #header #menu {
+			display: inline; /* ie6fh */
+			float: left;
+			margin: 24px 0 0 0;
+		}
+			#page #header #menu li {
+				display: inline;
+			}
+				#page #header #menu li.current a {
+					background-color: #08295d;
+				}
+			#page #header #menu a {
+				display: block;
+				float: left;
+				height: 1.6em;
+				font-size: 1.167em; /* 14px */
+				background-repeat: no-repeat;
+				background-position: 0 100%;
+				padding: 2.5em 1.4em .2em 1.2em;
+			}
+				#page #header #menu a#con {
+					background-image: url('img/icon_menu_continguts.png');
+				}
+				#page #header #menu a#usu {
+					background-image: url('img/icon_menu_usuaris.png');
+				}
+				#page #header #menu a#car {
+					background-image: url('img/icon_menu_carpetes.png');
+				}
+				#page #header #menu a#pla {
+					background-image: url('img/icon_menu_plantilles.png');
+				}
+				#page #header #menu a#men {
+					background-image: url('img/icon_menu_menus.png');
+				}
+				#page #header #menu a#for {
+					background-image: url('img/icon_menu_formularis.png');
+				}
+				#page #header #menu a#uti {
+					background-image: url('img/icon_menu_utilitats.png');
+				}
+	/* contenidor principal */
+	#page #content {
+		padding: 20px 33px;
+		background-color: #fff;
+	}
+		/* contingut central */
+		#page #content #main {
+			display: inline; /* ie6fh */
+			width: 75%;
+			clear: left;
+			float: left;
+		}
+				/* contenidor amb botons */
+				#page #content #main div.buttons {
+					text-align: right;
+					width: 94%;
+				}
+					#page #content #main div.buttons p {
+						display: inline;
+						float: right;
+						margin: 0 0 0 5px;
+					}
+		/* barra lateral dreta */
+		#page #content #sidebar-right {
+			display: inline; /* ie6fh */
+			width: 22.5%;
+			clear: right;
+			float: right;
+		}
+				/* contenidor amb vora */
+				#page #content #sidebar-right div.bordered {
+					margin-bottom: 2em;
+				}
+			/* capçaleres barra lateral */
+			#page #content #sidebar-right h3 {
+				padding: 0 16px 32px 16px;
+				background: url("img/titol_neutre.jpg") no-repeat center bottom;
+			}
+				#page #content #sidebar-right h3.info {
+					background: url("img/titol_informacio.jpg") no-repeat center bottom;
+				}
+				#page #content #sidebar-right h3.templates {
+					background: url("img/titol_plantilla.jpg") no-repeat center bottom;
+				}
+			#page #content #sidebar-right h4 {
+				font-size: 1.333em; /* 16px */
+			}
+			/* paràgrafs barra lateral */
+			#page #content #sidebar-right p {
+				margin: .8em 0;
+			}
+				#page #content #sidebar-right p.center {
+					margin: 1em 20px;
+				}
+					#page #content #sidebar-right p.center a {
+						color: #993300;
+					}
+				/* llegendes */
+				#page #content #sidebar-right p.edit {
+					border-bottom: 1px solid #ccc;
+					padding: 0 0 .8em 26px;
+					background: url("img/editar.png") no-repeat 0 .2em;
+				}
+				/* fons gris */
+				#page #content #sidebar-right p.gray {
+					display: block;
+					padding: 4px 8px;
+					background: #e0e0e0;
+				}
+				/* icona no publicat */
+				#page #content #sidebar-right p.nopublished {
+					border-bottom: 1px solid #ccc;
+					padding: 0 0 .8em 26px;
+					background: url("img/red_button.png") no-repeat 0 .2em;
+				}
+				/* icona opcions */
+				#page #content #sidebar-right p.options {
+					border-bottom: 1px solid #ccc;
+					padding: 0 0 .8em 26px;
+					background: url("img/mes_info.png") no-repeat 0 .2em;
+				}
+				/* icona pendent */
+				#page #content #sidebar-right p.pending {
+					padding: 0 0 0 26px;
+					background: url("img/yellow_button.png") no-repeat 0 .2em;
+				}
+				/* icona publicat */
+				#page #content #sidebar-right p.published {
+					border-bottom: 1px solid #ccc;
+					padding: 0 0 .8em 26px;
+					background: url("img/green_button.png") no-repeat 0 .2em;
+				}
+				/* icona veure */
+				#page #content #sidebar-right p.view {
+					border-bottom: 1px solid #ccc;
+					padding: 0 0 .8em 26px;
+					background: url("img/ico_veure.png") no-repeat 0 .2em;
+				}
+			/* spans barra lateral */
+				#page #content #sidebar-right span.small {
+					clear: both;
+					display: block;
+					color: #777;
+					font-size: .833em; /* 10px */
+				}
+			/* llistes barra lateral */
+			#page #content #sidebar-right ul {
+				margin-bottom: .1em;
+			}
+				#page #content #sidebar-right ul li {
+					border-top: 1px solid #ccc;
+					padding: 14px 0;
+				}
+					#page #content #sidebar-right ul li.change_template {
+						padding-left: 32px;
+						background: url("img/ico_veure_canviar_plantilla.jpg") no-repeat 0 10px;
+					}
+					#page #content #sidebar-right ul li.view_template {
+						padding-left: 32px;
+						background: url("img/ico_veure_plantilla.jpg") no-repeat 0 10px;
+					}
+		/* contenidors amb estils */
+			/* contenidor amb vora */
+			#page #content div.bordered {
+				margin-bottom: 1.2em;
+				border: 1px solid #cdcdcd;
+				border-radius: 1em;
+				-moz-border-radius: 1em;
+				-webkit-border-radius: 1em;
+				padding: 8px 14px;
+			}
+			/* contenidor molla de pa */
+				#page #content div.breadcrumbs ol {
+					display: inline;
+					list-style: none;
+					margin: 0 .6em;
+				}
+					#page #content div.breadcrumbs ol li {
+						display: inline;
+						margin-right: 5px;
+						padding-right: 14px;
+						background: url("img/list_separator_white.jpg") no-repeat right center;
+					}
+						#page #content div.breadcrumbs ol li.last {
+							background: none;
+							padding: 0;
+						}
+						#page #content div.breadcrumbs ol li a {
+							padding-left: 17px;
+							background: url("img/folder.png") no-repeat left center;
+						}
+			/* contenidor controls d'edició de pàgines */
+			#page #content div.controls {
+				margin-bottom: 2.4em;
+				background: #d8d8d8 url("img/fons_barra_controls.png") repeat-x left bottom;
+			}
+				/* barra d'idiomes */
+				#page #content div.controls div.languages {
+					margin-bottom: 15px;
+					background: #d2d2d2 url("img/fons_barra_idiomes.png") repeat-x left bottom;
+				}
+					#page #content div.controls div.languages ul {
+						display: inline; /* ie6fh */
+						float: left;
+						border-left: 1px solid #9c9c9c;
+						border-right: 1px solid #ffffff;
+					}
+						#page #content div.controls div.languages ul li {
+							display: inline;
+							float: left;
+							margin-bottom: 4px;
+							border-left: 1px solid #fff;
+							border-right: 1px solid #9c9c9c;
+							padding: 14px 16px 11px 16px;
+						}
+							#page #content div.controls div.languages ul li.current {
+								background: #e0e0e0 url("img/fons_barra_idiomes_li_current.png") repeat-x;
+							}
+							#page #content div.controls div.languages ul li a {
+								color: #666;
+							}
+								#page #content div.controls div.languages ul li a.ca {
+									padding: 6px 0 6px 32px;
+									background: url("img/ico_idioma_catala.png") no-repeat left center;
+								}
+								#page #content div.controls div.languages ul li a.en {
+									padding: 6px 0 6px 32px;
+									background: url("img/ico_idioma_english.png") no-repeat left center;
+								}
+								#page #content div.controls div.languages ul li a.es {
+									padding: 6px 0 6px 32px;
+									background: url("img/ico_idioma_castellano.png") no-repeat left center;
+								}
+				/* barra pestanyes accions edició de pàgines */
+				#page #content div.controls div.tabs {
+					display: inline; /* ie6fh */
+					clear: left;
+					float: left;
+					margin-left: 12px;
+				}
+						#page #content div.controls div.tabs ul li {
+							display: inline;
+							float: left;
+							margin-right: 8px;
+							padding: 10px 15px;
+							background: #eee url("img/fons_barra_controls_li_gris.png") repeat-x left bottom;
+						}
+							#page #content div.controls div.tabs ul li.current {
+								background: #fff;
+							}
+								#page #content div.controls div.tabs ul li.current a {
+									color: #000;
+								}
+							#page #content div.controls div.tabs ul li a {
+								color: #666;
+							}
+				/* barra pestanyes verdes accions edició de pàgines */
+				#page #content div.controls div.greentabs {
+					display: inline; /* ie6fh */
+					clear: right;
+					float: right;
+					margin-right: 12px;
+				}
+						#page #content div.controls div.greentabs ul li {
+							display: inline;
+							float: left;
+							margin-left: 8px;
+							padding: 10px 15px;
+							background: #87b519 url("img/fons_barra_controls_li_verd.png") repeat-x left bottom;
+						}
+							#page #content div.controls div.greentabs ul li a {
+								color: #fff;
+							}
+			/* contenidor informatiu (amb icona d'info) */
+			#page #content div.info {
+				padding-left: 22px;
+				color: #0e449a;
+				background: url("img/info.png") no-repeat;
+			}
+			/* contenidor genèric llistats */
+			#page #content div.list {
+				width: 27.5%;
+				float: left;
+				margin-bottom: 1.5em;
+				text-align: center;
+			}
+				#page #content div.list h2 {
+					border-bottom: 2px solid #fff;
+					padding: 4px .4em 4px 1.4em;
+					color: #fff;
+					font-size: .917em; /* 11px */
+					text-align: left;
+					line-height: 1.6em;
+					background: #171717 url('img/bg_titol.jpg') repeat-x;
+				}
+				#page #content div.list img {
+					width: 77.86%;
+				}
+			/* contenidor icona carpeta gran */
+			#page #content div.folder {
+				margin: 0 0 1em 0;
+				padding: 0 0 15px 55px;
+				background: url("img/ico_gran_carpeta.jpg") no-repeat;
+			}
+			/* llistat carpetes */
+			#page #content div.folders {
+				margin-bottom: 1.6em;
+				background: #f5f5f5 url('img/ombra.jpg') 0 100% repeat-x;
+			}
+				#page #content div.folders select {
+					display: block;
+					width: 90%;
+					margin: .75em auto;
+					border: 1px solid #999;
+				}
+				#page #content div.folders ul {
+					height: 1%;
+					margin: .5em 1em;
+					border-top: 1px solid #d5d5d5;
+					text-align: left;
+					font-size: .833em; /* 10px */
+					padding: 1em 0 2em 0;
+				}
+					#page #content div.folders ul li {
+						height: 1%;
+						margin: 0 0 .75em 0;
+						padding: 0;
+						font-weight: bold;
+						line-height: 1.2em;
+					}
+						#page #content div.folders ul li a {
+							display: block;
+							padding: 0 0 0 18px;
+							background: url('img/icon_carpeta.gif') no-repeat;
+						}
+							#page #content div.folders ul li a.open {
+								background-image: url('img/icon_carpeta_oberta.gif');
+							}
+							#page #content div.folders ul li ul {
+								margin: .5em 0 0 10px;
+								border: none;
+								padding: 0;
+								font-size: 1em;
+								background: none;
+							}
+								#page #content div.folders ul li ul li {
+									font-weight: normal;
+								}
+			/* contenidor petit flotant esquerra */
+			#page #content div.tinyL {
+				display: inline; /* ie6fh */
+				clear: left;
+				float: left;
+				width: 15%;
+				margin: 0 2% 1.5em 0;
+			}
+				#page #content div.tinyL h3 {
+					padding-top: 90px;
+					background: url("img/ico_gran_contingut.jpg") no-repeat 0 10px;
+				}
+			/* contenidor petit flotant dreta */
+			#page #content div.tinyR {
+				display: inline; /* ie6fh */
+				clear: right;
+				float: right;
+				width: 80%;
+				margin: 0 0 1.5em 2%;
+			}
+					#page #content div.tinyR div.bordered {
+						padding: 25px;
+					}
+		/* formularis (base), per a canviar estils dels formularis mirar jforms.css i jforms.js */
+			#page #content form label {
+				display: block;
+				margin-bottom: 1.2em;
+			}
+				#page #content form label span {
+					display: block;
+					margin-bottom: .4em;
+					font-size: 1.167em; /* 14px */
+				}
+				#page #content form label input {
+					width: 95%;
+				}
+					#page #content form label input.checkbox {
+						width: auto;
+					}
+				#page #content form label select {
+					width: 75%;
+				}
+			#page #content form textarea {
+				margin-bottom: 1.54em;
+				width: 94%;
+				height: 140px;
+			}
+		/* capçaleres */
+		#page #content h2 {
+			margin: 0 0 .25em 0;
+			font-size: 2.167em; /* 26px */
+			font-weight: normal;
+			line-height: 1.2em;
+		}
+			#page #content h2.templates {
+				margin: 0 0 .75em 0;
+				padding: 13px 0 13px 80px;
+				background: url('img/bg_h2_templates.jpg') no-repeat;
+			}
+		#page #content h3 {
+			margin-bottom: .3em;
+			font-size: 1.833em; /* 22px */
+			font-weight: normal;
+			line-height: 1.2em;
+		}
+		#page #content h4 {
+			margin-bottom: .5em;
+			color: #000;
+			font-size: 1.5em; /* 18px */
+			font-weight: normal;
+			letter-spacing: -.05em;
+			line-height: 1.2em;
+		}
+		#page #content h5 {
+
+		}
+		#page #content h6 {
+			margin: 0 0 1em 0;
+			font-size: 1em;
+			font-weight: bold;
+		}
+		/* taules */
+		#page #content table {
+			width: 100%;
+			margin: 0 0 2em 0;
+			border-collapse: collapse;
+		}
+			#page #content table td {
+				border-bottom: 2px solid #fff;
+				padding: 10px 14px;
+				font-size: 1em; /* 12px */
+				background: #efefef url("img/bg_table_td.png") no-repeat left center;
+			}
+				#page #content table td.checkbox {
+					background: #efefef;
+				}
+				#page #content table td.options {
+					font-size: .833em; /* 10px */
+					background-image: none;
+				}
+				#page #content #main table a {
+					text-decoration: underline;
+				}
+					#page #content #main table a:hover {
+						text-decoration: none;
+					}
+				#page #content #main table td label {
+					display: inline;
+				}
+			#page #content table th {
+				padding: 8px 12px;
+				text-align: left;
+				font-weight: bold;
+				background: #d2d2d2;
+			}
+				#page #content table th.center {
+					text-align: center;
+				}
+				#page #content table th.transparent {
+					background: transparent;
+				}
+					#page #content table tr.grey td {
+						background: #ccc url("img/bg_table_td.png") no-repeat left center;
+					}
+		/* llistats */
+		#page #content ul {
+			margin: 0 0 1em 0;
+		}
+			/* llistat elements menús */
+			#page #content ul.menu_builder {
+				margin: 0 0 15px 0;
+			}
+				#page #content ul.menu_builder li {
+					height: 1%;
+					margin: 0;
+				}
+					#page #content ul.menu_builder li.placeholder{
+						height: 2.5em;
+						margin: 0 0 4px 0;
+						border: 2px solid #4a7dbc;
+						border-radius: .25em;
+						-moz-border-radius: .25em;
+						background: #e6f0ff;
+					}
+						#page #content ul.menu_builder li div.line {
+							margin: 0 0 4px 0;
+							border-radius: .25em;
+							-moz-border-radius: .25em;
+							padding: 6px 6px 6px 44px;
+							color: #fff;
+							background: #4a7dbc url('img/page.png') no-repeat 15px 50%;
+						}
+								#page #content ul.menu_builder li div.line div.wrapper {
+									padding: 6px 12px;
+									background: url('img/bg_menu_builder_wrapper.png') repeat-y;
+								}
+								#page #content form label {
+									display: block;
+									margin: 0 0 .25em 0;
+								}
+									#page #content form label span {
+										display: inline;
+										vertical-align: middle;
+										font-size: 1em;
+										margin: 0 5px 0 0;
+									}
+									#page #content form label input {
+										display: inline;
+										vertical-align: middle;
+										width: 200px;
+									}
+								/* accions sobre el punt de menú */
+								#page #content ul.menu_builder li div.line ul.actions {
+									display: inline; /* ie6fh */
+									clear: right;
+									float: right;
+									margin: 4px 0 0 5px;
+								}
+									#page #content ul.menu_builder li div.line ul.actions li {
+										display: inline; /* ie6fh */
+										float: left;
+										margin: 0 8px 0 0;
+									}
+										#page #content ul.menu_builder li div.line ul.actions li img {
+											vertical-align: middle;
+										}
+								/* accions sobre el punt de menú */
+								#page #content ul.menu_builder li div.line ul.alert {
+									display: inline; /* ie6fh */
+									clear: right;
+									float: right;
+									margin: 0 0 0 5px;
+								}
+										#page #content ul.menu_builder li div.line ul.alert li.accept {
+											margin: 0 0 .5em 0;
+											padding-left: 20px;
+											background: url('img/bg_alert_accept.png') no-repeat 0 50%;
+										}
+										#page #content ul.menu_builder li div.line ul.alert li.cancel {
+											margin: 0 0 .5em 0;
+											padding-left: 20px;
+											background: url('img/bg_alert_cancel.png') no-repeat 0 50%;
+										}
+				#page #content ul.menu_builder li ul {
+					margin: 0 0 0 43px;
+					min-height: 4px;
+					height: auto !important;
+					height: 4px;
+				}
+							#page #content ul.menu_builder li ul li div.line {
+								background-color: #b6cce4;
+							}
+									#page #content ul.menu_builder li ul li ul li div.line {
+										background-color: #ccc;
+									}
+			/* llistat plantilles */
+			#page #content ul.templates {
+				margin: 0 0 1em 0;
+			}
+				#page #content ul.templates li {
+					display: inline; /* ie6fh */
+					float: left;
+					width: 182px;
+					margin: 0 35px 22px 0;
+					border-bottom: 1px solid #ccc;
+					padding: 14px 14px 2px 14px;
+					color: #333;
+					background: #efefef;
+				}
+					#page #content ul.templates li:hover {
+						border-bottom: 1px solid #0e449a;
+						color: #fff;
+						background: #487cbb;
+					}
+							#page #content ul.templates li:hover h6 a {
+								color: #fff;
+							}
+					#page #content ul.templates li.nomargin {
+						margin-right: 0;
+					}
+						#page #content ul.templates li h6 a {
+							color: #333;
+						}
+					#page #content ul.templates li p {
+						font-size: .833em; /* 10px */
+					}
+						#page #content ul.templates li p.image {
+							line-height: 0;
+							text-align: center;
+						}
+			/* sense marge, no moure! */
+			#page #content ul.nomargin {
+				margin: 0;
+			}

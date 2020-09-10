@@ -1,0 +1,50 @@
+####activació de https
+#order deny,allow
+#SSLRequireSSL
+#Satisfy any
+
+
+
+####Impedir acces a zones no publiques
+<Files ~ "(\.(inc|tpl|sql|config\.php))$">
+  order deny,allow
+  deny from all
+</Files>
+
+####Utilitzar codificació utf8
+AddDefaultCharset UTF-8
+
+####desactivar llistat fitxers
+Options -Indexes
+Options +FollowSymLinks
+
+####Parsejar tots els fitxers
+DirectoryIndex index.html index.htm index.php
+
+
+####Configuracio del php
+##activa els errors per desemvolupament
+#php_value error_reporting         2047
+php_value error_reporting          2047
+php_value display_errors           1
+##desactiva els errors per explotacio
+#php_value error_reporting         0
+#php_value display_errors          0
+
+##activar registrar les variables globals
+php_value register_globals        1
+
+##desactiva la opció de globals llarges
+php_value register_long_arrays    0
+
+##desactiva tags curts
+php_value short_open_tag          0
+php_value asp_tags                0
+
+##desactiva substitució de carecters a l'entrada
+php_value magic_quotes_gpc        0
+php_value magic_quotes_runtime    0
+php_value magic_quotes_sybase     0
+
+php_value arg_separator.output    "&amp;"
+php_value track_vars              1

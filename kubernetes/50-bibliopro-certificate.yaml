@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1alpha3
+kind: Certificate
+metadata:
+  name: biblioprocertificate
+  namespace: bibliopro 
+spec:
+  dnsNames:
+  - 'bibliopro.com'
+  - '*.bibliopro.com'
+  - '*.prod01.bibliopro.com'
+  - '*.prod02.bibliopro.com'
+  - '*.prod03.bibliopro.com'
+  issuerRef:
+    name: cert-manager-webhook-dnsimple-production
+    kind: ClusterIssuer
+  secretName: biblioprocom

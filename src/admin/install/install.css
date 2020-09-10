@@ -1,0 +1,200 @@
+
+body {
+  background-color: #ffffff;
+  font-size: 11px;
+  font-family: trebuchet,verdana,geneva,arial,sans-serif;
+  margin-left: 18px;
+  margin-right: 18px;
+  font-weight: normal;
+  color: #000000;
+  padding: 10px;
+  line-height:120%;
+}
+
+a:link    {
+  color: #990000;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  border-bottom : 1px dotted #333399;
+}
+a:visited {
+  color: #990000;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  border-bottom : 1px dotted #333399;
+}
+a:active  {
+  color: #990000;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  border-bottom : 1px dotted #333399;
+}
+a:hover   {
+  color: #aaaaaa;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.border {
+  border-top:   #999999 1px dotted;
+  border-left:  #999999 1px dotted;
+  border-right:  #999999 1px dotted;
+  border-bottom:  #999999 1px dotted;
+}
+h2 {
+  font-size: 15px;
+  color: #000000;
+  margin-bottom: 6px;
+  margin-top: 6px;
+  margin-left: 12px;
+  margin-right: 12px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 11px;
+  margin-left: 12px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  color: #999999;
+  font-weight: normal;
+}
+h4 {
+  font-size: 11px;
+  margin-top: 6px;
+  color: #333333;
+  font-weight: bold;
+}
+button {
+  margin: 20px 0px 0px 0px;
+}
+.green {
+  color: green;
+  font-weight:bold;
+}
+.error, strong {
+color: #ff0000;
+font-weight: bold;
+}
+
+
+
+
+.subHead {
+ font-size: 11px;
+ margin-top: 6px;
+ color: #000000;
+ font-weight: bold;
+}
+.lgrey {
+ font-family: trebuchet,verdana,geneva,arial,sans-serif;
+ font-size: 11px;
+ margin-top: 6px;
+ color: #cccccc;
+ font-weight: bold;
+}
+
+.dgrey {
+ font-family: trebuchet,verdana,geneva,arial,sans-serif;
+ font-size: 11px;
+ margin-top: 6px;
+ color: #999999;
+ font-weight: bold;
+ text-align: right;
+ margin: 10px 0px 10px 0px;
+}
+
+.text9 {
+ font-family: trebuchet,verdana,geneva,arial,sans-serif;
+ font-size: 9px;
+ color: #333333;
+ font-weight: normal;
+}
+
+.text11 {
+ font-family: trebuchet,verdana,geneva,arial,sans-serif;
+ font-size: 11px;
+ margin-top: 6px;
+ color: #333333;
+ font-weight: normal;
+}
+
+.text14 {
+ font-family: trebuchet,verdana,geneva,arial,sans-serif;
+ font-size: 14px;
+ margin-top: 6px;
+ color: #333333;
+ font-weight: normal;
+}
+
+.smGrey {
+ font-family: trebuchet,verdana,geneva,arial,sans-serif;
+ font-size: 11px;
+ margin-left: 12px;
+ margin-top: 6px;
+ margin-bottom: 6px;
+ color: #999999;
+ font-weight: normal;
+}
+.red {
+color: #990000;
+}
+
+input, a#check_perm {
+ font : bold 11px/12px verdana,trebuchet,sans-serif;
+ border : 1px solid #999999;
+ color : black;
+ background-color : #eeeeee;
+ margin-top: 2px;
+ margin-bottom: 2px;
+ padding: 3px 3px 3px 3px;
+}
+input:focus {
+ background-color : #ffffff;
+}
+
+/*input.button {
+ color : white;
+ background-color : #990000;
+} */
+.pulldown {
+ font-family: trebuchet,Verdana, sans-serif;
+ font-size: 11px;
+ font-weight: bold;
+ color: #333333;
+ border-top: #000000 1px solid;
+ border-left: #000000 1px solid;
+ border-right: #000000 1px solid;
+ border-bottom: #000000 1px solid;
+}
+
+#taula-permissos{
+  border-spacing: 0;
+  color: #333333;
+  border-left: 1px solid #999999;
+}
+#taula-permissos th{
+  background-color: #999999;
+  border-right: 1px solid #999999;
+  padding: 3px 5px 3px 5px;
+}
+#taula-permissos td{
+  border-bottom: 1px solid #999999;
+  border-right: 1px solid #999999;
+  text-align: center;
+  padding: 3px 5px 3px 5px;
+}
+#taula-permissos .name{
+  text-align: left;
+}
+#phperror {
+  text-align: center;
+  color: #ff0000;
+  font-weight: bold;
+  margin: 40px 15px 40px 15px;
+  line-height:200%;
+  
+}

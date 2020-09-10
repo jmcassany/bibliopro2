@@ -1,0 +1,256 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver atrás</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/mbp">Ir a Mi BiblioPRO</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+	setlocale(LC_ALL, 'es_ES.UTF-8', 'es_ES', 'es');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+<?php
+
+	// si l'usuari està identificat, mostrem la plana
+	if (accessGetLogin() != '') {
+
+		$userInfo = getUserInfo($taula_usuaris);
+
+?>
+					<div class="broken border clearfix">
+						|Introduccio|
+					</div>
+
+<?php
+
+		// obtenim les descàrregues de l'usuari
+		$downloadsQuery = db_query("
+			SELECT *
+			FROM `$taula_descarregues`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+				AND FECHA_VALIDEZ > NOW()
+			ORDER BY
+				FECHA_VALIDEZ ASC
+		");
+		if (db_num_rows($downloadsQuery) > 0) {
+
+?>
+					<ul class="faqs">
+<?php
+
+			while ($downloadsRow = db_fetch_array($downloadsQuery)) {
+
+				// obtenim info descarregable i qüestionari
+				$qQuery = db_query("
+					SELECT
+						`$taula_questionaris`.NOM_CAST AS NOM_CAST,
+						`$taula_questionaris`.ID AS ID_CUEST,
+						`$taula_descarregables`.ID AS ID_DESC,
+						`$taula_descarregables`.TIPO AS TIPO_DESC
+					FROM `$taula_questionaris`, `$taula_descarregables`
+					WHERE
+						`$taula_questionaris`.ID = $downloadsRow[ID_CUEST]
+						AND `$taula_descarregables`.ID = $downloadsRow[ID_DESCARGABLE]
+				");
+				$qRow = db_fetch_array($qQuery);
+
+				if (empty($downloadsRow['FACTURA'])) {
+
+					$downloadsRow['FACTURA'] = $billDate = $billLink = 'No emitida';
+
+				}
+				else {
+
+					if (
+						!empty($downloadsRow['FECHA_FACTURA'])
+						and $downloadsRow['FECHA_FACTURA'] != '0000-00-00 00:00:00'
+					) {
+						$billDate = strftime('%e de %B de %Y a las %H:%M', strtotime($downloadsRow['FECHA_FACTURA']));
+					}
+					else {
+						$billDate = 'No indicada';
+					}
+					if (!empty($downloadsRow['FICHERO_FACTURA'])) {
+						$billLink = '<a href="|CONFIG_NOMCARPETA|/media/upload/pdf/facturas/'. htmlspecialchars($downloadsRow['FICHERO_FACTURA']) . '">Descargar</a>';
+					}
+					else {
+						$billLink = 'No suministrada';
+					}
+
+				}
+
+				// estat pagament
+				if (
+					empty($downloadsRow['FECHA_COBRO'])
+					or $downloadsRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+				) {
+
+					$paymentStatus = 'Pendiente';
+
+				}
+				else {
+
+					$paymentStatus = 'Confirmado el ' . strftime('%e de %B de %Y a las %H:%M', strtotime($downloadsRow['FECHA_COBRO']));
+
+				}
+
+				// estat descàrrega
+				if (empty($downloadsRow['STATUS'])) { $downloadStatus = 'Inactiva'; }
+				else { $downloadStatus = 'Activa'; }
+
+?>
+						<li class="element clearfix">
+							<h4 class="big"><?php echo htmlspecialchars($dTypes[$qRow['TIPO_DESC']]); ?> de <?php echo htmlspecialchars($qRow['NOM_CAST']); ?></h4>
+							<p><strong>Estado de la descarga:</strong> <?php echo $downloadStatus; ?></p>
+							<p><strong>Válida hasta:</strong> <?php echo strftime('%e de %B de %Y a las %H:%M', strtotime($downloadsRow['FECHA_VALIDEZ'])); ?> <?php echo ($downloadStatus == 'Inactiva' ? '<em>(No definitiva)</em>' : ''); ?></p>
+							<div class="answer">
+								<h5>Información sobre el pago</h5>
+								<ul>
+									<li>
+										<strong>Precio de la descarga:</strong>
+										<ul>
+											<li><strong>Base imponible:</strong> <?php echo $downloadsRow['PRECIO']; ?>€</li>
+											<li><strong>IVA:</strong> <?php echo $downloadsRow['TIPO_IVA']; ?>% (<?php echo $downloadsRow['IVA']; ?>€)</li>
+											<li><strong>Total:</strong> <?php echo $downloadsRow['TOTAL']; ?>€</li>
+										</ul>
+									</li>
+									<li><strong>Estado del pago:</strong> <?php echo $paymentStatus; ?></li>
+									<li><strong>Número de la factura:</strong> <?php echo $downloadsRow['FACTURA']; ?></li>
+									<li><strong>Fecha de la factura:</strong> <?php echo $billDate; ?></li>
+									<li><strong>Factura en PDF:</strong> <?php echo $billLink; ?></li>
+									<li><strong>Número de albarán interno:</strong> <?php echo $downloadsRow['NUM_ALBARAN']; ?></li>
+								</ul>
+								<h5>Datos de facturación indicados</h5>
+								<ul>
+									<li><strong>Razón social:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_NOMBRE']); ?></li>
+									<li><strong>CIF:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_CIF']); ?></li>
+									<li><strong>Dirección:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_DIRECCION']); ?></li>
+									<li><strong>Código postal:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_CP']); ?></li>
+									<li><strong>Población:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_CIUDAD']); ?></li>
+									<li><strong>País:</strong> <?php echo htmlspecialchars(getCountryName($downloadsRow['FACTURACION_PAIS'], $taula_paisos)); ?></li>
+									<li><strong>Teléfono:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_TELEFONO']); ?></li>
+									<li><strong>Correo electrónico:</strong> <?php echo htmlspecialchars($downloadsRow['FACTURACION_EMAIL']); ?></li>
+								</ul>
+							</div>
+							<p class="primer"><a href="|CONFIG_NOMCARPETA|/buscador/descargar.html?id=<?php echo $qRow['ID_DESC']; ?>&amp;id_cuest=<?php echo $qRow['ID_CUEST']; ?>">Ir al descargable</a></p>
+<?php
+
+				if (
+					$downloadsRow['STATUS'] == 0
+					and (
+						empty($downloadsRow['FECHA_COBRO'])
+						or $downloadsRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+					)
+				) {
+
+?>
+							<p class="right pay"><a href="|CONFIG_NOMCARPETA|/mbp/pago.html?tipo=3&amp;ID=<?php echo $downloadsRow['ID']; ?>"><strong>Realizar o modificar pago</strong></a></p>
+<?php
+
+				}
+
+?>
+							<p class="primer"><a href="|CONFIG_NOMCARPETA|/buscador/ver.html?ID=<?php echo $qRow['ID_CUEST']; ?>">Ir al cuestionario</a></p>
+						</li>
+<?php
+
+			}
+
+?>
+					</ul>
+					<p class="top"><a href="#content">Subir</a></p>
+<?php
+
+		}
+		// si l'usuari no té cap subllicència, mostrem missatge
+		else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge no disposa de descarregues|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+		}
+
+	}
+	// si l'usuari no està identificat, mostrem error
+	else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge usuari no identificat|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

@@ -1,0 +1,80 @@
+a, a:visited, a:active {
+    	color: #02366f;
+	text-decoration:none;
+}
+
+ol {
+	font-size:.75em;
+	font-family: Arial, Verdana, sans-serif; 
+	line-height:2em;
+}
+
+ul {
+	list-style: none;
+	margin:0 0 0 1em;
+	padding:0 0 0 0;
+	font-size:.75em;
+	font-family: Arial, Verdana, sans-serif; 
+	line-height:2em;
+}
+	ul li { 
+		background: url(../comu/images/klander-cuadrat.gif) 0em .7em no-repeat; 
+		padding:0 0 0 1em;
+	}
+
+h3 {
+	border-top: dotted 1px #333;
+	padding-top: .5em;
+	border-bottom: dotted 1px #333;
+	padding-bottom: .5em;
+	color: #02366f;
+}
+
+h4 {
+	color: #02366f;
+}
+
+.txtImgEsq,
+.txtImgDr {
+	margin: 1.125em 0;
+	font-size:.75em;
+	font-family: Arial, Verdana, sans-serif; 
+	line-height:1.5em;
+}
+	.txtImgEsq img {
+		float: left;
+		margin: 0 1.125em 1.125em 0;
+	}
+	.txtImgDr img {
+		float: right;
+		margin: 0  0 1.125em 1.125em;
+	}
+
+
+p.primer {
+	text-indent: 8px;
+	background: url(../comu/kland_p_primer.gif) 0 .5em no-repeat;
+	font-size:.75em;
+	font-family: Arial, Verdana, sans-serif; 
+	line-height:1.5em;
+}
+
+p.destacat {
+	padding: 1.5em 2em 1.5em 2em;
+	margin: 1em 0;
+	background: #fff;
+	font-style: italic;
+	border: solid #cdcdcd 1px;
+	color: #02366f;
+	font-size:1em;
+	font-family: Arial, Verdana, sans-serif; 
+	line-height:1.5em;
+}
+
+p.linia {
+	border-bottom: dotted 1px #333;
+	padding-bottom: 1em;
+	font-size:.75em;
+	font-family: Arial, Verdana, sans-serif; 
+	line-height:1.5em;
+}

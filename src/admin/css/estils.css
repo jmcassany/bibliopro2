@@ -1,0 +1,168 @@
+BODY {
+  color: #333333;
+  font-family: Verdana, Helvetica, Geneva, sans-serif;
+  font-size: 11px;
+  text-decoration: none;
+  background-color: #ffffff;
+}
+
+TD{color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;}
+A{color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;text-decoration: underline;}
+SELECT,DIV{color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;}
+A:hover{text-decoration: underline;}
+P{margin: 6 0 6 0}
+UL {margin: 10 0 10 20}
+OL {margin: 10 0 10 20}
+LI {margin: 5 5 5 25}
+.nompagina {color: #0066CC; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; }
+
+.blanc10 {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;  }
+.blanc10b {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.blanc11b {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; font-weight: bold; }
+.gris11 {color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; }
+.filetblanc {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;border-bottom:solid #FFFFFF 1px; }
+.filetblau {color: #006699; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;border-bottom:solid #006699 1px; }
+.filetverd {color: #91C433; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;border-bottom:solid #91C433 1px; }
+.titol {color: #006699; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 12px; text-decoration: none;font-weight: bold;}
+
+.filetgris {color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;border-bottom:solid #CCCCCC 1px; }
+.gris11b {color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; font-weight: bold; }
+.gris10 {color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;}
+.grisportada10 {color: #999999; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;}
+.grisportada9 {color: #999999; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 9px; text-decoration: none;}
+.blau11b {color: #0E449A; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; font-weight: bold; }
+.blau10b {color: #0E449A; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.blau10 {color: #0E449A; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; }
+.vermell10b {color: #CC3366; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.vermell9 {color: #CC3366; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 9px; text-decoration: none;  }
+.negre10b {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.menupreview {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.menupreview:hover { text-decoration: underline;color: #333333;}
+.text {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; }
+.formulari {font-family: verdana,arial,helvetica,sans-seriff; font-size:11px; color : #333333;	line-height : normal; text-decoration: none; background-color:#FFFFFF;border-style:groove;  width:450px;}
+.botoportada {font-size:10px;font-family: verdana,arial,helvetica,sans-seriff;background: #F66013;border-bottom: 2px solid #AC430D;border-right: 2px solid #AC430D;border-left: 1px solid #F69470 ;border-top:1px solid #F69470 ;color:#FFFFFF;height:19px;text-decoration:none;cursor: hand;width:75px;font-weight: bold;}
+.titolllistat {border:1px solid #CCCCCC;padding:2px;overflow-x:hidden;overflow-y:auto;vertical-align:top;width:100%;text-decoration:none;color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px;  font-weight: bold;}
+.titolllistat:hover {border:1px solid #FFFFFF;text-decoration:none;}
+
+.titblanc {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 12px; text-decoration: none; font-weight: bold; }
+.blanc10b {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.blanc10 {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; }
+.textdespublicat {color: #999999; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; padding-left:6px;padding-right:5px;padding-top:5px;padding-bottom:5px;}
+
+.text:hover {color:#FF9900; text-decoration: underline;}
+.textvincle {color: #000000; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight: bold; }
+.textvincle:hover { text-decoration: underline;}
+.texteliminar {color: #CC0000; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; }
+.texteliminar:hover { text-decoration: underline;}
+.text12 {color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 12px; text-decoration: none; line-height: 25px;}
+.text12:hover {color:#FF9900; text-decoration: underline;}
+
+.botonavegacio {PADDING:5px;BACKGROUND-COLOR:#e9f2f8;BORDER:1px solid #336699;CURSOR:hand;text-decoration: none;}
+.botonavegacio:hover {color:#0E449A; text-decoration: none;BACKGROUND-COLOR:#FFFFFF;}
+
+.text10 {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; }
+.text10:hover {color:#0E449A; text-decoration: none;}
+.textpaginacio {color: #BF7300; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;}
+.textpaginacio:hover {text-decoration: underline;}
+.taronja {color: #FF9900; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;}
+.taronja:hover {color:#FF9900; text-decoration: underline;}
+.titolllista {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none; font-weight:bold; padding-left:5px;}
+.textllista {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; padding-left:6px;padding-right:5px;padding-top:5px;padding-bottom:5px;}
+.textnoticia {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;}
+.titnoticia {color: #003973; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none;}
+.vinclenoticia {color: #ff6600; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: underline;}
+.taulafilettaronja {border-color: #FF7300; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;padding-left:5px;padding-right:5px;padding-top:5px;padding-bottom:5px;}
+.taulafiletblau {border-color: #00427B; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;padding-left:8px;padding-right:8px;padding-top:3px;padding-bottom:3px;margin:10 10 10 10;}
+.titolportada {color: #666666; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 14px; text-decoration: none; font-weight: bold;}
+.grana {color: #8B1F30; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; font-weight: bold;height:15px;}
+.grana11 {color: #8B1F30; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; font-weight: bold;height:15px;}
+.text9 {color: #333333; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 9px; text-decoration: none; }
+
+
+.menublauf10 {color:#003366;font-size: 10px;padding:5px;}
+.menublanc10 {color: #FFFFFF; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 10px; text-decoration: none;padding:5px;}
+
+.texteliminat {color: #8B1F30; font-family: Verdana, Helvetica, Geneva, sans-serif; font-size: 11px; text-decoration: none; font-weight: bold;}
+
+
+/*peu i capcelera*/
+.peuadmin {
+    width: 760px;
+    border: 0px;
+}
+.peuadmin .top {
+    padding-left: 15px;
+    width: 21px;
+}
+.peuadmin .top img{
+    border: 0px;
+}
+.peuadmin .credits {
+    color: #999999;
+    font-size: 9px;
+    text-align: center;
+    padding:5px;
+}
+.peuadmin .credits img{
+    border: 0px;
+}
+.capadmin {
+    border: 0px;
+    width: 760px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.capadmin img{
+    border: 0px;
+}
+.capadmin .logo {
+    width: 132px;
+}
+.capadmin .info {
+    color: #FFFFFF;
+    font-size: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #0E449A;
+}
+.capadmin .links {
+    font-size: 10px;
+    padding-left: 0px;
+    padding-right: 10px;
+    background-color:#C0CEE4;
+}
+.capadmin .links img {
+    margin-left: 11px;
+    margin-right: 5px;
+}
+
+/*estils menu*/
+
+.menu-nivell-1 a{
+  color: #ffffff;
+  background-color: #999999;
+  vertical-align:middle;
+  padding: 5px 5px 6px 15px;
+}
+.menu-nivell-1 a:hover {
+  color: #000000;
+  background-color: #ffffff;
+}
+.menu-nivell-2 a {
+  color: #ffffff;
+  background-color: #2413d3;
+  vertical-align:middle;
+  padding: 5px 5px 6px 5px;
+}
+.menu-nivell-2 a:hover {
+  color: #000000;
+  background-color: #2ff2d3;
+}
+
+/*fi estils menu*/
+
+.boto_calendari {
+	background:none;
+	border:none;
+	vertical-align:middle;
+}

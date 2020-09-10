@@ -1,0 +1,113 @@
+Enquesta
+-------------------------------------
+<div class="enquesta enquesta_id">
+  <h2>titol</h2>
+
+  <form class="enquesta-form">
+
+    <ul>
+      <li><input type="radio" name="pregunta-id"  /><label>text</label></li>
+      ...
+    </ul>
+
+		<button type="sumit" name="action" class="boto-enquesta" id="boto-enquesta-id" value="vota">Votar</button>
+
+	</form>
+
+	<div class="enquesta-llegirmes"><a>Altres enquestes</a></div>
+</div>
+
+
+id -> id el número identificador de l'enquesta
+
+
+Respostes enquesta
+----------------------------------------
+  .barra-resposta
+  .total-resposta
+  .anteriors-enquesta
+
+
+<div class="resultat-enquesta">
+  <h4>titol</h4>
+
+  <div class="barra-resposta">
+    barra de %
+  </div>
+
+  <div class="total-resposta">
+    Número d'opinions: <strong>total vots</strong>
+  </div>
+
+  <div class="anteriors-enquesta">
+     <a href="">Veure les enquestes anteriors</a>
+  </div>
+</div>
+
+
+<div class="resultat-enquesta">
+  <h4>titol</h4>
+  <div class="anteriors-enquesta">
+    <a href="">titol</a>
+  </div>
+
+  .....
+
+
+</div>
+
+
+Menu
+------------------------------------
+<ul class="menu orientacio tipus estil">
+  <li>
+    <span>1</span>
+    <ul>
+      <li><a href="dddd">entrada 1</a></li>
+    </ul>
+  </li>
+
+  <li>
+    <a href="link 2" rel="extenal">entrada 2</a>
+    <ul>
+      <li><span>entrada 2.1</span></li>
+      <li><hr /></li>
+    </ul>
+  </li>
+</ul>
+
+orientacio -> és l'orientació del menú, i pot ser menu_vertical o menu_horitzontal
+tipus -> és el tipus de menú seleccionat, i pot ser menu_normal, menu_desplegable_hover o menu_desplegable_click
+estil -> és l'estil que ha seleccionat l'usuari, i es algun dels configurats
+
+
+
+Caixeta lliure
+------------------------------------
+<div class="caixeta">
+  ........
+</div>
+
+Caixeta text
+-------------------------------------
+<div class="caixeta">
+  <h3>titol</h3>
+  <div>
+    .........
+  </div>
+  <a class="link-caixeta">enllaç</a>
+</div>
+
+Caixeta imatge
+-------------------------------------
+<a class="caixeta"><img /></a>
+
+Composicions
+-------------------------------------
+<div class="comp-vertical">
+  ..............
+</div>
+
+<div class="comp-horitzontal">
+  ..............
+</div>

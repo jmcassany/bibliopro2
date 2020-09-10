@@ -1,0 +1,65 @@
+
+<?php
+///variables de text idioma
+$data['LANGETSA'] = $messages["youarein"];
+$data['LANGTITOL'] = $messages["dinamicstitle"];
+$data['LANGHOME'] = $messages["home"];
+$data['LANGWAIT'] = $messages["wait"];
+$data['LANGUPDATE'] = $messages["update"];
+$data['LANGLOADING'] = $messages["loading"];
+$data['LANGWEBMAP'] = $messages["viewmapweb"];
+$data['LANGFORMTITLE'] = $messages["dinamicsformtitle"];
+$data['LANGFORMSUBTITLE'] = $messages["dinamicsformsubtitle"];
+$data['LANGFORMRESUM'] = $messages["dinamicsformresum"];
+$data['LANGPATHFCK'] = $CONFIG_URLADMIN;
+$data['LANGFORMTEXT'] = $messages["dinamicsformtext"];
+$data['LANGFORMDATE'] = $messages["date"];
+$data['LANGFORMLINK'] = $messages["link"];
+$data['LANGFORMURL'] = $messages["url"];
+$data['LANGFORMTEXT'] = $messages["text"];
+$data['LANGFORMNEWWINDOW'] = $messages["newwindow"];
+$data['LANGFORMIMAGE'] = $messages["image"];
+$data['LANGFORMFILE'] = $messages["file"];
+$data['LANGFORMPUBLISH'] = $messages["publish"];
+$data['LANGFORMSTART'] = $messages["start"];
+$data['LANGFORMDATEFORMAT'] = $messages["dateformat"];
+$data['LANGFORMEND'] = $messages["end"];
+$data['LANGFORMACTIVATE'] = $messages["activate"];
+$data['LANGFORMSELECTCATEGORY'] = $messages["dinamicsselectcategory"];
+$data['LANGFORMCREATE'] = $messages["staticpagescreate"];
+$data['LANGFOR'] = $messages["for"];
+$data['LANG_CERCAR'] = $messages['cercar'];
+$data['LANG_TORNAR'] = $messages['tornar'];
+$data['LANG_ESTAT'] = $messages['estat'];
+$data['LANG_LINK'] = $messages['link'];
+$data['LANG_MODEL'] = $messages['model'];
+$data['LANG_WEBSITE'] = $messages['website'];
+$data['LANG_FORMATS'] = $messages['formats'];
+$data['LANG_MIDAMAXIMA'] = $messages['midamaxima'];
+$data['LANG_IMATGE'] = $messages['imatge'];
+$data['LANG_CARREC'] = $messages['carrec'];
+$data['LANG_DESCRIPCIO'] = $messages['descripcio'];
+$data['LANG_RESUM'] = $messages['resum'];
+$data['LANG_IMATGES'] = $messages['imatges'];
+$data['LANG_ADJUNTS'] = $messages['adjunts'];
+$data['LANG_NOMARXIU'] = $messages['nmarxiu'];
+$data['LANG_APLICARCANVIS'] = $messages['aplicarcanvis'];
+$data['LANG_LLISTATIOPCIONS'] = $messages['llistatiopcions'];
+$data['LANG_ELIMINAR'] = $messages['eliminar'];
+$data['LANG_CREACIO'] = $messages['creacio'];
+$data['LANG_LLEGENDES'] = $messages['llegendes'];
+$data['LANG_RESULCERCA'] = $messages['resulcerca'];
+$data['LANG_CONFIRMACIOELIMINACIO'] = $messages['confirmacioeliminacio'];
+/*Banners*/
+$data['LANG_VEUREBANNER'] = $messages['veurebanner'];
+$data['LANG_ELIMINARBANNER'] = $messages['eliminarbanner'];
+$data['LANG_EDITARBANNER'] = $messages['editarbanner'];
+$data['LANG_CREARBANNER'] = $messages['crearbanner'];
+/*Notícies*/
+$data['LANG_VEURENOTICIA'] = $messages['veurenoticia'];
+$data['LANG_ELIMINARNOTICIA'] = $messages['eliminarnoticia'];
+$data['LANG_EDITARNOTICIA'] = $messages['editarnoticia'];
+$data['LANG_CREARNOTICIA'] = $messages['crearnoticia'];
+$data['LANG_LINKSNOTICIESNEWSLETTER'] = $messages['linksnoticiesnewsletter'];
+$data['LANG_NOMARXIU'] = $messages['nomarxiu'];
+$data['LANG_MIDESRECOMANADES'] = $messages['midesrecomanades'];

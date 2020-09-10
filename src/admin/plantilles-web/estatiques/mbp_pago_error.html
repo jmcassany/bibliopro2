@@ -1,0 +1,145 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="|CONFIG_NOMCARPETA|/mbp">Ir a Mi BiblioPRO</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+
+<?php
+	$tpvResponse = $tpv->getDadesPagament();
+	
+	if (!is_null($tpvResponse)) {
+
+		switch ($tpvResponse['Ds_Order'][0]) {
+
+			case '1':
+				$what = ' <strong>de su suscripción</strong>';
+				// esborrem el pagament
+				$rmQuery = db_query("
+					UPDATE `$taula_subscripcions`
+					SET ID_TPV = ''
+					WHERE ID_TPV = '" . mysql_real_escape_string($tpvResponse['Ds_Order']) . "'
+				");
+				break;
+
+			case '2':
+				$what = ' <strong>de una sublicencia</strong>';
+				// esborrem el pagament
+				$rmQuery = db_query("
+					UPDATE `$taula_subllicencies_pagaments`
+					SET ID_TPV = ''
+					WHERE ID_TPV = '" . mysql_real_escape_string($tpvResponse['Ds_Order']) . "'
+				");
+				break;
+
+			case '3':
+				$what = ' <strong>de un descargable</strong>';
+				// esborrem el pagament
+				$rmQuery = db_query("
+					UPDATE `$taula_descarregues`
+					SET ID_TPV = ''
+					WHERE ID_TPV = '" . mysql_real_escape_string($tpvResponse['Ds_Order']) . "'
+				");
+				break;
+
+			case '4':
+				$what = ' <strong>de una donación</strong>';
+				// esborrem el pagament
+				$rmQuery = db_query("
+					UPDATE `$taula_donacions`
+					SET ID_TPV = ''
+					WHERE ID_TPV = '" . mysql_real_escape_string($tpvResponse['Ds_Order']) . "'
+				");
+				break;
+
+			default:
+				$what = '';
+				break;
+
+		}
+
+?>
+					<div class="error clearfix">
+						<h5>Error en el proceso de pago</h5>
+						<p>Se ha producido un error durante el proceso de pago<?php echo $what; ?> a través del TPV virtual o se ha cancelado la transacción antes de ser realizada.</p>
+						<p>Puede volver a intentar el proceso yendo al apartado correspondiente en <a href="|CONFIG_NOMCARPETA|/mbp">Mi BiblioPRO</a>.</p>
+						<?php echo $continueBrowsing; ?>
+					</div>
+<?php
+
+	}
+	else {
+
+?>
+					<div class="error clearfix">
+						<p>Esta página sirve para capturar pagos fallidos, pero <strong>no se ha indicado ninguno</strong>.</p>
+						<?php echo $continueBrowsing; ?>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

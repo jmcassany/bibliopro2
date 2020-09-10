@@ -1,0 +1,1 @@
+<div class="comp-vertical"><?php @include("/var/www/html//media/caixetes//reservamos120.inc") ?><?php @include("/var/www/html//media/caixetes//webs-de-interes.inc") ?><?php @include("/var/www/html//media/caixetes//empro.inc") ?><?php @include("/var/www/html//media/caixetes//isoqol_webinar_empro.inc") ?><?php @include("/var/www/html//media/caixetes//proqolid.inc") ?></div>

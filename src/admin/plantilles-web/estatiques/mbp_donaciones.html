@@ -1,0 +1,201 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver atrás</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/mbp">Ir a Mi BiblioPRO</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+	setlocale(LC_ALL, 'es_ES.UTF-8', 'es_ES', 'es');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+<?php
+
+	// si l'usuari està identificat, mostrem la plana
+	if (accessGetLogin() != '') {
+
+		$userInfo = getUserInfo($taula_usuaris);
+
+?>
+					<div class="broken border clearfix">
+						|Introduccio|
+					</div>
+
+<?php
+
+		// obtenim les donacions de l'usuari
+		$donationsQuery = db_query("
+			SELECT *
+			FROM `$taula_donacions`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+			ORDER BY
+				FECHA_SOLICITUD DESC
+		");
+		if (db_num_rows($donationsQuery) > 0) {
+
+?>
+					<ul class="faqs">
+<?php
+
+			while ($donationsRow = db_fetch_array($donationsQuery)) {
+
+				if (empty($donationsRow['FACTURA'])) {
+
+					$donationsRow['FACTURA'] = $billDate = $billLink = 'No emitida';
+
+				}
+				else {
+
+					if (
+						!empty($donationsRow['FECHA_FACTURA'])
+						and $donationsRow['FECHA_FACTURA'] != '0000-00-00 00:00:00'
+					) {
+						$billDate = strftime('%e de %B de %Y a las %H:%M', strtotime($donationsRow['FECHA_FACTURA']));
+					}
+					else {
+						$billDate = 'No indicada';
+					}
+					if (!empty($donationsRow['FICHERO_FACTURA'])) {
+						$billLink = '<a href="|CONFIG_NOMCARPETA|/media/upload/pdf/facturas/'. htmlspecialchars($donationsRow['FICHERO_FACTURA']) . '">Descargar</a>';
+					}
+					else {
+						$billLink = 'No suministrada';
+					}
+
+				}
+
+?>
+						<li class="element clearfix">
+							<h4 class="big">Donación a BiblioPRO</h4>
+<?php
+
+				if (
+					$donationsRow['STATUS'] == 0
+					and (
+						empty($donationsRow['FECHA_COBRO'])
+						or $donationsRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+					)
+				) {
+
+?>
+								<p class="right pay"><a href="|CONFIG_NOMCARPETA|/mbp/pago.html?tipo=4&amp;ID=<?php echo $donationsRow['ID']; ?>"><strong>Realizar o modificar pago</strong></a></p>
+<?php
+
+				}
+
+?>
+							<p><strong>Fecha:</strong> <?php echo strftime('%e de %B de %Y a las %H:%M', strtotime($donationsRow['FECHA_SOLICITUD'])); ?></p>
+							<div class="answer">
+								<h5>Información sobre el pago</h5>
+								<ul>
+									<li><strong>Estado de la donación:</strong> <?php echo $donationsStatus[$donationsRow['STATUS']]; ?></li>
+									<li><strong>Cantidad de la donación:</strong> <?php echo $donationsRow['TOTAL']; ?>€</li>
+									<li><strong>Número de la factura:</strong> <?php echo $donationsRow['FACTURA']; ?></li>
+									<li><strong>Fecha de la factura:</strong> <?php echo $billDate; ?></li>
+									<li><strong>Factura en PDF:</strong> <?php echo $billLink; ?></li>
+									<li><strong>Número de albarán interno:</strong> <?php echo $donationsRow['NUM_ALBARAN']; ?></li>
+								</ul>
+							</div>
+						</li>
+<?php
+
+			}
+
+?>
+					</ul>
+					<p class="top"><a href="#content">Subir</a></p>
+<?php
+
+		}
+		// si l'usuari no té cap donació, mostrem missatge
+		else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge no disposa de donacions|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+		}
+
+	}
+	// si l'usuari no està identificat, mostrem error
+	else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge usuari no identificat|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

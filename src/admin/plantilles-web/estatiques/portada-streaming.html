@@ -1,0 +1,160 @@
+|PHP_VARS||block-static-gestioUsuaris|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script type="text/javascript" src="|CONFIG_NOMCARPETA|/media/js/jquery.cycle.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#cycle').cycle({ speed: 2000, timeout: 6000 });
+			});
+		</script>
+<style type="text/css">
+#streaming{
+height:396px;
+background: #EBEBEB; /* Old browsers */
+	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQyNTU4NyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM1MzY5YTQiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  #EBEBEB 0%, #FFFFFF 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#EBEBEB), color-stop(99%,#FFFFFF)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #EBEBEB 0%,#FFFFFF 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #EBEBEB 0%,#FFFFFF 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #EBEBEB 0%,#FFFFFF 99%); /* IE10+ */
+	background: linear-gradient(to bottom,  #EBEBEB 0%,#FFFFFF 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EBEBEB', endColorstr='#FFFFFF',GradientType=0 ); /* IE6-8 */
+}
+#streaming ul li{background:none;}
+#streaming .description{
+ 	color: #888888; 
+    font-size: 1.5em;
+    font-weight: normal;
+    letter-spacing: 0;
+    line-height: 1.3em;
+    margin: 15px 0;
+}
+#streaming iframe{float:left;}
+#streaming #text-streaming{float:left;width:350px;margin:35px 30px;}
+</style>
+	</head>
+
+	<body id="frontpage">
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="frontpageBanner" class="clearfix">
+					<div id="streaming">
+						|Embed Streaming|
+						<div id="text-streaming">
+							<h2>|Titol streaming|</h2>
+							<p class="description">|Subtitol streaming|</p>
+							|Text Streaming|
+						</div>
+					</div>
+					|begin_isset Link boto|
+					<p class="frontpageNewsButton right"><a href="|Link boto|">|Text boto|</a></p>
+					|end_isset|
+				</div>
+
+				<ul id="frontpageBoxes" class="clearfix">
+					<li class="box clearfix">
+						<h2 class="what"><span>Qué es BiblioPRO</span></h2>
+<?php
+
+	// menú qué es
+	include('|CONFIG_PATHBASE|/media/menus/menu_que_es.inc');
+
+?>
+					</li>
+					<li class="box clearfix">
+						<h2 class="polls"><span>Cuestionarios PRO y CVRS</span></h2>
+<?php
+
+	// menú cuestionarios
+	include('|CONFIG_PATHBASE|/media/menus/cuestionarios.inc');
+
+?>
+					</li>
+					<li class="box nomargin clearfix">
+						<h2 class="services"><span>Servicios</span></h2>
+<?php
+
+	// menú qué es
+	include('|CONFIG_PATHBASE|/media/menus/servicios.inc');
+
+?>
+					</li>
+				</ul>
+
+				<div class="clearfix">
+|MENUDRETA|
+					<div id="pollsInfo"><div class="wrapper clearfix">
+						<div class="stats"><div class="statsWrapper clearfix">
+<?php
+
+	$questionnariesTable = 'Cuestionarios';
+
+	$identified = $available = $evaluated = 0;
+
+	// fem el recompte de qüestionaris
+	$questionnairesQuery = db_query ("
+		SELECT IDENTIFICADO, DISPONIBLE, EVALUADO
+		FROM `$questionnariesTable`
+		WHERE
+			VERSION = 1
+			AND STATUS = 1
+	");
+
+	// si hi ha algun qüestionari, continuem
+	if (db_num_rows($questionnairesQuery) > 0) {
+
+		while ($questionnairesRow = db_fetch_array($questionnairesQuery)) {
+
+			if ($questionnairesRow['IDENTIFICADO'] == 1) {
+				$identified++;
+			}
+			if ($questionnairesRow['DISPONIBLE'] == 1) {
+				$available++;
+			}
+			if ($questionnairesRow['EVALUADO'] == 1) {
+				$evaluated++;
+			}
+
+		}
+
+ }
+
+?>
+							<ul>
+								<li><strong>Identificados:</strong> <?php echo $identified; ?></li>
+							</ul>
+						</div></div>
+						<p class="button"><a href="|CONFIG_NOMCARPETA|/buscador/">Buscar cuestionario &gt;&gt;</a></p>
+					</div></div>
+				</div>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

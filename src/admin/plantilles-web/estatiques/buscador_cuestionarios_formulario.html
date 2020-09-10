@@ -1,0 +1,325 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+	</head>
+
+	<body id="noNav">
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_main">
+
+<?php
+
+	// fem el recompte de qüestionaris
+	$questionnairesQuery = db_query ("
+		SELECT IDENTIFICADO, DISPONIBLE, EVALUADO
+		FROM `$taula_questionaris`
+		WHERE VERSION = 1 AND STATUS = 1
+	");
+
+	// si hi ha algun qüestionari, continuem
+	if (db_num_rows($questionnairesQuery) > 0) {
+
+		$identified = $available = $evaluated = 0;
+		while ($questionnairesRow = db_fetch_array($questionnairesQuery)) {
+
+			if ($questionnairesRow['IDENTIFICADO'] == 1) {
+				$identified++;
+			}
+			if ($questionnairesRow['DISPONIBLE'] == 1) {
+				$available++;
+			}
+			if ($questionnairesRow['EVALUADO'] == 1) {
+				$evaluated++;
+			}
+
+		}
+
+?>
+					<div class="border clearfix">
+						<ul class="right clean" style="margin-left: 15px">
+							<li><strong>Identificados:</strong> <?php echo $identified; ?></li>
+							<!-- li><strong>Disponibles:</strong> <?php echo $available; ?></li>
+							<li><strong>Evaluados:</strong> <?php echo $evaluated; ?></li -->
+						</ul>
+						<p class="right"><a href="buscar.html" class="noborder"><img src="|CONFIG_NOMCARPETA|/media/img/bt_ver_todos.jpg" alt="Ver todos" /></a></p>
+						<h2 class="orange search">|Titol|</h2>
+					</div>
+
+					<!--
+					<div>
+					   <p class="alert">Actualmente estamos realizando tareas de mantenimiento de la página web, sugerimos no descargarse ni solicitar ninguna licencia de ningún cuestionario hasta nueva información</p>
+					</div>
+					-->
+
+					<form action="buscar.html" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+						<div class="search"><div class="wrapper clearfix">
+							<label for="text-cerca">
+								<input type="text" name="text-cerca" id="text-cerca" />
+							</label>
+							<div class="button"><input type="image" src="|CONFIG_NOMCARPETA|/media/img/bt_buscar.jpg" alt="Buscar" class="button" /></div>
+						</div></div>
+						<!-- /search -->
+					</form>
+
+					<h6>Búsqueda avanzada</h6>
+					<form action="buscar.html" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+						<div class="search"><div class="wrapper clearfix">
+
+							<div class="border clearfix">
+								<label for="text-cerca-advanced" class="short">
+									<input type="text" name="text-cerca" id="text-cerca-advanced" />
+								</label>
+								<div class="advancedSearchInfo">
+									<p>|Text cerca avançada|</p>
+								</div>
+							</div>
+
+							<div class="border clearfix">
+								<label for="CONTENIDO" class="large">
+									<span>Tipo de contenido</span>
+									<select name="CONTENIDO" id="CONTENIDO">
+										<option value="">Todos los tipos de contenido</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, VALOR
+		FROM `$taula_contingut`
+		ORDER BY VALOR ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['VALOR']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+								</label>
+							</div>
+
+							<div class="border clearfix">
+								<label for="ENFERMEDAD" class="large">
+									<span>Enfermedades y síntomas relacionados con</span>
+									<select name="ENFERMEDAD" id="ENFERMEDAD">
+										<option value="">Todas las enfermedades o síntomas</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, VALOR
+		FROM `$taula_malalties`
+		ORDER BY VALOR ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['VALOR']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+								</label>
+							</div>
+
+							<div class="border clearfix">
+								<label for="MEDIDA" class="large">
+									<span>Conceptos medidos</span>
+									<select name="MEDIDA" id="MEDIDA">
+										<option value="">Todos los conceptos</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, VALOR
+		FROM `$taula_mesures`
+		ORDER BY VALOR ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['VALOR']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+								</label>
+							</div>
+
+							<div class="border clearfix">
+								<h6>Población</h6>
+								<label for="EDAD" class="inline">
+									<span>Edad</span>
+									<select name="EDAD" id="EDAD">
+										<option value="">Cualquiera</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, VALOR
+		FROM `$taula_edats`
+		ORDER BY VALOR ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['VALOR']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+								</label>
+								<label for="POBLACION" class="inline">
+									<span>Género</span>
+									<select name="POBLACION" id="POBLACION">
+										<option value="">Cualquiera</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, VALOR
+		FROM `$taula_poblacio`
+		ORDER BY VALOR ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['VALOR']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+								</label>
+							</div>
+
+							<div class="border clearfix">
+								<label for="PAIS" class="large">
+									<span>País</span>
+									<select name="PAIS" id="PAIS">
+										<option value="">Cualquiera</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, PAIS
+		FROM `$taula_paisos`
+		ORDER BY PAIS ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['PAIS']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+								</label>
+							</div>
+
+							<div class="button"><input type="image" src="|CONFIG_NOMCARPETA|/media/img/bt_buscar.jpg" alt="Buscar" class="button" /></div>
+
+						</div></div>
+						<!-- /search -->
+					</form>
+
+<?php
+
+	}
+	// si no hi ha cap qüestionari, mostrem error
+	else {
+
+?>
+				<div class="broken border clearfix">
+					<h2 class="orange search">|Titol|</h2>
+					<div class="warning">|Missatge no hi ha questionaris|</div>
+					<?php echo $continueBrowsing; ?>
+				</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+				<div id="content_sub">
+
+					|begin_isset Avis usuaris|
+					<div class="gray clearfix">
+						|Avis usuaris|
+					</div>
+					|end_isset|
+
+					<div class="border clearfix">
+						<h6 class="ads">PUBLICIDAD</h6>
+					</div>
+					|BANNERDRETA|
+
+				</div>
+				<!-- /content_sub -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

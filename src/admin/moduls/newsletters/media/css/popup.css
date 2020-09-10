@@ -1,0 +1,85 @@
+/* dom */
+html { font-size: 100%; } /* WinIE text resize correction */
+body {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 0.75em; /* 12px */
+	color: #333;
+	background: #fff;
+}
+* { margin: 0; border: none; padding: 0; }
+a { outline: 0; color: #00528d; text-decoration: none; }
+	a:hover { color: #000; text-decoration: underline; }
+	a:visited { font-size:inherit; }
+p { margin-bottom: 1em; line-height: 1.4em; }
+ul { list-style: none; }
+		ul li.clear { clear: left; }
+/* esquerra, dreta i centrar */
+div.left { clear: left; float: left; width: 49%; }
+div.right { clear: right; float: right; width: 49%; }
+.center { text-align: center; }
+/* clearfix */
+.clearfix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+	.clearfix { display:inline-block; }
+	/* amagar d'IE mac \*/
+	.clearfix { display:block; }
+
+#popup {
+	padding: 12px 15px;
+}
+	#popup fieldset {
+		margin: 0 0 15px 0;
+		padding: 15px;
+		border: 1px solid #ddd;
+	}
+		#popup fieldset legend {
+			border: 1px solid #ddd;
+			padding: .5em .75em;
+			font-size: 1.5em; /* 18px */
+		}
+		#popup fieldset label {
+			display: block;
+			vertical-align: middle;
+			margin: 0 0 .75em 0;
+			border-bottom: 1px solid #eaeaea;
+			padding: 0 0 .75em 0;
+		}
+			#popup fieldset label input, #popup fieldset label select {
+				margin: 0 .5em;
+				border: 1px solid #ccc;
+				padding: .5em;
+				font-family: arial, helvetica, sans-serif;
+				font-size: 1em; /* 12px */
+				color: #666;
+				background: #fff;
+			}
+				#popup fieldset label input:focus, #popup fieldset label select:focus {
+					border: 1px solid #999;
+					color: #333;
+				}
+				#popup fieldset label input.checkbox, #popup fieldset label input.radio, #popup fieldset label input.checkbox:focus, #popup fieldset label input.radio:focus {
+					width: auto !important;
+					border: 0;
+					padding: 0;
+				}
+			 #popup fieldset label select {
+					cursor: pointer;
+			 }
+		#popup input.send {
+			cursor: pointer;
+			margin: 0 0 1em 0;
+			border: 1px solid #000;
+			padding: .75em 2em;
+			color: #fff;
+			font-weight: bold;
+			text-align: center;
+			text-shadow: #000 1px 1px 1px;
+			background: #444;
+		}
+			#popup input.send:hover {
+				color: #fff;
+				text-shadow: #051a3b 1px 1px 1px;
+				background: #0e449a;
+			}

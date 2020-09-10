@@ -1,0 +1,301 @@
+<?php
+require_once('/var/www/html//config.php');
+$id = '157';
+$idioma = 'es';
+$pare = '3';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '/servicios/index.html' , 'title' => 'Servicios' , 'nom' => 'Servicios') , 2 => array('link' => '' , 'title' => 'Bienvenida IV Jornada Científica' , 'nom' => 'Bienvenida IV Jornada Científica'));
+$folderArray = array(3 => 'servicios');
+$folderIds = array(0 => 3);
+$folderUrl = '/servicios';
+$pageUrl = '/servicios/ivjornadabienvenida.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Presentación III Jornada Científica - BiblioPRO</title>
+		<meta name="description" content="Presentación III Jornada Científica" />
+		<meta name="Keywords" content="Presentación, jornada, bibliopro, cuestionarios, instrumentos, calidad de vida, resultados percibidos por los pacientes, patient reported outcomes, en español, PRO, CVRS, HRQL, BiblioPRO, servicios, biblioteca, informacion básica, distribución, materiales de ayuda, cómo funciona, entrada de datos, newsletter, noticias, preguntas frecuentes" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+	</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+<?php
+$directori = '3';
+$url = '/servicios/ivjornadabienvenida.html';
+$rutaplana = ($pos = strpos('/servicios/ivjornadabienvenida.html', '?')) ? substr('/servicios/ivjornadabienvenida.html', 0, ($pos-1)) : '/servicios/ivjornadabienvenida.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_principal.inc")
+?>
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">Servicios</p>
+<?php
+$directori = '3';
+$url = '/servicios/ivjornadabienvenida.html';
+$rutaplana = ($pos = strpos('/servicios/ivjornadabienvenida.html', '?')) ? substr('/servicios/ivjornadabienvenida.html', 0, ($pos-1)) : '/servicios/ivjornadabienvenida.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//servicios.inc")
+?>
+
+					<p class="button"><a href="/buscador/">Buscar cuestionario</a></p>
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix"><a href="/index.html" title="Portada">Portada</a> > <a href="/servicios/index.html" title="Servicios">Servicios</a></div>
+						<h2><span>Bienvenida IV Jornada Científica</span></h2>
+					</div></div>
+
+					<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Estimado/a colega,</span></p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Nos complace muy especialmente invitarle a la&nbsp;<span style="#FF6600"><a href="/servicios/ivjornadabienvenida.html"><span style="#FF6600">IV Jornada Científica BiblioPRO</span></a></span><sup>1</sup>, que tiene el lema&nbsp;&quot;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600">El rol de los PROs en la evaluación de proveedores de servicios sanitarios</span></strong>&rdquo;. Tendrá lugar el&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;color:#FF6600">21 de febrero de 2019</span></strong>&nbsp;en la&nbsp;<span style="#FF6600"><a href="http://www.cat.isciii.es/ISCIII/es/contenidos/fd-el-instituto/fd-informacion-ciudadano/contacto-localizacion.shtml"><span style="#FF6600">Escuela Nacional de Sanidad (ISCIII) - campus Chamartin</span></a></span>,&nbsp;Madrid.</span></p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">La misión de BiblioPRO (<span style="#FF6600"><a href="/"><span style="#FF6600">www.bibliopro.org</span></a></span>) es promover un uso adecuado de los PROs (Patient-Reported Outcomes en inglés) en investigación, gestión sanitaria y práctica clínica, proporcionando información exhaustiva online, evaluaciones basadas en la evidencia y formación específica en esta área.    </span></p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Después de las exitosas Jornadas celebradas en 2013 y 2015 en Barcelona y 2017 en Madrid, con más de 100 asistentes en cada una y elevado seguimiento por streaming, en esta ocasión queremos reunir a los profesionales interesados en la&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;color:#FF6600">administración rutinaria de PROs para promover la evaluación de la calidad de los proveedores sanitarios</span></strong></span>&nbsp;en nuestro país.&nbsp;&nbsp;La coincidencia de iniciativas como la de&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;color:#FF6600">ICHOM&nbsp;</span></strong>(International Consortium of Health Outcomes Measurement) proponiendo standard sets por patología o la de los países de la&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600">OCDE&nbsp;</span></strong>(Organización para la Cooperación y el Desarrollo Económico)&nbsp;para llegar a una propuesta conjunta de PROs remarca la máxima actualidad de este tema.</p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">La&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;color:#FF6600">Conferencia Principal&nbsp;</span></strong></span><strong><span lang="ES" style="font-size:12.0pt;&#10;line-height:107%;font-family:&quot;Tahoma&quot;,sans-serif;mso-fareast-font-family:Calibri;&#10;mso-fareast-theme-font:minor-latin;mso-ansi-language:ES;mso-fareast-language:&#10;EN-US;mso-bidi-language:AR-SA;font-weight:normal;mso-bidi-font-weight:bold">irà a cargo&nbsp;</span></strong><span style="font-family: Tahoma, sans-serif;">de&nbsp;<strong><span style="rgb(255, 102, 0);">Mona Khalid</span></strong>, BSc (Hons) MSc PhD, Vicepresidenta de Outcomes Research and Development de&nbsp;<strong><span style="rgb(255, 102, 0);">ICHOM&nbsp;</span></strong>(International Consortium of Health Outcomes Measurement).&nbsp;Presentará los roles y aplicaciones del uso de Patient Reported Outcomes y Patient Reported Experience Measures desde la perspectiva de ICHOM (&ldquo;</span><strong><span lang="EN-GB" style="font-size:11.0pt;line-height:&#10;107%;font-family:&quot;Tahoma&quot;,sans-serif;color:#EA6B14;mso-ansi-language:EN-GB">Role and application of PROMs and PREMs from an ICHOM&rsquo;s perspective</span></strong><span style="font-family: Tahoma, sans-serif;">&rdquo;</span><span style="font-family: Tahoma, sans-serif;">).</span></p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">El&nbsp;<span style="#FF6600"><a href="https://bibliopro.org/servicios/ivjornadaprograma.html"><span style="#FF6600">programa</span></a></span>&nbsp;incluye un&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;color:#FF6600">Panel </span></strong>sobre la aplicación de los estándares de ICHOM especialmente dirigido a implementación de PROs en el sistema de salud, en el que participarán, entre otros, el Dr. José María Valderas (Professor of Health Services and Policy Research, Exeter University) y la Dra. Inés Gallego (Subdirectora de Innovación del Hospital Universitario Cruces) y el Dr. Pablo Serrano (Director de Planificación, Hospital 12 de Octubre).</span></p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">La jornada, que ha sido acreditada por el CCFPS con <strong>0.4 créditos</strong>, contará con&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600">Sesiones Científicas paralelas</span></strong>&nbsp;sobre áreas específicas y&nbsp;<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600">Presentación de pósteres</span></strong>.&nbsp;</span></p>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">La participación en la Jornada requiere de inscripción previa cumplimentando el formulario online. Para formalizar la inscripción se debe realizar el pago correspondiente por<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600"> transferencia bancaria</span></strong> al número de cuenta:<strong><span style="font-family:&quot;Tahoma&quot;,sans-serif"> ES07 2100 0801 1302 0045 9928</span></strong>, indicando en el concepto &ldquo;inscripción IV jornada científica&rdquo; y enviar el comprobante a&nbsp;&nbsp;<a   href="mailto:bibliopro(ELIMINAR)@imim.es" >bibliopro(ELIMINAR)@imim.es</a>.</span></p>
+<h3 style="text-align:justify"><strong><span lang="ES" style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600;font-weight:normal">Tarifas</span></strong></h3>
+<ul>
+    <li class="MsoNormal" style="mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;&#10;     text-align:justify;line-height:normal;mso-list:l1 level1 lfo1;tab-stops:&#10;     list 36.0pt"><span lang="ES" style="font-size:12.0pt;font-family:&quot;Tahoma&quot;,sans-serif">Empresas privadas:      75 &euro; (incluye inscripción, catering y cafés)</span></li>
+    <li class="MsoNormal" style="mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;&#10;     text-align:justify;line-height:normal;mso-list:l1 level1 lfo1;tab-stops:&#10;     list 36.0pt"><span lang="ES" style="font-size:12.0pt;font-family:&quot;Tahoma&quot;,sans-serif">CIBERESP, Parc de Salut Mar, empresas públicas y universidades: 35 &euro;&nbsp;(incluye inscripción,      catering y cafés)</span></li>
+</ul>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif;&#10;color:#FF6600">*Los estudiantes pueden aplicar a la bolsa de becas incluyendo está opción en el formulario de inscripción y adjuntando el comprobante académico</span><span style="font-family:&quot;Tahoma&quot;,sans-serif">.</span></p>
+<h3><strong><span lang="ES" style="font-family:&quot;Tahoma&quot;,sans-serif;color:#FF6600;&#10;font-weight:normal">Fechas importantes</span></strong></h3>
+<ul>
+    <li class="MsoNormal" style="mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;&#10;     text-align:justify;line-height:normal;mso-list:l0 level1 lfo2;tab-stops:&#10;     list 36.0pt"><strong><span lang="ES" style="font-size:12.0pt;font-family:&#10;     &quot;Tahoma&quot;,sans-serif">31 de Enero de 2019:</span></strong><span lang="ES" style="font-size:12.0pt;font-family:&quot;Tahoma&quot;,sans-serif"> Fecha límite      para<span style="#FF6600">&nbsp;<a href="https://bibliopro.org/servicios/resumenes_ivjornada.html"><span style="#FF6600">enviar resúmenes</span></a></span>.</span></li>
+    <li class="MsoNormal" style="mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;&#10;     text-align:justify;line-height:normal;mso-list:l0 level1 lfo2;tab-stops:&#10;     list 36.0pt"><strong><span lang="ES" style="font-size:12.0pt;font-family:&#10;     &quot;Tahoma&quot;,sans-serif">11 de Febrero de 2019:</span></strong><span lang="ES" style="font-size:12.0pt;font-family:&quot;Tahoma&quot;,sans-serif"> Comunicación de      resúmenes&nbsp;aceptados y resolución de becas.</span></li>
+    <li class="MsoNormal" style="mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;&#10;     text-align:justify;line-height:normal;mso-list:l0 level1 lfo2;tab-stops:&#10;     list 36.0pt"><strong><span lang="ES" style="font-size: 12pt; font-family: Tahoma, sans-serif;">20 de Febrero de 2019:</span></strong><span lang="ES" style="font-size: 12pt; font-family: Tahoma, sans-serif;">&nbsp;Fecha límite de <a href="https://bibliopro.org/servicios/iv_inscripcion.html">inscripción</a>.</span></li>
+</ul>
+<p style="text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Esperando contar con su participación, reciba un saludo muy cordial.</span></p>
+<p style="0cm;margin-bottom:.0001pt;text-align:justify;line-height:12.0pt"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Dr. Antonio Escobar</span></p>
+<p style="0cm;margin-bottom:.0001pt;text-align:justify;line-height:12.0pt"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Presidente, Comité Organizador IV Jornada Científica BiblioPRO</span></p>
+<p style="0cm;margin-bottom:.0001pt;text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Dr. Jordi Alonso y Dra. Montse Ferrer</span></p>
+<p style="0cm;margin-bottom:.0001pt;text-align:justify"><span style="font-family:&quot;Tahoma&quot;,sans-serif">Co-directores comité científico BiblioPRO</span></p>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				<?php @include("/var/www/html//media/caixetes//logos-peu.inc") ?>
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

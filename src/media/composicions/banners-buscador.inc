@@ -1,0 +1,1 @@
+<div class="comp-vertical"><?php @include("/var/www/html//media/caixetes//banner-buscador-1.inc") ?></div>

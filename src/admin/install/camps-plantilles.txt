@@ -1,0 +1,79 @@
+Elements comuns a totes les plantilles de pàgines
+-------------------------------------------------
+
+|METAS| -> metadades de la pàgina web
+|CONFIG_NOMCARPETA| -> carpeta base de la web
+|SITUACIO| -> fil d'Ariadna
+|IDIOMA_PAG| -> idioma de la pàgina
+
+|MENUSUPERIOR| -> menus
+|MENUESQUERRA|
+|MENUDRETA|
+|BANNERSUPERIOR| -> banners
+|BANNERESQUERRA|
+|BANNERDRETA|
+
+|PEU| -> peu comu obtingut de admin/php/peuweb.php
+
+
+
+Elements de les plantilles estatiques
+-------------------------------------------------
+
+|Titol Grafic| -> titol grafic si es coloca al primer camp curt (obtatiu)
+
+
+
+Elements de les plantilles de formulari
+-------------------------------------------------
+
+|TITOL| -> titol de la pàgina
+|CONFIGFORMULARI| -> configuració del formulari, parametres del form
+|DESCRIPCIOFORMULARI| -> text desriptiu del formulari
+|CAMPSFORMULARI| -> tots els elements del formulari
+
+
+
+Elements de les plantilles dinàmiques
+-------------------------------------------------
+
+|TITOLSECCIO| -> titol de la pàgina
+|SUBTITOLSECCIO|
+|INDEXCATEGORIES| -> llista de les categories
+|TEXTSECCIO|
+
+
+|TITOL| -> titol de l'entrada
+|SUBTITOL| -> subtitol de l'entrada
+|RESUM| -> resum de l'entrada
+|DESCRIPCIO| -> descripció de l'entrada
+|DESCRIPCIO2|
+|IMATGE| -> imatge asociada a l'entrada
+
+|DATA| -> data de l'entrada
+
+|MES| -> link a visualització de l'element
+
+|TEXTLINK1| -> links relacionats
+|TEXTLINK2|
+|TEXTLINK3|
+|LINKS|
+
+|ADJUNT| -> fitxer relacionat
+
+
+Elements de les plantilles de rss
+-------------------------------------------------
+
+|CONFIG_PATHBASE| -> path per trobar els fitxers
+
+|LINKRSS| -> link a la font rss
+|MAXRSS| -> número d'elements a mostrar
+
+
+Elements de les plantilles de enquestes
+-------------------------------------------------
+
+|CONFIG_PATHBASE| -> path per trobar els fitxers
+
+|ENQUESTA| -> identificador de l'enquesta

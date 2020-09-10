@@ -1,0 +1,539 @@
+<?php
+require_once('/var/www/html//config.php');
+$id = '69';
+$idioma = 'es';
+$pare = '12';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '/mbp/index.html' , 'title' => 'Mi BiblioPRO' , 'nom' => 'Mi BiblioPRO') , 2 => array('link' => '' , 'title' => 'Mis sublicencias' , 'nom' => 'Mis sublicencias'));
+$folderArray = array(12 => 'mbp');
+$folderIds = array(0 => 12);
+$folderUrl = '/mbp';
+$pageUrl = '/mbp/sublicencias.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver atrás</a></li>
+						<li><a href="/mbp">Ir a Mi BiblioPRO</a></li>
+						<li><a href="/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+	setlocale(LC_ALL, 'es_ES.UTF-8', 'es_ES', 'es');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Mis sublicencias - BiblioPRO</title>
+		<meta name="description" content="Mis sublicencias en BiblioPRO" />
+		<meta name="Keywords" content="sublicencias, cuestionarios, bibliopro, BiblioPRO, registro, identificación, espacio personal, modificación datos, datos de facturación, histórico, mis descargas, mis sublicencias, mis suscripciones" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://www.bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+	</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+<?php
+$directori = '12';
+$url = '/mbp/sublicencias.html';
+$rutaplana = ($pos = strpos('/mbp/sublicencias.html', '?')) ? substr('/mbp/sublicencias.html', 0, ($pos-1)) : '/mbp/sublicencias.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_principal.inc")
+?>
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">Mi BiblioPRO</p>
+<?php
+$directori = '12';
+$url = '/mbp/sublicencias.html';
+$rutaplana = ($pos = strpos('/mbp/sublicencias.html', '?')) ? substr('/mbp/sublicencias.html', 0, ($pos-1)) : '/mbp/sublicencias.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//mi_bibliopro.inc")
+?>
+
+					<p class="button"><a href="/buscador/">Buscar cuestionario</a></p>
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix"><a href="/index.html" title="Portada">Portada</a> > <a href="/mbp/index.html" title="Mi BiblioPRO">Mi BiblioPRO</a></div>
+						<h2><span>Mis sublicencias</span></h2>
+					</div></div>
+<?php
+
+	// si l'usuari està identificat, mostrem la plana
+	if (accessGetLogin() != '') {
+
+		$userInfo = getUserInfo($taula_usuaris);
+
+?>
+					<div class="broken border clearfix">
+						<p>En este apartado puede consultar el histórico de todas las sublicencias que ha solicitado, así como comprobar su estado.</p>
+					</div>
+
+<?php
+
+		// obtenim les subllicències de l'usuari
+		/*$sublicencesQuery = db_query("
+			SELECT *
+			FROM `$taula_subllicencies_pagaments`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+				AND FECHA_VALIDEZ >= NOW()
+			ORDER BY
+				FECHA_VALIDEZ ASC
+		");*/
+
+		$sublicencesQuery = db_query("
+			SELECT *
+			FROM `$taula_subllicencies_pagaments`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+			ORDER BY
+				FECHA_VALIDEZ ASC
+		");
+		if (db_num_rows($sublicencesQuery) > 0) {
+
+?>
+					<ul class="faqs">
+<?php
+
+			while ($sublicencesRow = db_fetch_array($sublicencesQuery)) {
+
+				// obtenim info qüestionari
+				$qQuery = db_query("
+					SELECT NOM_CAST, ID
+					FROM `$taula_questionaris`
+					WHERE ID = $sublicencesRow[ID_CUEST]
+				");
+				$qRow = db_fetch_array($qQuery);
+
+				// finançament per entitat
+				switch ($sublicencesRow['FINANCIACION_ENTIDAD']) {
+
+					case 1: $finan = 'Con ánimo de lucro'; break;
+					case 2: $finan = 'Sin ánimo de lucro'; break;
+					case 3: $finan = 'Académica'; break;
+					default: $finan = 'Desconocida'; break;
+
+				}
+
+				// estat / otorgament
+				if (!empty($sublicencesRow['STATUS'])) {
+
+					switch ($sublicencesRow['OTORGADA']) {
+
+						case 0: $status = 'Pendiente de otorgación'; break;
+						case 1: $status = 'Pendiente de terceros'; break;
+						case 2: $status = 'Otorgada el ' . strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_OTORGADA'])); break;
+						case 3: $status = 'Denegada'; $sublicencesRow['FECHA_VALIDEZ'] = 'Denegada'; break;
+						default: $status = 'Desconocido'; break;
+
+					}
+
+				}
+				else {
+
+					$status = 'Inactiva';
+
+				}
+
+				// factura
+				if (empty($sublicencesRow['FACTURA'])) {
+
+					$sublicencesRow['FACTURA'] = $billDate = $billLink = 'No emitida';
+
+				}
+				else {
+
+					if (
+						!empty($sublicencesRow['FECHA_FACTURA'])
+						and $sublicencesRow['FECHA_FACTURA'] != '0000-00-00 00:00:00'
+					) {
+						$billDate = strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_FACTURA']));
+					}
+					else {
+						$billDate = 'No indicada';
+					}
+					if (!empty($sublicencesRow['FICHERO_FACTURA'])) {
+						$billLink = '<a href="/media/upload/pdf/facturas/'. htmlspecialchars($sublicencesRow['FICHERO_FACTURA']) . '">Descargar</a>';
+					}
+					else {
+						$billLink = 'No suministrada';
+					}
+
+				}
+
+				// estat pagament
+				if (
+					(
+						empty($sublicencesRow['FECHA_COBRO'])
+						or $sublicencesRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+					)
+				) {
+
+					$paymentStatus = 'Pendiente';
+
+				}
+				else {
+
+					$paymentStatus = 'Confirmado el ' . strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_COBRO']));
+
+				}
+
+?>
+						<li class="element clearfix">
+							<h4 class="big"><?php echo $qRow['NOM_CAST']; ?></h4>
+							<p><strong>Estado de la sublicencia:</strong> <?php echo $status; ?></p>
+							<p><strong>Válida hasta:</strong> <?php echo strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_VALIDEZ'])); ?> <?php echo ($sublicencesRow['OTORGADA'] != 2 ? '<em>(No definitiva)</em>' : ''); ?></p>
+<?php
+
+				// si està otorgada i té document, mostrem enllaç
+				if (
+					$sublicencesRow['OTORGADA'] == 2
+					and is_file('/var/www/html//media/upload/pdf/sublicencias-atorgadas/' . $sublicencesRow['NUM_ALBARAN'] . '.pdf')
+				) {
+
+?>
+							<p><a href="/media/upload/pdf/sublicencias-atorgadas/<?php echo $sublicencesRow['NUM_ALBARAN']; ?>.pdf"><strong>Descargar documento de otorgación</strong></a></p>
+<?php
+
+				}
+
+?>
+							<div class="answer">
+								<h5>Información sobre el pago</h5>
+								<ul>
+									<li>
+										<strong>Precio de la sublicencia:</strong>
+										<ul>
+											<li><strong>Base imponible:</strong> <?php echo $sublicencesRow['PRECIO']; ?>€</li>
+											<li><strong>IVA:</strong> <?php echo $sublicencesRow['TIPO_IVA']; ?>% (<?php echo $sublicencesRow['IVA']; ?>€)</li>
+											<li><strong>Total:</strong> <?php echo $sublicencesRow['TOTAL']; ?>€</li>
+										</ul>
+									</li>
+									<li><strong>Estado del pago:</strong> <?php echo $paymentStatus; ?></li>
+									<li><strong>Número de la factura:</strong> <?php echo $sublicencesRow['FACTURA']; ?></li>
+									<li><strong>Fecha de la factura:</strong> <?php echo $billDate; ?></li>
+									<li><strong>Factura en PDF:</strong> <?php echo $billLink; ?></li>
+									<li><strong>Número de albarán interno:</strong> <?php echo $sublicencesRow['NUM_ALBARAN']; ?></li>
+								</ul>
+								<h5>Información sobre la sublicencia</h5>
+								<ul>
+									<li><strong>Fecha de solicitud:</strong> <?php echo strftime('%e de %B de %Y a las %H:%M', strtotime($sublicencesRow['FECHA_SOLICITUD'])); ?></li>
+									<li><strong>Número de administraciones:</strong> <?php echo htmlspecialchars($sublicencesRow['NUM_ADMINISTRACIONES']); ?></li>
+									<li><strong>Financiación mayoritaria por una entidad:</strong> <?php echo $finan; ?></li>
+								</ul>
+								<h5>Información sobre el estudio</h5>
+								<ul>
+									<li><strong>Nombre:</strong> <?php echo htmlspecialchars($sublicencesRow['TITULO']); ?></li>
+									<li><strong>Uso:</strong> <?php echo htmlspecialchars($sublicencesRow['USO']); ?></li>
+									<li><strong>Ojetivos:</strong> <?php echo htmlspecialchars($sublicencesRow['OBJETIVOS']); ?></li>
+									<li><strong>Período:</strong> <?php echo htmlspecialchars($sublicencesRow['FECHA_INICIO']); ?> - <?php echo htmlspecialchars($sublicencesRow['FECHA_FINAL']); ?></li>
+									<li><strong>Diseño:</strong> <?php echo htmlspecialchars($sublicencesRow['DISENO_ESTUDIO']); ?></li>
+									<li><strong>Población:</strong> <?php echo htmlspecialchars($sublicencesRow['POBLACION']); ?></li>
+									<li><strong>Modo de administración:</strong> <?php echo htmlspecialchars($sublicencesRow['MODO_ADMIN']); ?></li>
+									<li><strong>Soporte técnico:</strong> <?php echo htmlspecialchars($sublicencesRow['SOPORTE_TECNICO']); ?></li>
+								</ul>
+								<h5>Datos de facturación indicados</h5>
+								<ul>
+									<li><strong>Razón social:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_NOMBRE']); ?></li>
+									<li><strong>CIF:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_CIF']); ?></li>
+									<li><strong>Dirección:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_DIRECCION']); ?></li>
+									<li><strong>Código postal:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_CP']); ?></li>
+									<li><strong>Población:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_CIUDAD']); ?></li>
+									<li><strong>País:</strong> <?php echo htmlspecialchars(getCountryName($sublicencesRow['FACTURACION_PAIS'], $taula_paisos)); ?></li>
+									<li><strong>Teléfono:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_TELEFONO']); ?></li>
+									<li><strong>Correo electrónico:</strong> <?php echo htmlspecialchars($sublicencesRow['FACTURACION_EMAIL']); ?></li>
+								</ul>
+							</div>
+<?php
+
+				// si el pagament no s'ha realitzat, permetre fer-lo
+				if (
+					$sublicencesRow['STATUS'] == 0
+					and (
+						empty($sublicencesRow['FECHA_COBRO'])
+						or $sublicencesRow['FECHA_COBRO'] == '0000-00-00 00:00:00'
+					)
+				) {
+
+?>
+							<p class="right pay"><a href="/mbp/pago.html?tipo=2&amp;ID=<?php echo $sublicencesRow['ID']; ?>"><strong>Realizar o modificar pago</strong></a></p>
+<?php
+
+				}
+
+?>
+							<p class="primer"><a href="/buscador/ver.html?ID=<?php echo $qRow['ID']; ?>">Ir al cuestionario</a></p>
+						</li>
+<?php
+
+			}
+
+?>
+					</ul>
+					<p class="top"><a href="#content">Subir</a></p>
+<?php
+
+		}
+		// si l'usuari no té cap subllicència, mostrem missatge
+		else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							<p><strong>No tiene ninguna sublicencia solicitada ni otorgada.</strong></p>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+		}
+
+	}
+	// si l'usuari no està identificat, mostrem error
+	else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							<p>Para ver el histórico de&nbsp;las sublicencias que ha solicitado y su estado, primero debe identificarse utilizando el enlace de <em>Login</em> de la cabecera.</p>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				<?php @include("/var/www/html//media/caixetes//logos-peu.inc") ?>
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

@@ -1,0 +1,511 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver a la página anterior</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+<?php
+
+	// si s'ha indicat algun qüestionari...
+	if (isset($_GET['ID'])) {
+
+		$id = $_GET['ID'];
+
+		$query = db_query ("
+			SELECT * FROM `$taula_questionaris`
+			WHERE ID = '" . mysql_real_escape_string($id) . "'
+		");
+		// si es troba el qüestionari indicat, el mostrem
+		if (db_num_rows($query) == 1) {
+
+			$row = db_fetch_array($query);
+
+			// obtenim autors adaptació
+			$castAuthors = unserialize($row['IDAUTORES_CAST']);
+			$castAuthorsArray = array();
+			if (is_array($castAuthors) and count($castAuthors) > 0) {
+				$where = array();
+				foreach ($castAuthors as $authorID) { $where[] = "ID = $authorID"; }
+				$authorsQuery = db_query ("
+					SELECT NOM
+					FROM `$taula_autors`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($authorRow = db_fetch_array($authorsQuery)) {
+					$castAuthorsArray[] = $authorRow['NOM'];
+				}
+			}
+
+			// obtenim autors original
+			$originalAuthors = unserialize($row['IDAUTORES_ORIGINAL']);
+			$originalAuthorsArray = array();
+			if (is_array($originalAuthors) and count($originalAuthors) > 0) {
+				$where = array();
+				foreach ($originalAuthors as $authorID) { $where[] = "ID = $authorID"; }
+				$authorsQuery = db_query ("
+					SELECT NOM
+					FROM `$taula_autors`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($authorRow = db_fetch_array($authorsQuery)) {
+					$originalAuthorsArray[] = $authorRow['NOM'];
+				}
+			}
+
+			// obtenim tipus contingut
+			$content = unserialize($row['CONTENIDO']);
+			$contentArray = array();
+			if (is_array($content) and count($content) > 0) {
+				$where = array();
+				foreach ($content as $itemID) { $where[] = "ID = $itemID"; }
+				$itemsQuery = db_query ("
+					SELECT VALOR
+					FROM `$taula_contingut`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($itemRow = db_fetch_array($itemsQuery)) {
+					$contentArray[] = $itemRow['VALOR'];
+				}
+			}
+
+			// obtenim malalties
+			$illness = unserialize($row['ENFERMEDAD']);
+			$illnessArray = array();
+			if (is_array($illness) and count($illness) > 0) {
+				$where = array();
+				foreach ($illness as $itemID) { $where[] = "ID = $itemID"; }
+				$itemsQuery = db_query ("
+					SELECT VALOR
+					FROM `$taula_malalties`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($itemRow = db_fetch_array($itemsQuery)) {
+					$illnessArray[] = $itemRow['VALOR'];
+				}
+			}
+
+			// obtenim poblacions
+			$population = unserialize($row['POBLACION']);
+			$populationArray = array();
+			if (is_array($population) and count($population) > 0) {
+				$where = array();
+				foreach ($population as $itemID) { $where[] = "ID = $itemID"; }
+				$itemsQuery = db_query ("
+					SELECT VALOR
+					FROM `$taula_poblacio`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($itemRow = db_fetch_array($itemsQuery)) {
+					$populationArray[] = $itemRow['VALOR'];
+				}
+			}
+
+			// obtenim edats
+			$age = unserialize($row['EDAD']);
+			$ageArray = array();
+			if (is_array($age) and count($age) > 0) {
+				$where = array();
+				foreach ($age as $itemID) { $where[] = "ID = $itemID"; }
+				$itemsQuery = db_query ("
+					SELECT VALOR
+					FROM `$taula_edats`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($itemRow = db_fetch_array($itemsQuery)) {
+					$ageArray[] = $itemRow['VALOR'];
+				}
+			}
+
+			// obtenim mesures
+			$concept = unserialize($row['MEDIDA']);
+			$conceptArray = array();
+			if (is_array($concept) and count($concept) > 0) {
+				$where = array();
+				foreach ($concept as $itemID) { $where[] = "ID = $itemID"; }
+				$itemsQuery = db_query ("
+					SELECT VALOR
+					FROM `$taula_mesures`
+					WHERE " . implode(' OR ', $where) . "
+				");
+				while ($itemRow = db_fetch_array($itemsQuery)) {
+					$conceptArray[] = $itemRow['VALOR'];
+				}
+			}
+
+			// referències
+			if (!empty($row['REFERENCIA_CAST_LINK'])) {
+				$refCast = '<a href="' . $row['REFERENCIA_CAST_LINK'] . '" rel="external">' . (!empty($row['REFERENCIA_CAST']) ? htmlspecialchars($row['REFERENCIA_CAST']) : 'Referencia') . '</a>';
+			}
+			else {
+				$refCast = htmlspecialchars($row['REFERENCIA_CAST']);
+			}
+			if (!empty($row['REFERENCIA_ORIGINAL_LINK'])) {
+				$refOrig = '<a href="' . $row['REFERENCIA_ORIGINAL_LINK'] . '" rel="external">' . (!empty($row['REFERENCIA_ORIGINAL']) ? htmlspecialchars($row['REFERENCIA_ORIGINAL']) : 'Referencia') . '</a>';
+			}
+			else {
+				$refOrig = htmlspecialchars($row['REFERENCIA_ORIGINAL']);
+			}
+
+			// correspondències
+			if (!empty($row['CORRESPONDENCIA_CAST_LINK'])) {
+				$corCast = '<a href="' . $row['CORRESPONDENCIA_CAST_LINK'] . '" rel="external">' . htmlspecialchars($row['CORRESPONDENCIA_CAST']) . '</a>';
+			}
+			else {
+				$corCast = htmlspecialchars($row['CORRESPONDENCIA_CAST']);
+			}
+			if (!empty($row['CORRESPONDENCIA_ORIGINAL_LINK'])) {
+				$corOrig = '<a href="' . $row['CORRESPONDENCIA_ORIGINAL_LINK'] . '" rel="external">' . htmlspecialchars($row['CORRESPONDENCIA_ORIGINAL']) . '</a>';
+			}
+			else {
+				$corOrig = htmlspecialchars($row['CORRESPONDENCIA_ORIGINAL']);
+			}
+
+
+?>
+|block-static-metas_css|
+
+	</head>
+
+	<body id="single">
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="border clearfix">
+<?php
+
+			// comprovem si hi ha altres versions del qüestionari
+			$relatedQuery = db_query ("
+				SELECT ID FROM `$taula_questionaris`
+				WHERE ID_CUEST = $row[ID_CUEST] AND ID != $row[ID]
+			");
+			if (db_num_rows($relatedQuery) > 0) {
+
+?>
+					<p class="otherVersions right"><a href="|CONFIG_NOMCARPETA|<?php echo $folderUrl; ?>/buscar.html?ID_CUEST=<?php echo $row['ID_CUEST']; ?>">Otras versiones de este cuestionario</a></p>
+<?php
+
+			}
+
+?>
+					<h2 class="card orange">
+					<?php 
+					if (trim($row['NOM_CAST']) != '') {
+						echo htmlspecialchars($row['NOM_CAST']); 
+					} elseif(trim($row['NOM_ORIGINAL']) != '') {
+						echo htmlspecialchars($row['NOM_ORIGINAL']); 
+					} else {
+						echo htmlspecialchars($row['SIGLAS']); 
+					}
+					?>
+					</h2>
+				</div>
+
+				<table summary="<?php echo 'Información sobre el cuestionario ' . htmlspecialchars($row['NOM_CAST']); ?>">
+					<tr>
+						<th><?php echo htmlspecialchars($row['SIGLAS']); ?></th>
+						<th>Versión Española</th>
+						<th>Original</th>
+					</tr>
+					<tr>
+						<th class="gray">Nombre</th>
+						<td><?php echo htmlspecialchars($row['NOM_CAST']); ?></td>
+						<td><?php echo htmlspecialchars($row['NOM_ORIGINAL']); ?></td>
+					</tr>
+					<tr>
+						<th class="gray">Autor(es)</th>
+						<td><?php echo htmlspecialchars(implode(', ', $castAuthorsArray) . ' ' . $row['AUTORES_EXTRA_CAST']); ?></td>
+						<td><?php echo htmlspecialchars(implode(', ', $originalAuthorsArray) . ' ' . $row['AUTORES_EXTRA_ORIGINAL']); ?></td>
+					</tr>
+					<tr>
+						<th class="gray">Referencia</th>
+						<td><?php echo $refCast; ?></td>
+						<td><?php echo $refOrig; ?></td>
+					</tr>
+					<tr>
+						<th class="gray">Correspondencia</th>
+						<td><?php echo $corCast; ?></td>
+						<td><?php echo $corOrig; ?></td>
+					</tr>
+					<tr>
+						<th class="gray">E-mail</th>
+						<td class="emails"><?php echo htmlspecialchars(str_replace('@', '(ELIMINAR)@', $row['EMAIL_CONTACTO_CAST'])); ?></td>
+						<td class="emails"><?php echo htmlspecialchars(str_replace('@', '(ELIMINAR)@', $row['EMAIL_CONTACTO_ORIGINAL'])); ?></td>
+					</tr>
+<?php
+
+			if (!empty($row['COPYRIGHT_CAST']) or !empty($row['COPYRIGHT_ORIGINAL'])) {
+
+?>
+					<tr>
+						<th class="gray">Copyright</th>
+						<td><?php echo htmlspecialchars($row['COPYRIGHT_CAST']); ?></td>
+						<td><?php echo htmlspecialchars($row['COPYRIGHT_ORIGINAL']); ?></td>
+					</tr>
+<?php
+
+			}
+
+			if (!empty($row['OTROS_CAST']) or !empty($row['OTROS_ORIGINAL'])) {
+
+?>
+					<tr>
+						<th class="gray">Otros</th>
+						<td><?php echo $row['OTROS_CAST']; ?></td>
+						<td><?php echo $row['OTROS_ORIGINAL']; ?></td>
+					</tr>
+<?php
+
+			}
+
+?>
+				</table>
+
+				<h6 class="orange">Características</h6>
+				<ul class="grid clearfix">
+					<li><strong>Conceptos medidos:</strong> <?php echo htmlspecialchars(implode(', ', $contentArray)); ?></li>
+					<li class="nomargin"><strong>Nº de ítems:</strong> <?php echo htmlspecialchars($row['NUMERO_ITEMS']); ?></li>
+					<li class="clear"><strong>Enfermedad:</strong> <?php echo htmlspecialchars(implode(', ', $illnessArray)); ?></li>
+					<li class="nomargin"><strong>Dimensiones:</strong> <?php echo htmlspecialchars($row['DIMENSIONES']); ?></li>
+					<li class="clear"><strong>Población:</strong> <?php echo htmlspecialchars(implode(', ', $populationArray)); ?></li>
+					<li class="nomargin"><strong>Medidas:</strong> <?php echo htmlspecialchars(implode(', ', $conceptArray)); ?></li>
+					<li class="clear"><strong>Edades:</strong> <?php echo htmlspecialchars(implode(', ', $ageArray)); ?></li>
+					<li class="nomargin"><strong>Palabras clave:</strong> <?php echo htmlspecialchars($row['PALABRAS_CLAVE']); ?></li>
+				</ul>
+
+				<h6 class="orange">Descargas</h6>
+				<ul class="download clearfix">
+<?php
+
+			$descarregables = array();
+
+			// mirem de quins descarregables disposa
+			$dQ = db_query ("
+				SELECT *
+				FROM `$taula_descarregables`
+				WHERE
+					ID_CUEST = '$row[ID]'
+					AND VISIBLE = 1
+				ORDER BY
+					TIPO ASC
+			");
+			// si disposa d'algun descarregable, els processem
+			if (db_num_rows($dQ) > 0) {
+
+				$priceField = false;
+
+				// si l'usuari està identificat...
+				if (accessGetLogin() != '') {
+
+					$priceField = $freeAcccess = false;
+
+					// obtenim tipus entitat usuari,
+					// si pertany a pais amb reducció AL o no
+					// i si té subllicència activa o no
+					$uiQ = db_query ("
+						SELECT
+							`$taula_usuaris`.TIPO_ENTIDAD as TIPO_ENTIDAD,
+							(
+								SELECT REDUCCION_AL
+								FROM `$taula_paisos`
+								WHERE ID = `$taula_usuaris`.PAIS
+							) as REDUCCION_AL,
+							(
+								SELECT COUNT(*)
+								FROM `$taula_subscripcions`
+								WHERE
+									ID_USUARIO = `$taula_usuaris`.ID
+									AND NOW() < DATE_ADD(FECHA_ACTIVACION, INTERVAL 1 YEAR)
+							) as SUBSCRIPCION
+						FROM `$taula_usuaris`
+						WHERE
+							`$taula_usuaris`.EMAIL = '" . mysql_real_escape_string(accessGetLogin()) . "'
+					");
+					$userInfo = db_fetch_array($uiQ);
+
+					$userInfo['SUBSCRIPCION'] > 0 ?
+						$subs = '_SUBS' :
+						$subs = '_IND' ;
+					$userInfo['REDUCCION_AL'] == 1 ?
+						$rAl = '_AL' :
+						$rAl = '' ;
+
+					// determinem quin camp de preu cal comprovar per l'usuari
+					switch ($userInfo['TIPO_ENTIDAD']) {
+						// lucro
+						case 1:
+							$priceField = 'PRECIO_LUCRO' . $subs . $rAl;
+							break;
+						// no lucro
+						case 2:
+							$priceField = 'PRECIO_NO_LUCRO' . $subs . $rAl;
+							break;
+						// académico
+						case 3:
+							$priceField = 'PRECIO_IND' . $subs . $rAl;
+							break;
+					}
+
+				}
+
+				while ($dR = db_fetch_array($dQ)) {
+
+					// si l'usuari NO està identificat, mirem si tots els preus són 0
+					if (accessGetLogin() == '') {
+
+						if (
+							$dR['PRECIO_LUCRO_IND'] > 0 or
+							$dR['PRECIO_LUCRO_SUBS'] > 0 or
+							$dR['PRECIO_NO_LUCRO_IND'] > 0 or
+							$dR['PRECIO_NO_LUCRO_SUBS'] > 0 or
+							$dR['PRECIO_IND_IND'] > 0 or
+							$dR['PRECIO_IND_SUBS'] > 0 or
+							$dR['PRECIO_LUCRO_IND_AL'] > 0 or
+							$dR['PRECIO_LUCRO_SUBS_AL'] > 0 or
+							$dR['PRECIO_NO_LUCRO_IND_AL'] > 0 or
+							$dR['PRECIO_NO_LUCRO_SUBS_AL'] > 0 or
+							$dR['PRECIO_IND_IND_AL'] > 0 or
+							$dR['PRECIO_IND_SUBS_AL'] > 0
+						) {
+							$freeAcccess = false;
+						}
+						else {
+							$freeAcccess = true;
+						}
+
+					}
+
+					$descarregables[$dR['TIPO']] = '
+					<li class="' . $dClasses[$dR['TIPO']] . '">
+						<a href="|CONFIG_NOMCARPETA|'. $folderUrl .'/descargar.html?id=' . $dR['ID'] . '&amp;id_cuest=' . $row['ID'] . '"><span>' . $dTypes[$dR['TIPO']] . '</span></a>
+						' . (
+							(
+								$dR['SUBLICENCIA'] == 0
+								and ($freeAcccess === true or (isset($dR[$priceField]) and $dR[$priceField] === '0'))
+							) ?
+							'<img src="|CONFIG_NOMCARPETA|/media/css/img/icon-dl-free.png" alt="Acceso gratuíto" title="Acceso gratuíto" />' :
+							''
+						) . '
+						' . (
+							(($dR['PROTEGIDO_LOGIN'] == 1 or $freeAcccess === false) and accessGetLogin() == '') ?
+							'<img src="|CONFIG_NOMCARPETA|/media/css/img/icon-dl-login-req.png" alt="Requiere identificación" title="Requiere identificación" />' :
+							''
+						) . '
+						' . (
+							$dR['SUBLICENCIA'] == 1 ?
+							'<img src="|CONFIG_NOMCARPETA|/media/css/img/icon-dl-sub.png" alt="Requiere sublicencia" title="Requiere sublicencia" />' :
+							''
+						) . '
+						' . (
+							($priceField !== false and (isset($dR[$priceField]) and $dR[$priceField] > 0)) ?
+							'<img src="|CONFIG_NOMCARPETA|/media/css/img/icon-dl-pay.png" alt="Requiere pago directo" title="Requiere pago directo" />' :
+							''
+						) . '
+					</li>';
+
+				}
+
+			}
+
+			// acabem d'emplenar amb els descarregables no informats
+			for ($i = 1; $i <= count($dTypes); $i++) {
+
+				if (!isset($descarregables[$i])) {
+
+					$descarregables[$i] = '
+					<li class="' . $dClasses[$i] . '"><span class="block"><span>' . $dTypes[$i] . '</span></span></li>';
+
+				}
+
+			}
+
+			// mostrem els descarregables
+			foreach ($descarregables as $dHTML) {
+
+				echo $dHTML;
+
+			}
+
+?>
+				</ul>
+
+				<ul class="buttons clearfix">
+					<li><a href="javascript:history.go(-1);"><img src="|CONFIG_NOMCARPETA|/media/img/bt_volver.jpg" alt="Volver" /></a></li>
+					<li><a href="|CONFIG_NOMCARPETA|<?php echo $folderUrl; ?>/"><img src="|CONFIG_NOMCARPETA|/media/img/bt_nueva_busqueda.jpg" alt="Nueva búsqueda" /></a></li>
+					<li><a href="javascript:window.print();"><img src="|CONFIG_NOMCARPETA|/media/img/bt_imprimir.jpg" alt="Imprimir" /></a></li>
+				</ul>
+
+				<ul class="resultsLegend clearfix">
+					<li><strong>Leyenda:</strong></li>
+					<li class="free">Acceso gratuíto o enlace externo</li>
+					<li class="login">Requiere identificación</li>
+					<li class="sublicence">Requiere sublicencia</li>
+					<li class="payment">Requiere pago directo</li>
+				</ul>
+<?php
+
+		}
+		else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge questionari no trobat|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+		}
+
+	}
+	else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge questionari no trobat|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+	}
+
+?>
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

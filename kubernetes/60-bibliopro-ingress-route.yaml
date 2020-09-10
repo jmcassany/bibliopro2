@@ -1,0 +1,37 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bibliopro-route-websecure
+  namespace: bibliopro
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`bibliopro.com`)
+    kind: Rule
+    services:
+    - name: apache 
+      port: 80
+      sticky:
+        cookie: {}
+  tls:
+    secretName: biblioprocom
+    namespace: bibliopro
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bibliopro-route-web
+  namespace: bibliopro
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`bibliopro.com`)
+    kind: Rule
+    services:
+    - name: apache
+      port: 80
+    middlewares:
+    - name: redirect-scheme
+      namespace: traefik

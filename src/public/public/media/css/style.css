@@ -1,0 +1,668 @@
+/* dom */
+html { font-size: 100%; } /* WinIE text resize correction */
+body {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 0.75em; /* 12px */
+	color: #333;
+	background: #fff;
+}
+* { margin: 0; border: none; padding: 0; }
+a { outline: 0; color: #00528d; text-decoration: none; }
+	a:hover { color: #000; text-decoration: underline; }
+	a:visited { font-size:inherit; }
+p { margin-bottom: 1em; line-height: 1.4em; }
+ul { list-style: none; }
+		ul li.clear { clear: left; }
+/* esquerra, dreta i centrar */
+div.left { clear: left; float: left; width: 49%; }
+div.right { clear: right; float: right; width: 49%; }
+.center { text-align: center; }
+/* clearfix */
+.clearfix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+	.clearfix { display:inline-block; }
+	/* amagar d'IE mac \*/
+	.clearfix { display:block; }
+
+/* wrapper */
+#page {
+	width: 961px;
+	margin: 0 auto;
+	border: 1px solid #aaa;
+	border-top: 3px solid #c0c0c0;
+	padding: 0 0 10px 0;
+	background: #fafafa;
+}
+	/* controls caixes portada */
+	#page #frontpage_controls {
+		margin: 0 0 1em 0;
+		border-top: 4px solid #cfcfcf;
+		border-bottom: 2px solid #cfcfcf;
+		padding: 12px 18px;
+		background: #e0e0e0;
+	}
+			#page #frontpage_controls ul.actions {
+				display: inline;
+				clear: left;
+				float: left;
+			}
+				#page #frontpage_controls ul.actions li {
+					display: inline; /* ie6fh */
+					float: left;
+					margin: 0 15px 0 0;
+				}
+					#page #frontpage_controls ul.actions li.add {
+						padding-left: 26px;
+						background: url('img/bg_frontpage_controls_add_left.png') no-repeat 0 50%;
+					}
+						#page #frontpage_controls ul.actions li.add a {
+							padding-left: 7px;
+							padding-right: 12px;
+							background: url('img/bg_frontpage_controls_add_right.png') no-repeat 100% 50%;
+						}
+						#page #frontpage_controls ul.actions li.reset a {
+							padding-left: 26px;
+							background: url('img/bg_frontpage_controls_reset.gif') no-repeat 0 50%;
+						}
+					#page #frontpage_controls ul.actions li a {
+						display: inline; /* ie6fh */
+						float: left;
+						padding: 7px 0 7px;
+						color: #444;
+					}
+	/* contenidor principal */
+	#page #content {
+		margin: 0 13px 0 14px;
+	}
+		/* DOM */
+		/* cita */
+		#page #content blockquote {
+			width: 450px;
+			margin: 0 0 12px 15px;
+			color: #000;
+			font-size: 2em;
+			letter-spacing: -.025em;
+		}
+			#page #content blockquote p {
+				margin: 0 0 .5em 0;
+				line-height: 1.167em;
+			}
+		/* contenidors */
+			/* borde inferior */
+			#page #content div.border {
+				margin: 0 0 1em 0;
+				border-bottom: 1px solid #ccc;
+				padding: 0 0 2px 0;
+			}
+			/* vora puntejada */
+			#page #content div.broken {
+				margin: 0 0 1em 0;
+				border-bottom: 1px dotted #ccc;
+				margin: 0 0 1em 0;
+			}
+			/* columna de caixes esquerra */
+			#page #content div.column_left {
+				display: inline; /* ie6fh */
+				clear: left;
+				float: left;
+				width: 619px;
+			}
+			/* columna de caixes dreta */
+			#page #content div.column_right {
+				display: inline; /* ie6fh */
+				clear: right;
+				float: right;
+				width: 304px;
+			}
+		/* formularis */
+				#page #content form input.send {
+					cursor: pointer;
+					width: 90%;
+					margin: 0 0 1em 0;
+					border: 1px solid #000;
+					padding: .75em 2em;
+					color: #fff;
+					font-weight: bold;
+					text-align: center;
+					background: #444;
+				}
+					#page #content form input.send:hover {
+						color: #C9FF7D;
+						background: #FF84FD;
+					}
+			#page #content form label {
+				display: block;
+				margin: 0 0 1.5em 0;
+			}
+		/* llistats de definicions */
+		#page #content dl {
+			margin: 0 0 1em 0;
+		}
+			#page #content dl dt {
+				clear: left;
+				float: left;
+				margin: 0 .25em 0 0;
+				font-weight: bold;
+			}
+		/* capçaleres */
+		#page #content h2 {
+			position: relative;
+			margin: 0 0 .5em 0;
+			font-family: georgia, helvetica, serif;
+			font-size: 2.167em;
+			font-weight: normal;
+			line-height: 1.2em;
+		}
+		#page #content h3 {
+			margin: 0 0 .5em 0;
+			color: #000;
+			font-size: 2em;
+			font-weight: bold;
+			line-height: 1em;
+		}
+		#page #content h4 {
+			margin: 0 0 1em 0;
+			font-size: 1.5em;
+			font-weight: normal;
+			line-height: 1.2em;
+		}
+		#page #content h5 {
+			margin: 0 0 1em 0;
+			font-size: 1.167em;
+			font-weight: bold;
+		}
+		#page #content h6 {
+			margin: 0 0 1em 0;
+			font-size: 1.083em;
+			font-weight: bold;
+		}
+			#page #content h6 a {
+				color: #696926;
+			}
+		/* imatges */
+			#page #content img.left {
+				display: inline; /* ie6fh */
+				float: left;
+				margin: 2px 20px 10px 0;
+			}
+			#page #content img.right {
+				display: inline; /* ie6fh */
+				float: right;
+				margin: 2px 0 10px 20px;
+			}
+		/* llistes ordenades */
+		#page #content ol {
+			margin: 0 0 1.25em 30px;
+		}
+			#page #content ol li {
+				margin: 0 0 .167em 0;
+			}
+		/* paràgrafs */
+			/* data */
+			#page #content p.date {
+				margin: 0 0 .75em 0;
+				color: #666;
+			}
+			/* destacat */
+			#page #content p.destacat {
+				display: inline; /* ie6fh */
+				float: left;
+				width: 180px;
+				margin: .25em 18px .75em 0;
+				border-top: 4px solid #cbc73d;
+				border-bottom: 4px solid #cbc73d;
+				padding: .75em 0;
+				color: #000;
+				font-family: georgia, helvetica, serif;
+				font-size: 1.286em;
+				line-height: 1.2em;
+			}
+			/* imatge */
+			#page #content p.image {
+				line-height: 0;
+			}
+			/* amb vora inferior */
+			#page #content p.linia {
+				border-bottom: 1px solid #ccc;
+				padding-bottom: .5em;
+			}
+			/* punt inicial */
+			#page #content p.primer {
+				text-indent: 10px;
+				background: url('img/kland_primer.png') no-repeat 0 .4em;
+			}
+			/* aliniat dreta */
+			#page #content p.right {
+				text-align: right;
+			}
+			/* pujar */
+			#page #content p.top {
+				margin: 1.5em 0 1em 0;
+				border-top: 1px dashed #999;
+				padding: 1em 0 0 0;
+			}
+				#page #content p.top a {
+					padding: 2px 0 2px 16px;
+					background: url('img/bg_top.gif') no-repeat 0 50%;
+				}
+			/* poc marge (¡no moure!) */
+			#page #content p.littlemargin {
+				margin: 0 0 .333em 0;
+			}
+			/* sense marge (¡no moure!) */
+			#page #content p.nomargin {
+				margin: 0;
+			}
+		/* pre */
+		#page #content pre {
+			overflow: auto;
+			width: 90%;
+			margin: 0 0 1em 0;
+			border: 1px solid #e0e0e0;
+			padding: 10px;
+			font-style: verdana, helvetica, sans-serif;
+			font-size: 1.25em;
+			background: #fff;
+		}
+		/* taules */
+		#page #content table {
+			width: 100%;
+			margin: 0 0 1.5em 0;
+			border-spacing: 1px;
+		}
+			#page #content table caption {
+				position: absolute;
+				left: -9999em;
+			}
+			#page #content th,
+			#page #content td {
+				padding: .75em 25px;
+				font-weight: bold;
+			}
+			#page #content th {
+				text-align: left;
+				font-weight: normal;
+			}
+			#page #content tbody th,
+			#page #content tbody td {
+				background: #e6e5e6;
+			}
+			#page #content tfoot th,
+			#page #content tfoot td {
+				background: #ebd3d4;
+			}
+			#page #content tfoot th {
+				font-weight: bold;
+			}
+		/* llistes desordenades */
+		#page #content ul {
+			margin: 0 0 1.25em 0;
+		}
+			#page #content ul li {
+				height: 1%;
+				margin: 0 0 .75em 0;
+				padding: 0 0 0 15px;
+				background: url('img/kland_n1.gif') no-repeat 0 .25em;
+			}
+				#page #content ul li ul {
+					margin: .75em 0;
+				}
+					#page #content ul li ul li {
+						padding: 0 0 0 15px;
+						color: #666;
+						background: url('img/kland_n2.gif') no-repeat 0 .25em;
+					}
+							#page #content ul li ul li ul li {
+								background: url('img/kland_n3.gif') no-repeat 0 .25em;
+							}
+			/* caixes portada */
+			#page #content ul.boxes {
+				display: inline; /* ie6fh */
+				float: left;
+				width: 304px;
+				min-height: 40px; height: auto !important; height: 40px;
+				margin: 0 11px 0 0;
+				padding: 0 0 6px 0;
+				background: url('img/bg_boxes_ul.gif') no-repeat;
+			}
+			/* doble amplada */
+			#page #content ul.bigboxes { width: 619px; }
+					/* caixa normal */
+					#page #content ul.boxes li.box {
+						position: relative;
+						margin: 0 0 12px 0;
+						padding: 0;
+						background: #fff url('img/bg_boxes_li.png') repeat-y 50% 100%;
+					}
+							#page #content ul.boxes li.box div.content {
+								position: relative;
+								border: 1px solid #ccc;
+								padding: 10px 12px 4px 12px;
+								background: #fff;
+							}
+							/* variations */
+							#page #content ul.boxes li.highlighted div.content {
+								background: #ccccff; /* e6dbdb */
+							}
+							#page #content ul.boxes li.extra div.content {
+								background: #ffffcc; /* e6dbdb */
+							}
+							#page #content ul.boxes li.superextra div.content {
+								background: #ccffff; /* e6dbdb */
+							}
+									/* galeria */
+									#page #content ul.boxes li.box div.content ul.gallery {
+										position: relative;
+										margin: 0 -5% 0 0;
+									}
+										#page #content ul.boxes li.box div.content ul.gallery li.box {
+											display: inline; /* ie6fh */
+											float: left;
+											width: 29.5%;
+											margin: 0 3% 10px 0;
+											border: 1px solid #e0e0e0;
+											padding: 2% 0;
+											line-height: 0;
+											text-align: center;
+											background: #f0f0f0;
+										}
+										#page #content ul.boxes li.box div.content ul.gallery li.highlighted {
+											background: #cc0000;
+										}
+										#page #content ul.boxes li.box div.content ul.gallery li.extra {
+											background: #000;
+										}
+									/* llistat (format notícies) */
+									#page #content ul.boxes li.box div.content ul.listing {
+										position: relative;
+										margin: 0 0 .25em 0;
+									}
+										#page #content ul.boxes li.box div.content ul.listing li.box {
+											position: relative;
+											margin: 0 0 .5em 0;
+											border: 1px solid #e0e0e0;
+											padding: 1em 1em .5em 1em;
+											background: #f0f0f0;
+										}
+											#page #content ul.boxes li.box div.content ul.listing li.box h4 {
+												margin: 0 0 .15em 0;
+											}
+										#page #content ul.boxes li.box div.content ul.listing li.highlighted {
+											background: #fff;
+										}
+										#page #content ul.boxes li.box div.content ul.listing li.extra {
+											background: #aacc77;
+										}
+									#page #content ul.boxes li.box div.content ul.double {
+										margin: 0 -4% 0 1%;
+										padding: 0;
+									}
+										#page #content ul.boxes li.box div.content ul.double li.box {
+											position: relative;
+											display: inline;
+											z-index: 0;
+											float: left;
+											width: 41%;
+											margin: 0 4.25% 6px 0;
+											padding: 2%;
+										}
+										#page #content ul.bigboxes li.box div.content ul.double li.box {
+											width: 42%;
+											margin: 0 3.5% 6px 0;
+										}
+											#page #content ul.boxes li.box div.content ul.double li.box ul.elementStylingControls {
+												left: -1em;
+											}
+												#page #content ul.boxes li.box div.content ul.double li.box ul.elementStylingControls li {
+													width: 1em;
+												}
+											#page #content ul.boxes li.box div.content ul.double li.clear {
+												clear: both;
+											}
+										#page #content ul.boxes li.box div.content ul.noir li.box {
+											border-color: #000;
+										}
+									/* controls inside listings/galleries */
+									#page #content ul.boxes li.box div.content ul.box-controls {
+										position: absolute;
+										top: 5px;
+										right: 0;
+										background: none;
+									}
+										#page #content ul.boxes li.box div.content ul.box-controls li {
+											position: relative;
+											margin: 0 5px 0 0;
+											border: 0;
+											padding: 0;
+											background: none;
+										}
+							#page #content ul.boxes li.box div.heading {
+								position: relative;
+								clear: both;
+								height: 1%;
+								cursor: move;
+								border: 1px solid #ccc;
+								padding: 6px 14px;
+								background: #efefef;
+							}
+								#page #content ul.boxes li.box div.heading input {
+									width: 200px;
+									margin: 0;
+									border: 1px solid #ccc;
+									padding: 3px .5em;
+									color: #666;
+									font-size: 1.25em;
+									line-height: 1.2em;
+									background: #fff;
+								}
+									#page #content ul.boxes li.box div.heading input:focus {
+										border: 1px solid #888;
+									}
+						#page #content ul.boxes li.box ul {
+							margin: 0 0 1em 0;
+						}
+							#page #content ul.boxes li.box ul.elementStylingControls {
+								position: absolute;
+								top: 0.5em;
+								left: -0.5em;
+								margin: 0;
+								font-size: .833em;
+							}
+								#page #content ul.boxes li.box ul.elementStylingControls li {
+									display: inline; /* ie6fh */
+									clear: left;
+									float: left;
+									z-index: 2;
+									margin: 0 0 3px 0;
+									padding: 0;
+									color: #fff;
+									font-weight: bold;
+									line-height: 1em;
+								}
+										#page #content ul.boxes li.box ul.elementStylingControls li a.highlighted {
+											background: #cc6666;
+										}
+										#page #content ul.boxes li.box ul.elementStylingControls li.current a {
+											color: #fff;
+											background: #000;
+										}
+									#page #content ul.boxes li.box ul.elementStylingControls li a {
+										display: block;
+										padding: .1em .25em;
+										color: #fff;
+										background: #888;
+									}
+										#page #content ul.boxes li.box ul.elementStylingControls li a:hover {
+											color: #fff;
+											background: #000;
+										}
+							#page #content ul.boxes li.box ul.listStylingControls, #page #content ul.boxes li.box ul.boxStylingControls {
+								display: inline;
+								clear: right;
+								float: right;
+								margin: 0;
+								border-bottom: 1px solid #ccc;
+								border-left: 1px solid #ccc;
+								font-size: .833em;
+								background: #f0f0f0;
+							}
+							#page #content ul.boxes li.box ul.boxStylingControls {
+								clear: left;
+								float: left;
+								border-bottom: 0;
+								border-top: 1px solid #ccc;
+							}
+								#page #content ul.boxes li.box ul.listStylingControls li, #page #content ul.boxes li.box ul.boxStylingControls li {
+									display: inline;
+									float: left;
+									margin: 0;
+									border-right: 1px solid #ccc;
+									padding: 0;
+								}
+										#page #content ul.boxes li.box ul.listStylingControls li.current a, #page #content ul.boxes li.box ul.boxStylingControls li.current a {
+											color: #666;
+											background: #dfdfdf;
+										}
+									#page #content ul.boxes li.box ul.listStylingControls li a, #page #content ul.boxes li.box ul.boxStylingControls li a {
+										display: block;
+										padding: .25em .417em;
+										color: #888;
+										background: #fff;
+									}
+										#page #content ul.boxes li.box ul.listStylingControls li a:hover, #page #content ul.boxes li.box ul.boxStylingControls a:hover {
+											color: #444;
+											text-decoration: none;
+											background: #ccc;
+										}
+							#page #content ul.boxes li.box ul li.element {
+								margin: 0 0 .5em 0;
+								padding: 0;
+								background: none;
+							}
+							#page #content ul.boxes li.box ul.box-controls {
+								display: inline; /* ie6fh */
+								float: right;
+								margin: 0;
+							}
+								#page #content ul.boxes li.box ul.box-controls li {
+									display: inline; /* ie6fh */
+									float: left;
+									margin: 4px 0 2px 6px;
+									border: 0;
+									padding: 0;
+								}
+										#page #content ul.boxes li.box ul.box-controls li.remove a {
+											float: left;
+											width: 18px;
+											height: 18px;
+											text-indent: -9999em;
+											background: url('img/bg_box_actions_remove.gif') no-repeat;
+										}
+					#page #content ul.boxes li.placeholder {
+						border: 1px dashed #bbb;
+						padding: 1em 1em .5em 1em;
+						background: #efefef;
+					}
+					#page #content ul.boxes li h3 {
+						margin: 0;
+						padding: 5px 0;
+						color: #000;
+						font-size: 1.25em;
+						font-weight: normal;
+					}
+					#page #content ul.boxes li h4 {
+						font-size: 1.167em;
+						font-weight: bold;
+					}
+					#page #content ul.boxes li h6 {
+						margin: 0 12px 1em 12px;
+						color: #00528d;
+						font-size: 1.083em;
+						font-weight: bold;
+					}
+						#page #content ul.boxes li span.collapse {
+							cursor: pointer;
+							display: inline; /* ie6fh */
+							float: left;
+							width: 10px;
+							height: 1.25em;
+							margin: 5px .333em 0 0;
+							padding: 0;
+							text-indent: -9999em;
+							background: url('img/bg_box_actions_collapse.gif') no-repeat 0 50%;
+						}
+						#page #content ul.boxes li span.collapsed {
+							background: url('img/bg_box_actions_collapsed.gif') no-repeat 1px 50%;
+						}
+			/* dos columnes (netes) */
+			#page #content ul.double {
+				margin: 0;
+				padding: 0 0 .25em 0;
+			}
+				#page #content ul.double li {
+					display: inline; /* ie6fh */
+					float: left;
+					width: 48%;
+					margin: 0 3% 10px 0;
+					padding: 0;
+					background: none;
+				}
+					#page #content ul.double li.nomargin {
+						margin-right: 0;
+					}
+			/* llistat simple editores */
+			#page #content ul.listing {
+				position: relative;
+				margin: 0 0 1.5em 0;
+			}
+					#page #content ul.listing li.element {
+						margin: 0 0 1em 0;
+						padding: 0 0 15px 0;
+						background: url('img/bg_listing_separator.jpg') no-repeat 100% 100%;
+					}
+						#page #content ul.listing li.element h3 {
+							margin: 0 0 .375em 0;
+						}
+							#page #content ul.listing li.element h3.big {
+								margin: 0 0 .222em 0;
+								font-size:
+							}
+						#page #content ul.listing li.element h6 {
+							margin: 0 0 .5em 0;
+						}
+						#page #content ul.listing li.highlighted h6 {
+							display: inline;
+							float: left;
+							margin: 0 .75em 0 0;
+						}
+					#page #content ul.listing li.last {
+						border: none;
+					}
+			#page #content ul.nomargin {
+				margin-right: 0;
+			}
+	/* peu de plana */
+	#page #footer {
+		margin: 10px 13px 0 14px;
+		border: 1px solid #cfcfcf;
+		padding: 10px;
+		color: #666;
+		background: #e0e0e0;
+	}
+		#page #footer a {
+			color: #222;
+		}
+		#page #footer ul {
+			display: block;
+			text-align: center;
+		}
+			#page #footer ul li {
+				display: inline;
+				border-right: 1px solid #999;
+				padding: 0 .75em;
+			}
+				#page #footer ul li.last {
+					border: 0;
+				}

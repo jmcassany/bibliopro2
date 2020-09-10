@@ -1,0 +1,22 @@
+ul#principal li a.crear {
+	width: 13.1em;
+	background-image: url('../comu/pestanya_02.jpg');
+}
+ul#principal li a.crear:hover {
+	background-image: url('../comu/pestanya_02_f2.jpg');
+}
+ul#principal li a.llistes {
+	width: 13.1em;
+}
+ul#principal li a.informes {
+	width: 7.3em;
+}
+ul#principal li a.butlletins {
+	width: 13.1em;
+}
+
+ul#subscriptors {
+	
+	width: 87%;
+	
+}

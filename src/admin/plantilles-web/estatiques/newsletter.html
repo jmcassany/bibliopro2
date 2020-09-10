@@ -1,0 +1,214 @@
+|PHP_VARS||block-static-gestioUsuaris|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+		|block-static-metas_css|
+
+		<script type="text/javascript" src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.min.js"></script>
+		<script type="text/javascript" src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.messages_ca.js"></script>
+
+		<script type="text/javascript">
+		$(document).ready(function() {
+			$("#mainform").validate();
+		});
+		</script>
+		<style type="text/css">
+			#mainform label.error {clear: both; margin-left: 0px; color: #d81823;}
+		</style>
+
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+
+					<div class="broken border clearfix">|Subscripcio|</div>
+
+					<form action="|CONFIG_NOMCARPETA|/news_subscribe.php" method="post" id="mainform">
+						<div class="broken border clearfix">
+							<label for="email">
+								<span>Correo electrónico:</span>
+								<input type="text" id="email" name="email" class="required email" />
+							</label>
+							<label for="nom">
+								<span>Nombre:</span>
+								<input type="text" id="nom" name="nom" class="required" />
+							</label>
+							<label for="cognoms">
+								<span>Apellidos:</span>
+								<input type="text" id="cognoms" name="cognoms" class="required" />
+							</label>
+							<label for="centre">
+								<span>Tipo de centro:</span>
+								<select id="centre" name="centre" class="required">
+									<option value="">Indique un tipo de centro de trabajo</option>
+									<option>Centro de Investigación</option>
+									<option>Universidad u otros centros académicos</option>
+									<option>CRO (Contract Research Organisation)</option>
+									<option>Empresa Farmacéutica o de Tecnología Médica</option>
+									<option>Hospital</option>
+									<option>Centro de Salud</option>
+									<option>Organismo/Administración Pública</option>
+									<option>Fundación</option>
+									<option>Sociedad Científica</option>
+									<option>Asociación de Pacientes</option>
+									<option>Aseguradora/Mútua</option>
+									<option>Otros</option>
+								</select>
+							</label>
+							<label for="pais">
+								<span>País:</span>
+								<select id="pais" name="pais" class="required">
+									<option value=""></option>
+									<option value="América" style="font-weight:bold">--- América ---</option>
+										<option value="Argentina">Argentina</option>
+										<option value="Antigua y Barbuda">Antigua y Barbuda</option>
+										<option value="Bahamas">Bahamas</option>
+										<option value="Barbados">Barbados</option>
+										<option value="Bélice">Bélice</option>
+										<option value="Bolivia">Bolivia</option>
+										<option value="Brasil">Brasil</option>
+										<option value="Canadá">Canadá</option>
+										<option value="Chile">Chile</option>
+										<option value="Colombia">Colombia</option>
+										<option value="Costa Rica">Costa Rica</option>
+										<option value="Cuba">Cuba</option>
+										<option value="Dominica">Dominica</option>
+										<option value="Estados Unidos">Estados Unidos</option>
+										<option value="Ecuador">Ecuador</option>
+										<option value="El Salvador">El Salvador</option>
+										<option value="Guyana">Guyana</option>
+										<option value="Granada">Granada</option>
+										<option value="Guatemala">Guatemala</option>
+										<option value="Haití">Haití</option>
+										<option value="Honduras">Honduras</option>
+										<option value="Jamaica">Jamaica</option>
+										<option value="México">México</option>
+										<option value="Nicaragua">Nicaragua</option>
+										<option value="Paraguay">Paraguay</option>
+										<option value="Perú">Perú</option>
+										<option value="Panamá">Panamá</option>
+										<option value="Puerto Rico">Puerto Rico</option>
+										<option value="República Dominicana">República Dominicana</option>
+										<option value="Surinam">Surinam</option>
+										<option value="San Cristóbal y Nevis">San Cristóbal y Nevis</option>
+										<option value="Santa Lucía">Santa Lucía</option>
+										<option value="San Vicente y las Granadinas">San Vicente y las Granadinas</option>
+										<option value="Trinidad y Tobago">Trinidad y Tobago</option>
+										<option value="Uruguay">Uruguay</option>
+										<option value="Venezuela">Venezuela</option>
+										<option value="Europa" style="font-weight:bold">--- Europa ---</option>
+										<option value="Albania">Albania</option>
+										<option value="Alemania">Alemania</option>
+										<option value="Andorra">Andorra</option>
+										<option value="Armenia">Armenia</option>
+										<option value="Austria">Austria</option>
+										<option value="Azerbaidjan">Azerbaidjan</option>
+										<option value="Bélgica">Bélgica</option>
+										<option value="Bielorusia">Bielorusia</option>
+										<option value="Bosnia y Hercegovina">Bosnia y Hercegovina</option>
+										<option value="Bulgaria">Bulgaria</option>
+										<option value="Ciudad del Vaticano">Ciudad del Vaticano</option>
+										<option value="Chipre">Chipre</option>
+										<option value="Croacia">Croacia</option>
+										<option value="Dinamarca">Dinamarca</option>
+										<option value="Eslovaquia">Eslovaquia</option>
+										<option value="Eslovenia">Eslovenia</option>
+										<option value="Estonia">Estonia</option>
+										<option value="España" selected="selected">España</option>
+										<option value="Finlandia">Finlandia</option>
+										<option value="Francia">Francia</option>
+										<option value="Georgia">Georgia</option>
+										<option value="Grecia">Grecia</option>
+										<option value="Hungría">Hungría</option>
+										<option value="Irlanda">Irlanda</option>
+										<option value="Islandia">Islandia</option>
+										<option value="Italia">Italia</option>
+										<option value="Kosovo">Kosovo</option>
+										<option value="Letonia">Letonia</option>
+										<option value="Liechtenstein">Liechtenstein</option>
+										<option value="Lituania">Lituania</option>
+										<option value="Luxemburgo">Luxemburgo</option>
+										<option value="Malta">Malta</option>
+										<option value="Macedonia">Macedonia</option>
+										<option value="Moldavia">Moldavia</option>
+										<option value="Mónaco">Mónaco</option>
+										<option value="Montenegro">Montenegro</option>
+										<option value="Noruega">Noruega</option>
+										<option value="Holanda">Holanda</option>
+										<option value="Polonia">Polonia</option>
+										<option value="Portugal">Portugal</option>
+										<option value="Reino Unido de la Gran Bretaña y Irlanda del Norte">Reino Unido de la Gran Bretaña y Irlanda del Norte</option>
+										<option value="República Checa">República Checa</option>
+										<option value="Rumania">Rumania</option>
+										<option value="Rusia">Rusia</option>
+										<option value="San Marino">San Marino</option>
+										<option value="Serbia">Serbia</option>
+										<option value="Suecia">Suecia</option>
+										<option value="Suiza">Suiza</option>
+										<option value="Turquía">Turquía</option>
+										<option value="Ucraina">Ucraina</option>
+									<option value="Otros" style="font-weight:bold">--- Otros ---</option>
+								</select>
+							</label>
+
+							<input type="hidden" name="id" value="|Llista|" />
+<?php
+
+	$result = db_query("select max(NEWSLETTERS.ID) as ID from NEWSLETTERS,news_CAMPANYES where NEWSLETTERS.SKIN=0 and news_CAMPANYES.estat=101 and NEWSLETTERS.IdCam=news_CAMPANYES.IdCam and NEWSLETTERS.ED_ANT=1");
+	$row = db_fetch_array($result);
+	$ID = $row['ID'];
+
+?>
+							<input type="hidden" name="ID" value="<?php echo $ID; ?>" />
+							<div><input type="submit" name="accion" value="Enviar" class="send" /></div>
+						</div>
+					</form>
+
+					|Edicions anteriors|
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

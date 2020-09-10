@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+  namespace: bibliopro
+  labels:
+    app: php
+spec:
+  selector:
+    matchLabels:
+      app: php
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: php
+    spec:
+      containers:
+      - image: phpmyadmin/phpmyadmin
+        name: bibliopro-phpmyadmin
+        env:
+        - name: PMA_HOST
+          value: mysql
+        - name: PMA_PORT
+          value: "3306"

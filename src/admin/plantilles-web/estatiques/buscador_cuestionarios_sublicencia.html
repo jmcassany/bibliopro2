@@ -1,0 +1,1346 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						' . (isset($_GET['id_cuest']) ? '<li><a href="|CONFIG_NOMCARPETA|/buscador/ver.html?ID=' . htmlspecialchars($_GET['id_cuest']) . '">Ir a la ficha técnica del cuestionario</a></li>' : '') . '
+						<li><a href="javascript:history.go(-1)">Volver a la página anterior</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.messages_es.js" type="text/javascript"></script>
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.maskedinput.min.js" type="text/javascript"></script>
+		<script type="text/javascript">/* <![CDATA[ */
+			$(document).ready(function() {
+				$('#sublicenceForm').validate();
+				$('#FECHA_INICIO').mask('9999/99/99');
+				$('#FECHA_FINAL').mask('9999/99/99');
+				$('#NUM_ADMINISTRACIONES').keydown(function(e){
+					var char = String.fromCharCode(e.which);
+					if (
+						!$.isNumeric(char)
+						&& e.which != 9
+						&& e.which != 8
+						&& e.which != 36
+						&& e.which != 37
+						&& e.which != 38
+						&& (e.which != 39 || (e.which == 39 && char == "'"))
+						&& e.which != 40
+						&& e.which != 46
+						// numpad
+						&& e.which != 96 && e.which != 97 && e.which != 98 && e.which != 99 && e.which != 100
+						&& e.which != 101 && e.which != 102 && e.which != 103 && e.which != 104 && e.which != 105
+					) {
+						return false;
+					}
+				});
+			});
+		/* ]]> */</script>
+
+	</head>
+
+	<body id="single">
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+<?php
+
+	// si s'ha indicat algun qüestionari...
+	if (isset($_GET['id_cuest'])) {
+
+		$idCuest = (int) $_GET['id_cuest'];
+
+		// obtenim informació subllicència
+		$query = db_query ("
+			SELECT *
+			FROM `$taula_subllicencies`
+			WHERE
+				ID = $idCuest
+				AND VISIBILITY = 1
+		");
+		// si es troba la subllicència amb codi i adquirible, continuem
+		if (db_num_rows($query) == 1) {
+
+			$row = db_fetch_array($query);
+
+			// obtenim informació qüestionari
+			$cQuery = db_query ("
+				SELECT
+					NOM_ORIGINAL,
+					NOM_CAST,
+					SIGLAS,
+					IDAUTORES_ORIGINAL,
+					IDAUTORES_CAST
+				FROM `$taula_questionaris`
+				WHERE ID = $idCuest
+			");
+			$cRow = db_fetch_array($cQuery);
+
+			// comprovem que l'usuari estigui identificat
+			if (accessGetLogin() != '') {
+
+				// obtenim id usuari, tipus entitat,
+				// i si pertany a pais amb reducció AL i de la CE o no
+				// i si té subscripció activa o no
+				$uiQ = db_query("
+					SELECT
+						`$taula_usuaris`.ID as ID,
+						`$taula_usuaris`.EMAIL as EMAIL,
+						`$taula_usuaris`.NOMBRE as NOMBRE,
+						`$taula_usuaris`.FACTURACION_NOMBRE as FACTURACION_NOMBRE,
+						`$taula_usuaris`.FACTURACION_CIF as FACTURACION_CIF,
+						`$taula_usuaris`.FACTURACION_PROFESIONAL as FACTURACION_PROFESIONAL,
+						`$taula_usuaris`.FACTURACION_DIRECCION as FACTURACION_DIRECCION,
+						`$taula_usuaris`.FACTURACION_CP as FACTURACION_CP,
+						`$taula_usuaris`.FACTURACION_CIUDAD as FACTURACION_CIUDAD,
+						`$taula_usuaris`.FACTURACION_PAIS as FACTURACION_PAIS,
+						`$taula_usuaris`.FACTURACION_OTRO_PAIS as FACTURACION_OTRO_PAIS,
+						`$taula_usuaris`.FACTURACION_TELEFONO as FACTURACION_TELEFONO,
+						`$taula_usuaris`.FACTURACION_FAX as FACTURACION_FAX,
+						`$taula_usuaris`.FACTURACION_EMAIL as FACTURACION_EMAIL,
+						(
+							SELECT REDUCCION_AL
+							FROM `$taula_paisos`
+							WHERE ID = `$taula_usuaris`.PAIS
+						) as REDUCCION_AL,
+						(
+							SELECT CE
+							FROM `$taula_paisos`
+							WHERE ID = `$taula_usuaris`.PAIS
+						) as CE,
+						(
+							SELECT COUNT(*)
+							FROM `$taula_subscripcions`
+							WHERE
+								ID_USUARIO = `$taula_usuaris`.ID
+								AND STATUS = 1
+								AND NOW() < DATE_ADD(FECHA_ACTIVACION, INTERVAL 1 YEAR)
+						) as SUBSCRIPCION
+					FROM `$taula_usuaris`
+					WHERE
+						`$taula_usuaris`.EMAIL = '" . mysql_real_escape_string(accessGetLogin()) . "'
+				");
+				$userInfo = db_fetch_array($uiQ);
+
+				// comprovem que l'usuari no tingui la subllicència adquirida
+				$paymentCheckQuery = db_query("
+					SELECT ID
+					FROM `$taula_subllicencies_pagaments`
+					WHERE
+						ID_USUARIO = $userInfo[ID]
+						AND ID_CUEST = $idCuest
+						AND OTORGADA != 3
+						AND FECHA_VALIDEZ >= NOW()
+				");
+				// si l'usuari NO té la subllicència, continuem
+                // COMPORTAMENT MODIFICAT: Permetem a l'usuari comprar més d'una subllicència del mateix tipus
+				if (db_num_rows($paymentCheckQuery) >= 0 ) {
+
+?>
+				<div class="border clearfix">
+					<h2 class="card orange">Sublicencia del cuestionario <?php echo htmlspecialchars($cRow['NOM_CAST']); ?></h2>
+				</div>
+<?php
+
+					// si s'ha enviat el formulari...
+					if (isset($_POST['NUM_ADMINISTRACIONES'])) {
+
+						$numAdm = (int) $_POST['NUM_ADMINISTRACIONES'];
+						$startDateArray = explode('/', $_POST['FECHA_INICIO']);
+						$endDateArray = explode('/', $_POST['FECHA_FINAL']);
+
+						// comprovem que les dades siguin correctes
+						if (
+							$numAdm > 0 and
+							// dades estudi
+							!empty($_POST['USO']) and
+							!empty($_POST['FINANCIACION_ENTIDAD']) and
+							!empty($_POST['DISENO_ESTUDIO']) and
+							!empty($_POST['POBLACION']) and
+							isset($_POST['ACEPTA_CONDICIONES']) and
+							isset($_POST['ACEPTA_LEGAL']) and
+							(
+								empty($_POST['FECHA_INICIO']) or
+								(
+									count($startDateArray) == 3 and
+									checkdate($startDateArray[1], $startDateArray[2], $startDateArray[0])
+								)
+							) and
+							(
+								!empty($_POST['FECHA_FINAL']) and
+								(
+									count($endDateArray) == 3 and
+									checkdate($endDateArray[1], $endDateArray[2], $endDateArray[0]) and
+									$_POST['FECHA_FINAL'] > $_POST['FECHA_INICIO']
+								)
+							)
+						) {
+
+							// obtenim els preus pel menor nombre d'administracions possible
+							$pricesQuery = db_query("
+								SELECT
+									LUCRO, NO_LUCRO, INDIVIDUAL,
+									LUCRO_SUBS, NO_LUCRO_SUBS, INDIVIDUAL_SUBS,
+									LUCRO_AL, NO_LUCRO_AL, INDIVIDUAL_AL,
+									LUCRO_SUBS_AL, NO_LUCRO_SUBS_AL, INDIVIDUAL_SUBS_AL
+								FROM `$taula_subllicencies_preus`
+								WHERE
+									ID_SUBLICENCIA = $row[ID]
+									AND NUM_HASTA >= $numAdm
+								ORDER BY
+									NUM_HASTA ASC
+								LIMIT 1
+							");
+							if (db_num_rows($pricesQuery) > 0) {
+								$pricesRow = db_fetch_array($pricesQuery);
+							}
+							else {
+								$pricesQuery = db_query("
+									SELECT
+										LUCRO, NO_LUCRO, INDIVIDUAL,
+										LUCRO_SUBS, NO_LUCRO_SUBS, INDIVIDUAL_SUBS,
+										LUCRO_AL, NO_LUCRO_AL, INDIVIDUAL_AL,
+										LUCRO_SUBS_AL, NO_LUCRO_SUBS_AL, INDIVIDUAL_SUBS_AL
+									FROM `$taula_subllicencies_preus`
+									WHERE
+										ID_SUBLICENCIA = $row[ID]
+									ORDER BY
+										NUM_HASTA DESC
+									LIMIT 1
+								");
+								if (db_num_rows($pricesQuery) > 0) {
+									$pricesRow = db_fetch_array($pricesQuery);
+								}
+								else {
+									$pricesRow = false;
+								}
+							}
+
+							// calculem el preu per a l'usuari
+							if (
+								$pricesRow !== false
+								and (
+									$pricesRow['LUCRO'] > 0 or
+									$pricesRow['LUCRO_AL'] > 0 or
+									$pricesRow['NO_LUCRO'] > 0 or
+									$pricesRow['NO_LUCRO_AL'] > 0 or
+									$pricesRow['INDIVIDUAL'] > 0 or
+									$pricesRow['INDIVIDUAL_AL'] > 0 or
+									$pricesRow['LUCRO_SUBS'] > 0 or
+									$pricesRow['LUCRO_SUBS_AL'] > 0 or
+									$pricesRow['NO_LUCRO_SUBS'] > 0 or
+									$pricesRow['NO_LUCRO_SUBS_AL'] > 0 or
+									$pricesRow['INDIVIDUAL_SUBS'] > 0 or
+									$pricesRow['INDIVIDUAL_SUBS_AL'] > 0
+								)
+							) {
+
+								$userInfo['REDUCCION_AL'] == 1 ?
+									$rAl = '_AL' :
+									$rAl = '' ;
+
+								$userInfo['SUBSCRIPCION'] > 0 ?
+									$subs = '_SUBS' :
+									$subs = '' ;
+
+								// determinem quin camp de preu cal comprovar per l'usuari
+								switch ($_POST['FINANCIACION_ENTIDAD']) {
+									// lucro
+									case 1:
+										$priceField = 'LUCRO' . $subs . $rAl;
+										break;
+									// no lucro
+									case 2:
+										$priceField = 'NO_LUCRO' . $subs . $rAl;
+										break;
+									// académico
+									case 3:
+										$priceField = 'INDIVIDUAL' . $subs . $rAl;
+										break;
+								}
+
+								$price = (double) $pricesRow[$priceField];
+
+							}
+							else { $price = 0; }
+
+							// número d'albarà
+							$numAlbara = date('Y-m-d') . '-SUBL-' . $idCuest . '-' . $userInfo['ID'];
+
+							// si l'usuari ha de pagar, demanem dades de facturació
+							if ($price > 0) {
+
+								// preu base
+								$sublBasePrice = $price;
+
+								// si s'han enviat les dades de pagament, continuem...
+								if (isset($_POST['METODO_PAGO'])) {
+
+									// si les dades de pagament són correctes, continuem...
+									if (
+										!empty($_POST['FACTURACION_NOMBRE']) and
+										!empty($_POST['FACTURACION_CIF']) and
+										!empty($_POST['FACTURACION_DIRECCION']) and
+										!empty($_POST['FACTURACION_CP']) and
+										!empty($_POST['FACTURACION_CIUDAD']) and
+										!empty($_POST['FACTURACION_PAIS']) and
+										!empty($_POST['FACTURACION_TELEFONO']) and
+										!empty($_POST['FACTURACION_EMAIL']) and
+										isValidEmail($_POST['FACTURACION_EMAIL']) and
+										!empty($_POST['METODO_PAGO'])
+									) {
+
+										// CÀLCUL IVA
+										// si és professsional...
+										if (isset($_POST['FACTURACION_PROFESIONAL'])) {
+											// ... de fora d'espanya, sense iva
+											if ($_POST['FACTURACION_PAIS'] != $spainID) {
+												$iva = 0;
+											}
+										}
+										// si NO és professional...
+										else {
+											if ($_POST['FACTURACION_PAIS'] != $spainID) {
+												// ... de fora de la CE, sense iva
+												if (empty($userInfo['CE'])) {
+													$iva = 0;
+												}
+											}
+											else {
+												// ... de Canàries, Ceuta o Melilla, sense iva
+												if (!empty($_POST['FACTURACION_OTRO_PAIS'])) {
+													$iva = 0;
+												}
+											}
+										}
+
+										// CÀLCUL PREU
+										$sublIva = round(($sublBasePrice * $iva) / 100, 2);
+										$sublPrice = $sublBasePrice + $sublIva;
+
+										// canaries, ceuta, melilla?
+										if (isset($_POST['FACTURACION_OTRO_PAIS'])) {
+											$_POST['FACTURACION_OTRO_PAIS'] = 1;
+										}
+										else {
+											$_POST['FACTURACION_OTRO_PAIS'] = 0;
+										}
+
+										// empresa o profesional?
+										if (isset($_POST['FACTURACION_PROFESIONAL'])) {
+											$_POST['FACTURACION_PROFESIONAL'] = 1;
+										}
+										else {
+											$_POST['FACTURACION_PROFESIONAL'] = 0;
+										}
+
+										// procedim segons el mètode de pagament indicat
+										switch ($_POST['METODO_PAGO']) {
+
+											// tarja crèdit
+											case 1:
+
+												// dades pagament
+												$order = '2' . rand(0, 9) . date('mdHis');
+												$amount = round($sublPrice, 2) * 100;
+												$urlOK = '|CONFIG_URLBASE|/mbp/pagook.html';
+												$urlKO = '|CONFIG_URLBASE|/mbp/pagoko.html';
+												$merchantURL = '|CONFIG_URLBASE|/mbp/pago.html';
+												$producto = 'BiblioPRO - Sublicencia del cuestionario ' . $cRow['NOM_CAST'];
+
+												// introduïm la subllicència a la base de dades, inactiva fins que es comprovi el pagament
+												$sublicenceQuery = db_query("
+													INSERT INTO `$taula_subllicencies_pagaments`
+													SET
+														ID_CUEST = $idCuest,
+														NOM_ORIGINAL_CUEST = '" . mysql_real_escape_string($cRow['NOM_ORIGINAL']) . "',
+														NOM_CAST_CUEST = '" . mysql_real_escape_string($cRow['NOM_CAST']) . "',
+														SIGLAS_CUEST = '" . mysql_real_escape_string($cRow['SIGLAS']) . "',
+														IDAUTORES_ORIGINAL_CUEST = '" . mysql_real_escape_string($cRow['IDAUTORES_ORIGINAL']) . "',
+														IDAUTORES_CAST_CUEST = '" . mysql_real_escape_string($cRow['IDAUTORES_CAST']) . "',
+														ID_USUARIO = '$userInfo[ID]',
+														IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+														USO = '" . mysql_real_escape_string($_POST['USO']) . "',
+														USO_OTROS = '" . mysql_real_escape_string($_POST['USO_OTROS']) . "',
+														FINANCIACION_ENTIDAD = '" . mysql_real_escape_string($_POST['FINANCIACION_ENTIDAD']) . "',
+														ENTIDAD_SOLICITANTE = '" . mysql_real_escape_string($_POST['ENTIDAD_SOLICITANTE']) . "',
+														PROMOTOR = '" . mysql_real_escape_string($_POST['PROMOTOR']) . "',
+														TITULO = '" . mysql_real_escape_string($_POST['TITULO']) . "',
+														OBJETIVOS = '" . mysql_real_escape_string($_POST['OBJETIVOS']) . "',
+														FECHA_INICIO = '" . mysql_real_escape_string($_POST['FECHA_INICIO']) . "',
+														FECHA_FINAL = '" . mysql_real_escape_string($_POST['FECHA_FINAL']) . "',
+														DISENO_ESTUDIO = '" . mysql_real_escape_string($_POST['DISENO_ESTUDIO']) . "',
+														DISENO_ESTUDIO_OTROS = '" . mysql_real_escape_string($_POST['DISENO_ESTUDIO_OTROS']) . "',
+														POBLACION = '" . mysql_real_escape_string($_POST['POBLACION']) . "',
+														ENFERMEDAD = '" . mysql_real_escape_string($_POST['ENFERMEDAD']) . "',
+														MODO_ADMIN = '" . mysql_real_escape_string($_POST['MODO_ADMIN']) . "',
+														SOPORTE_TECNICO = '" . mysql_real_escape_string($_POST['SOPORTE_TECNICO']) . "',
+														COMENTARIOS = '" . mysql_real_escape_string($_POST['COMENTARIOS']) . "',
+														FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+														FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+														FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+														FACTURACION_PROFESIONAL = '" . mysql_real_escape_string($_POST['FACTURACION_PROFESIONAL']) . "',
+														FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+														FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+														FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+														FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+														FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+														FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+														FACTURACION_FAX = '" . mysql_real_escape_string($_POST['FACTURACION_FAX']) . "',
+														NUM_ADMINISTRACIONES = '$numAdm',
+														PREGUNTAS = '" . ((isset($_POST['ANSWERS']) and is_array($_POST['ANSWERS'])) ? serialize($_POST['ANSWERS']) : '') . "',
+														PRECIO = $sublBasePrice,
+														ID_TPV = '$order',
+														TIPO_IVA = $iva,
+														IVA = $sublIva,
+														TOTAL = $sublPrice,
+														METODO_PAGO = $_POST[METODO_PAGO],
+														SOLICITA_FACTURA = " . (isset($_POST['SOLICITA_FACTURA']) ? '1' : '0') . ",
+														NUM_ALBARAN = '$numAlbara',
+														STATUS = 0,
+														FECHA_SOLICITUD = NOW(),
+														FECHA_VALIDEZ = '" . mysql_real_escape_string($_POST['FECHA_FINAL']) . " 23:59:59',
+														CREATION = NOW(),
+														USUARICREAR = 'admin'
+												");
+
+												//Afegim l'identificador de la solicitud per tenir diverses versions de la subllicència
+												$lastId = mysql_insert_id();
+												$numAlbara = $lastId . '_' . $numAlbara;
+												db_query('UPDATE ' .$taula_subllicencies_pagaments.' SET NUM_ALBARAN = "' . $numAlbara . '" WHERE ID = ' . $lastId);
+
+?>
+
+						<div class="broken border clearfix">
+							|Missatge pagament tarjeta|
+							<ul>
+								<li>
+									Precio de la sublicencia para <strong><?php echo htmlspecialchars($_POST['NUM_ADMINISTRACIONES']); ?></strong> administraciones:
+									<ul>
+										<li>Base imponible: <?php echo number_format($sublBasePrice, 2, ',', '.'); ?>€</strong></li>
+										<li>IVA: <?php echo $iva; ?>% (<?php echo number_format($sublIva, 2, ',', '.'); ?>€)</li>
+										<li>Total: <strong><?php echo number_format($sublPrice, 2, ',', '.'); ?>€</strong></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+<?php
+
+/*
+ * Establim els paràmetres de pagament per al formulari per TPV
+*/
+
+$pagamentImport = round($sublPrice, 2);
+$pagamentDescripcio = htmlspecialchars($producto);
+$tpv->setUrlConfirmCallback($merchantURL);
+$tpv->setUrlOk($urlOK);
+$tpv->setUrlError($urlKO);
+$form = $tpv->getFormPagament($order, $pagamentImport, $pagamentDescripcio, array('value="Realizar pago"', 'class="buttonSubmit send"'), $idioma);
+
+echo $form;
+
+												break;
+
+											// transferència bancària
+											case 2:
+
+												// introduïm la subllicència a la base de dades, pendent fins que es comprovi la transferència
+												$sublicenceQuery = db_query("
+													INSERT INTO `$taula_subllicencies_pagaments`
+													SET
+														ID_CUEST = $idCuest,
+														NOM_ORIGINAL_CUEST = '" . mysql_real_escape_string($cRow['NOM_ORIGINAL']) . "',
+														NOM_CAST_CUEST = '" . mysql_real_escape_string($cRow['NOM_CAST']) . "',
+														SIGLAS_CUEST = '" . mysql_real_escape_string($cRow['SIGLAS']) . "',
+														IDAUTORES_ORIGINAL_CUEST = '" . mysql_real_escape_string($cRow['IDAUTORES_ORIGINAL']) . "',
+														IDAUTORES_CAST_CUEST = '" . mysql_real_escape_string($cRow['IDAUTORES_CAST']) . "',
+														ID_USUARIO = '$userInfo[ID]',
+														IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+														USO = '" . mysql_real_escape_string($_POST['USO']) . "',
+														USO_OTROS = '" . mysql_real_escape_string($_POST['USO_OTROS']) . "',
+														FINANCIACION_ENTIDAD = '" . mysql_real_escape_string($_POST['FINANCIACION_ENTIDAD']) . "',
+														ENTIDAD_SOLICITANTE = '" . mysql_real_escape_string($_POST['ENTIDAD_SOLICITANTE']) . "',
+														PROMOTOR = '" . mysql_real_escape_string($_POST['PROMOTOR']) . "',
+														TITULO = '" . mysql_real_escape_string($_POST['TITULO']) . "',
+														OBJETIVOS = '" . mysql_real_escape_string($_POST['OBJETIVOS']) . "',
+														FECHA_INICIO = '" . mysql_real_escape_string($_POST['FECHA_INICIO']) . "',
+														FECHA_FINAL = '" . mysql_real_escape_string($_POST['FECHA_FINAL']) . "',
+														DISENO_ESTUDIO = '" . mysql_real_escape_string($_POST['DISENO_ESTUDIO']) . "',
+														DISENO_ESTUDIO_OTROS = '" . mysql_real_escape_string($_POST['DISENO_ESTUDIO_OTROS']) . "',
+														POBLACION = '" . mysql_real_escape_string($_POST['POBLACION']) . "',
+														ENFERMEDAD = '" . mysql_real_escape_string($_POST['ENFERMEDAD']) . "',
+														MODO_ADMIN = '" . mysql_real_escape_string($_POST['MODO_ADMIN']) . "',
+														SOPORTE_TECNICO = '" . mysql_real_escape_string($_POST['SOPORTE_TECNICO']) . "',
+														COMENTARIOS = '" . mysql_real_escape_string($_POST['COMENTARIOS']) . "',
+														FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+														FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+														FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+														FACTURACION_PROFESIONAL = '" . mysql_real_escape_string($_POST['FACTURACION_PROFESIONAL']) . "',
+														FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+														FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+														FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+														FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+														FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+														FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+														FACTURACION_FAX = '" . mysql_real_escape_string($_POST['FACTURACION_FAX']) . "',
+														NUM_ADMINISTRACIONES = '$numAdm',
+														PREGUNTAS = '" . ((isset($_POST['ANSWERS']) and is_array($_POST['ANSWERS'])) ? serialize($_POST['ANSWERS']) : '') . "',
+														PRECIO = $sublBasePrice,
+														TIPO_IVA = $iva,
+														IVA = $sublIva,
+														TOTAL = $sublPrice,
+														METODO_PAGO = $_POST[METODO_PAGO],
+														IBAN = '" . mysql_real_escape_string($IBAN) . "',
+														SWIFT = '" . mysql_real_escape_string($SWIFT) . "',
+														SOLICITA_FACTURA = " . (isset($_POST['SOLICITA_FACTURA']) ? '1' : '0') . ",
+														NUM_ALBARAN = '$numAlbara',
+														STATUS = 0,
+														FECHA_SOLICITUD = NOW(),
+														FECHA_VALIDEZ = '" . mysql_real_escape_string($_POST['FECHA_FINAL']) . " 23:59:59',
+														CREATION = NOW(),
+														USUARICREAR = 'admin'
+												");
+
+												//Afegim l'identificador de la solicitud per tenir diverses versions de la subllicència
+												$lastId = mysql_insert_id();
+												$numAlbara = $lastId . '_' . $numAlbara;
+												db_query('UPDATE ' .$taula_subllicencies_pagaments.' SET NUM_ALBARAN = "' . $numAlbara . '" WHERE ID = ' . $lastId);
+
+												// enviem email amb dades per realitzar la transferència
+												include_once ("mail.php");
+												$cos = '
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+		<h1>Sublicencia de cuestionario en BiblioPRO</h1>
+		<p>Usted ha solicitado una sublicencia para el cuestionario <strong>' . htmlspecialchars($cRow['NOM_CAST']) . '</strong></p>
+		<hr />
+		<h2>Datos para realizar la transferencia</h2>
+		<ul>
+			<li>
+				Precio de la sublicencia para <strong>' . htmlspecialchars($_POST['NUM_ADMINISTRACIONES']) . '</strong> administraciones:
+				<ul>
+					<li>Base imponible: ' . number_format($sublBasePrice, 2, ',', '.'). '€</li>
+					<li>IVA: ' . $iva . '% (' . number_format($sublIva, 2, ',', '.'). '€)</li>
+					<li>Total: <strong>' . number_format($sublPrice, 2, ',', '.'). '€</strong></li>
+				</ul>
+			</li>
+			<li>Número de albarán interno: <strong>' . $numAlbara . '</strong></li>
+			<li>Entidad bancaria: <strong>' . htmlspecialchars($bankName) . '</strong></li>
+			<li>Cuenta bancaria: <strong>' . htmlspecialchars($bankAccountNumber) . '</strong></li>
+			<li>IBAN: <strong>' . $IBAN . '</strong></li>
+			<li>SWIFT: <strong>' . $SWIFT . '</strong></li>
+		</ul>
+		<hr />
+		|Missatge pagament transferencia bancaria|
+		<hr />
+		<p>Si usted no ha solicitado una sublicencia de cuestionario en el sitio web de BiblioPRO, por favor ignore este mensaje.</p>
+	</body>
+</html>';
+												$destinatari = $_POST['FACTURACION_EMAIL'];
+												$from = '"BiblioPRO" <bibliopro@imim.es>';
+												$assumpte = 'Información para realizar el pago de sublicencia a BiblioPRO';
+												// $cos = utf8_decode($cos);
+												// $assumpte = utf8_decode($assumpte);
+												// enviem el correu
+												sendMail($destinatari, $assumpte, $cos, $from, null, true);
+												if (
+													!empty($userInfo['FACTURACION_EMAIL'])
+													and $userInfo['FACTURACION_EMAIL'] != $destinatari
+													and isValidEmail($userInfo['FACTURACION_EMAIL'])
+												) {
+													sendMail($userInfo['FACTURACION_EMAIL'], $assumpte, $cos, $from, null, true);
+												}
+
+?>
+					<div class="broken border clearfix">
+						<div class="ok">
+							|Missatge pagament transferencia bancaria|
+							<h5>Datos para realizar la transferencia</h5>
+							<ul>
+								<li>
+									Precio de la sublicencia para <strong><?php echo htmlspecialchars($_POST['NUM_ADMINISTRACIONES']); ?></strong> administraciones:
+									<ul>
+										<li>Base imponible: <?php echo number_format($sublBasePrice, 2, ',', '.'); ?>€</li>
+										<li>IVA: <?php echo $iva; ?>% (<?php echo number_format($sublIva, 2, ',', '.'); ?>€)</li>
+										<li>Total: <strong><?php echo number_format($sublPrice, 2, ',', '.'); ?>€</strong></li>
+									</ul>
+								</li>
+								<li>Número de albarán interno: <strong><?php echo $numAlbara; ?></strong></li>
+								<li>Entidad bancaria: <strong><?php echo htmlspecialchars($bankName); ?></strong></li>
+								<li>Cuenta bancaria: <strong><?php echo htmlspecialchars($bankAccountNumber); ?></strong></li>
+								<li>IBAN: <strong><?php echo $IBAN; ?></strong></li>
+								<li>SWIFT: <strong><?php echo $SWIFT; ?></strong></li>
+							</ul>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+												break;
+
+											default:
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge error forma pagament|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+												break;
+
+										}
+									}
+
+
+									// si les dades de pagament NO són correctes, mostrem error
+									else {
+
+?>
+				<div class="broken border clearfix">
+					<div class="warning">
+						|Missatge error dades pagament|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+									}
+
+								}
+								// si NO s'han enviat les dades de pagament, mostrem formulari
+								else {
+
+?>
+				<form action="" method="post" enctype="multipart/form-data" accept-charset="UTF-8" id="sublicenceForm">
+
+					<!-- survey data -->
+					<input type="hidden" name="USO" value="<?php echo htmlspecialchars($_POST['USO']); ?>" />
+					<input type="hidden" name="USO_OTROS" value="<?php echo htmlspecialchars($_POST['USO_OTROS']); ?>" />
+					<input type="hidden" name="FINANCIACION_ENTIDAD" value="<?php echo $_POST['FINANCIACION_ENTIDAD']; ?>" />
+					<input type="hidden" name="ENTIDAD_SOLICITANTE" value="<?php echo htmlspecialchars($_POST['ENTIDAD_SOLICITANTE']); ?>" />
+					<input type="hidden" name="PROMOTOR" value="<?php echo htmlspecialchars($_POST['PROMOTOR']); ?>" />
+					<input type="hidden" name="TITULO" value="<?php echo htmlspecialchars($_POST['TITULO']); ?>" />
+					<input type="hidden" name="OBJETIVOS" value="<?php echo htmlspecialchars($_POST['OBJETIVOS']); ?>" />
+					<input type="hidden" name="FECHA_INICIO" value="<?php echo htmlspecialchars($_POST['FECHA_INICIO']); ?>" />
+					<input type="hidden" name="FECHA_FINAL" value="<?php echo htmlspecialchars($_POST['FECHA_FINAL']); ?>" />
+					<input type="hidden" name="DISENO_ESTUDIO" value="<?php echo htmlspecialchars($_POST['DISENO_ESTUDIO']); ?>" />
+					<input type="hidden" name="DISENO_ESTUDIO_OTROS" value="<?php echo htmlspecialchars($_POST['DISENO_ESTUDIO_OTROS']); ?>" />
+					<input type="hidden" name="ENFERMEDAD" value="<?php echo htmlspecialchars($_POST['ENFERMEDAD']); ?>" />
+					<input type="hidden" name="NUM_ADMINISTRACIONES" value="<?php echo $_POST['NUM_ADMINISTRACIONES']; ?>" />
+<?php
+
+									if (!empty($_POST['ANSWERS']) and is_array($_POST['ANSWERS']) and count($_POST['ANSWERS']) > 0) {
+
+										foreach ($_POST['ANSWERS'] as $questionID => $answers) {
+
+											if (is_array($answers) and count($answers) > 0) {
+
+												foreach ($answers as $i => $answerID) {
+
+?>
+					<input
+						type="hidden" name="ANSWERS[<?php echo htmlspecialchars($questionID); ?>][<?php echo htmlspecialchars($i); ?>]"
+						value="<?php echo htmlspecialchars($answerID); ?>"
+					/>
+<?php
+
+												}
+
+											}
+
+										}
+
+									}
+
+?>
+					<input type="hidden" name="POBLACION" value="<?php echo htmlspecialchars($_POST['POBLACION']); ?>" />
+					<input type="hidden" name="MODO_ADMIN" value="<?php echo htmlspecialchars($_POST['MODO_ADMIN']); ?>" />
+					<input type="hidden" name="SOPORTE_TECNICO" value="<?php echo htmlspecialchars($_POST['SOPORTE_TECNICO']); ?>" />
+					<input type="hidden" name="COMENTARIOS" value="<?php echo htmlspecialchars($_POST['COMENTARIOS']); ?>" />
+<?php
+
+									if (isset($_POST['ACEPTA_CONDICIONES']) and isset($_POST['ACEPTA_LEGAL'])) {
+
+?>
+					<input type="hidden" name="ACEPTA_CONDICIONES" value="1" />
+					<input type="hidden" name="ACEPTA_LEGAL" value="1" />
+<?php
+
+									}
+
+?>
+
+					<div class="broken border clearfix">
+						<h3>Coste de la sublicencia</h3>
+						<p class="primer">Según los datos indicados, el coste de la sublicencia es de <strong><?php echo number_format($sublBasePrice, 2, ',', '.'); ?>€</strong> para <?php echo htmlspecialchars($_POST['NUM_ADMINISTRACIONES']); ?> administraciones, sin impuestos incluídos.</p>
+						<p>Por favor, rellene el formulario con los datos de facturación para continuar con el proceso de pago.</p>
+					</div>
+
+					<div class="broken border clearfix">
+						<h3>Datos de facturación</h3>
+						<!-- nombre -->
+						<label for="FACTURACION_NOMBRE">
+							<span>Nombre y apellidos <em>*</em></span>
+							<input type="text" name="FACTURACION_NOMBRE" id="FACTURACION_NOMBRE" class="required" maxlength="255" value="<?php echo $userInfo['FACTURACION_NOMBRE']; ?>" />
+						</label>
+						<!-- cif -->
+						<label for="FACTURACION_CIF">
+							<span>CIF/NIF/VAT <em>*</em></span>
+							<input type="text" name="FACTURACION_CIF" id="FACTURACION_CIF" class="required petit" maxlength="20" value="<?php echo htmlspecialchars($userInfo['FACTURACION_CIF']); ?>" />
+						</label>
+						<!-- empresario o profesional? -->
+						<label for="FACTURACION_PROFESIONAL" class="radio checkbox clearfix">
+<?php
+
+									if ($userInfo['FACTURACION_PROFESIONAL'] == 1) {
+
+?>
+							<input type="checkbox" name="FACTURACION_PROFESIONAL" id="FACTURACION_PROFESIONAL" value="1" checked="checked" />
+<?php
+
+									}
+									else {
+
+?>
+							<input type="checkbox" name="FACTURACION_PROFESIONAL" id="FACTURACION_PROFESIONAL" value="1" />
+<?php
+
+									}
+
+?>
+							<span>Soy empresario o profesional</span>
+						</label>
+						<!-- dirección -->
+						<label for="FACTURACION_DIRECCION">
+							<span>Dirección <em>*</em></span>
+							<input type="text" name="FACTURACION_DIRECCION" id="FACTURACION_DIRECCION" class="required gran" maxlength="255" value="<?php echo htmlspecialchars($userInfo['FACTURACION_DIRECCION']); ?>" />
+						</label>
+						<!-- código postal -->
+						<label for="FACTURACION_CP">
+							<span>Código postal <em>*</em></span>
+							<input type="text" name="FACTURACION_CP" id="FACTURACION_CP" class="required petit" maxlength="16" value="<?php echo htmlspecialchars($userInfo['FACTURACION_CP']); ?>" />
+						</label>
+						<!-- ciudad -->
+						<label for="FACTURACION_CIUDAD">
+							<span>Población <em>*</em></span>
+							<input type="text" name="FACTURACION_CIUDAD" id="FACTURACION_CIUDAD" class="required" maxlength="128" value="<?php echo htmlspecialchars($userInfo['FACTURACION_CIUDAD']); ?>" />
+						</label>
+						<!-- país -->
+						<label for="FACTURACION_PAIS">
+							<span>País <em>*</em></span>
+							<select name="FACTURACION_PAIS" id="FACTURACION_PAIS" class="required">
+<?php
+
+			$countriesQuery = db_query("SELECT ID, PAIS FROM `$taula_paisos` ORDER BY PAIS ASC");
+			if (db_num_rows($countriesQuery) > 0) {
+
+				while ($countriesRow = db_fetch_array($countriesQuery)) {
+
+					if ($countriesRow['ID'] == $userInfo['FACTURACION_PAIS']) {
+
+?>
+								<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>" selected="selected"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+					}
+					else {
+
+?>
+								<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+					}
+
+				}
+
+			}
+
+?>
+							</select>
+						</label>
+						<!-- otro país -->
+						<label for="FACTURACION_OTRO_PAIS" class="radio checkbox clearfix">
+<?php
+
+									if ($userInfo['FACTURACION_OTRO_PAIS'] == 1) {
+
+?>
+							<input type="checkbox" name="FACTURACION_OTRO_PAIS" id="FACTURACION_OTRO_PAIS" value="1" checked="checked" />
+<?php
+
+									}
+									else {
+
+?>
+							<input type="checkbox" name="FACTURACION_OTRO_PAIS" id="FACTURACION_OTRO_PAIS" value="1" />
+<?php
+
+									}
+
+?>
+							<span>Resido en Canarias, Ceuta o Melilla <em>(sólo en caso de que su país sea España)</em></span>
+						</label>
+						<!-- telefono -->
+						<label for="FACTURACION_TELEFONO">
+							<span>Teléfono <em>*</em></span>
+							<input type="text" name="FACTURACION_TELEFONO" id="FACTURACION_TELEFONO" class="required petit" maxlength="16" value="<?php echo htmlspecialchars($userInfo['FACTURACION_TELEFONO']); ?>" />
+						</label>
+						<!-- fax -->
+						<label for="FACTURACION_FAX">
+							<span>Fax</span>
+							<input type="text" name="FACTURACION_FAX" id="FACTURACION_FAX" class="petit" maxlength="16" value="<?php echo htmlspecialchars($userInfo['FACTURACION_FAX']); ?>" />
+						</label>
+						<!-- email -->
+						<label for="FACTURACION_EMAIL">
+							<span>Correo electrónico <em>*</em></span>
+							<input type="text" name="FACTURACION_EMAIL" id="FACTURACION_EMAIL" class="required" maxlength="255" value="<?php echo htmlspecialchars($userInfo['FACTURACION_EMAIL']); ?>" />
+						</label>
+					</div>
+
+					<div class="broken border clearfix">
+						<!-- ¿solicita factura? -->
+						<label for="SOLICITA_FACTURA" class="checkbox">
+							<input type="checkbox" name="SOLICITA_FACTURA" id="SOLICITA_FACTURA" />
+							<span>Deseo poder descargar la factura en formato <acronym title="Portable Document Format">PDF</acronym></span>
+						</label>
+					</div>
+
+					<div class="broken border clearfix">
+						<h3>Datos del pago</h3>
+						<!-- forma pago -->
+						<label for="METODO_PAGO">
+							<span>Forma de pago <em>*</em></span>
+							<select name="METODO_PAGO" id="METODO_PAGO" class="required">
+								<option value="1">Tarjeta de crédito</option>
+								<option value="2">Transferencia bancaria</option>
+							</select>
+						</label>
+					</div>
+
+					<div><input type="submit" value="Solicitar sublicencia" class="send" /></div>
+
+				</form>
+<?php
+
+								}
+
+							}
+							// si l'usuari NO ha de pagar, afegim subllicència
+							else {
+
+								// introduïm la subllicència a la base de dades, pendent fins que s'aprovi
+								$sublicenceQuery = db_query("
+									INSERT INTO `$taula_subllicencies_pagaments`
+									SET
+										ID_CUEST = $idCuest,
+										NOM_ORIGINAL_CUEST = '" . mysql_real_escape_string($cRow['NOM_ORIGINAL']) . "',
+										NOM_CAST_CUEST = '" . mysql_real_escape_string($cRow['NOM_CAST']) . "',
+										SIGLAS_CUEST = '" . mysql_real_escape_string($cRow['SIGLAS']) . "',
+										IDAUTORES_ORIGINAL_CUEST = '" . mysql_real_escape_string($cRow['IDAUTORES_ORIGINAL']) . "',
+										IDAUTORES_CAST_CUEST = '" . mysql_real_escape_string($cRow['IDAUTORES_CAST']) . "',
+										ID_USUARIO = $userInfo[ID],
+										IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+										USO = '" . mysql_real_escape_string($_POST['USO']) . "',
+										USO_OTROS = '" . mysql_real_escape_string($_POST['USO_OTROS']) . "',
+										FINANCIACION_ENTIDAD = '" . mysql_real_escape_string($_POST['FINANCIACION_ENTIDAD']) . "',
+										ENTIDAD_SOLICITANTE = '" . mysql_real_escape_string($_POST['ENTIDAD_SOLICITANTE']) . "',
+										PROMOTOR = '" . mysql_real_escape_string($_POST['PROMOTOR']) . "',
+										TITULO = '" . mysql_real_escape_string($_POST['TITULO']) . "',
+										OBJETIVOS = '" . mysql_real_escape_string($_POST['OBJETIVOS']) . "',
+										FECHA_INICIO = '" . mysql_real_escape_string($_POST['FECHA_INICIO']) . "',
+										FECHA_FINAL = '" . mysql_real_escape_string($_POST['FECHA_FINAL']) . "',
+										DISENO_ESTUDIO = '" . mysql_real_escape_string($_POST['DISENO_ESTUDIO']) . "',
+										DISENO_ESTUDIO_OTROS = '" . mysql_real_escape_string($_POST['DISENO_ESTUDIO_OTROS']) . "',
+										POBLACION = '" . mysql_real_escape_string($_POST['POBLACION']) . "',
+										ENFERMEDAD = '" . mysql_real_escape_string($_POST['ENFERMEDAD']) . "',
+										MODO_ADMIN = '" . mysql_real_escape_string($_POST['MODO_ADMIN']) . "',
+										SOPORTE_TECNICO = '" . mysql_real_escape_string($_POST['SOPORTE_TECNICO']) . "',
+										COMENTARIOS = '" . mysql_real_escape_string($_POST['COMENTARIOS']) . "',
+										NUM_ADMINISTRACIONES = '$numAdm',
+										PREGUNTAS = '" . ((isset($_POST['ANSWERS']) and is_array($_POST['ANSWERS'])) ? serialize($_POST['ANSWERS']) : '') . "',
+								        METODO_PAGO = 0,
+								        IBAN = '',
+								        SWIFT = '',
+										PRECIO = 0,
+										TIPO_IVA = $iva,
+										IVA = 0,
+										TOTAL = 0,
+										NUM_ALBARAN = '$numAlbara',
+										STATUS = 1,
+										FECHA_SOLICITUD = NOW(),
+										FECHA_VALIDEZ = '" . mysql_real_escape_string($_POST['FECHA_FINAL']) . " 23:59:59',
+										CREATION = NOW(),
+										USUARICREAR = 'admin'
+								");
+
+								//Afegim l'identificador de la solicitud per tenir diverses versions de la subllicència
+								$lastId = mysql_insert_id();
+								$numAlbara = $lastId . '_' . $numAlbara;
+
+								db_query('UPDATE ' .$taula_subllicencies_pagaments.' SET NUM_ALBARAN = "' . $numAlbara . '" WHERE ID = ' . $lastId);
+
+?>
+					<div class="broken border clearfix">
+						<div class="ok">
+							|Missatge pagament innecessari|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+							}
+
+						}
+						// si les dades de l'estudi no són correctes, mostrem error
+						else {
+
+?>
+				<div class="broken border clearfix">
+					<div class="warning">
+						|Missatge error dades estudi|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+						}
+
+					}
+					// si NO s'ha enviat mostrem formulari i informació subllicència
+					else {
+
+						// condiciones aceptación
+						if (!empty($row['TEXTO_ACEPTACION'])) {
+
+?>
+				<div class="broken border clearfix">
+					<h3>Condiciones de adquisición</h3>
+					<p><strong>Antes de solicitar esta sublicencia, usted debe comprender y aceptar las siguientes condiciones:</strong></p>
+					<?php echo $row['TEXTO_ACEPTACION']; ?>
+				</div>
+<?php
+
+						}
+
+						// fichero con información adicional
+						if (!empty($row['FICHERO_SUBLICENCIA'])) {
+
+?>
+				<div class="broken border clearfix">
+					<h3>Más información</h3>
+					<p>Para más información, por favor <strong><a href="|CONFIG_NOMCARPETA|/media/upload/pdf/sublicencias/<?php echo htmlspecialchars($row['FICHERO_SUBLICENCIA']); ?>">descargue este documento</a></strong>.</p>
+				</div>
+<?php
+
+						}
+
+						// explicación solicitación
+						if (!empty($row['EXPLICACION_SOLICITACION'])) {
+
+?>
+				<div class="broken border clearfix">
+					<h3>Explicación de solicitud</h3>
+					<p><strong>Para solicitar esta sublicencia, usted debe seguir los pasos indicados a continuación:</strong></p>
+					<?php echo $row['EXPLICACION_SOLICITACION']; ?>
+				</div>
+<?php
+
+						}
+
+						// sublicencia bibliopro?
+						if ($row['SUBLICENCIA_BIBLIOPRO'] == 1) {
+
+?>
+				<div class="broken border clearfix">
+					<p class="primer"><strong>Usted adquiere esta sublicencia directamente a BiblioPRO</strong>.</p>
+				</div>
+<?php
+
+						}
+
+						// información contrato sublicencia
+						if (
+							$row['VISIBLE_WEB'] == 1
+							and !empty($row['CODIGO_CONTRATO'])
+						) {
+
+?>
+				<div class="broken border clearfix">
+					<h3>Información del contrato de la sublicencia</h3>
+					<ul>
+						<li><strong>Código:</strong> <?php echo htmlspecialchars($row['CODIGO_CONTRATO']); ?></li>
+<?php
+
+							if (!empty($row['FECHA_CONTRATO'])) {
+
+?>
+						<li><strong>Fecha:</strong> <?php echo htmlspecialchars($row['FECHA_CONTRATO']); ?></li>
+<?php
+
+							}
+							if (!empty($row['INSTITUCIONES_CONTRATO'])) {
+
+?>
+						<li><strong>Instituciones firmantes:</strong> <?php echo htmlspecialchars($row['INSTITUCIONES_CONTRATO']); ?></li>
+<?php
+
+							}
+							if (!empty($row['FICHERO_CONTRATO'])) {
+
+?>
+						<li><a href="|CONFIG_NOMCARPETA|/media/upload/pdf/contratos/<?php echo htmlspecialchars($row['FICHERO_CONTRATO']); ?>"><strong>Descargar contrato</strong></a></li>
+<?php
+
+							}
+
+?>
+					</ul>
+				</div>
+<?php
+
+						}
+
+?>
+				<form action="" method="post" enctype="multipart/form-data" accept-charset="UTF-8" id="sublicenceForm">
+
+					<div class="broken border clearfix">
+						<h3>Datos sobre el estudio</h3>
+						<!-- título -->
+						<label for="TITULO">
+							<span>Título <em>(excepto si el uso es para práctica clínica)</em></span>
+							<input type="text" name="TITULO" id="TITULO" maxlength="255" />
+						</label>
+						<!-- financiación -->
+						<label for="FINANCIACION_ENTIDAD">
+							<span>Proyecto financiado <em>*</em></span>
+							<select name="FINANCIACION_ENTIDAD" id="FINANCIACION_ENTIDAD" class="required">
+								<option value="">Indique el tipo de organismo/institución</option>
+<?php
+
+						if (!empty($financementTypes) and is_array($financementTypes) and count($financementTypes) > 0) {
+
+							foreach ($financementTypes as $value => $financementType) {
+
+?>
+								<option value="<?php echo htmlspecialchars($value); ?>"><?php echo htmlspecialchars($financementType); ?></option>
+<?php
+
+							}
+
+						}
+
+?>
+							</select>
+						</label>
+						<!-- entidad -->
+						<label for="ENTIDAD_SOLICITANTE">
+							<span>Entidad desde la que solicita la sublicencia <em>(ej: Universidad, etc) *</em></span>
+							<input type="text" name="ENTIDAD_SOLICITANTE" id="ENTIDAD_SOLICITANTE" maxlength="255" class="required" />
+						</label>
+						<!-- promotor -->
+						<label for="PROMOTOR">
+							<span>Promotor del proyecto <em>*</em></span>
+							<input type="text" name="PROMOTOR" id="PROMOTOR" maxlength="255" class="required" />
+						</label>
+						<!-- uso cuestionario -->
+						<label for="USO">
+							<span>Uso del cuestionario <em>*</em></span>
+							<select name="USO" id="USO" class="required">
+								<option value="">Indique el uso que se va a hacer del cuestionario</option>
+								<option>Evaluación (transversal) de la salud de la población general o de grupos específicos de población</option>
+								<option>Monitorización (longitudinal) de la salud de la población general o de grupos específicos de población</option>
+								<option>Evaluación del impacto de intervenciones de salud y/o de políticas sanitarias</option>
+								<option>Evaluación de la eficacia y efectividad de las intervenciones</option>
+								<option>Evaluación económica de las intervenciones sanitarias</option>
+								<option>Análisis de la calidad de las intervenciones sanitarias</option>
+								<option>Cribado de problemas de salud</option>
+								<option>Diagnóstico de problemas de salud</option>
+								<option>Monitorización del estado de salud individual</option>
+								<option value="Otros">Otros</option>
+							</select>
+						</label>
+						<!-- uso otros -->
+						<label for="USO_OTROS">
+							<span>Otros usos <em>(sólo en caso de que el suyo no aparezca en el seleccionable anterior)</em></span>
+							<input type="text" name="USO_OTROS" id="USO_OTROS" maxlength="255" />
+						</label>
+						<!-- objetivos -->
+						<label for="OBJETIVOS">
+							<span>Objetivos</span>
+							<input type="text" name="OBJETIVOS" id="OBJETIVOS" maxlength="255" />
+						</label>
+						<!-- fecha inicio -->
+						<label for="FECHA_INICIO">
+							<span>Probable fecha de inicio <em>(año/mes/día) *</em></span>
+							<input type="text" name="FECHA_INICIO" id="FECHA_INICIO" maxlength="10" class="required short" />
+						</label>
+						<!-- fecha final -->
+						<label for="FECHA_FINAL">
+							<span>Fecha final <em>(año/mes/día) *</em></span>
+							<input type="text" name="FECHA_FINAL" id="FECHA_FINAL" maxlength="10" class="required short" />
+						</label>
+						<!-- diseño estudio -->
+						<label for="DISENO_ESTUDIO">
+							<span>Diseño del estudio <em>*</em></span>
+							<select name="DISENO_ESTUDIO" id="DISENO_ESTUDIO" class="required">
+								<option value="">Indique el diseño</option>
+								<option>Transversal</option>
+								<option>Caso-control</option>
+								<option>Cohortes</option>
+								<option>Ensayo clínico</option>
+								<option value="Otros">Otros</option>
+							</select>
+						</label>
+						<!-- diseño otros -->
+						<label for="DISENO_ESTUDIO_OTROS">
+							<span>Otros diseños de estudio <em>(sólo en caso de que el suyo no aparezca en el seleccionable anterior)</em></span>
+							<input type="text" name="DISENO_ESTUDIO_OTROS" id="DISENO_ESTUDIO_OTROS" maxlength="255" />
+						</label>
+						<!-- número de administraciones -->
+						<label for="NUM_ADMINISTRACIONES">
+							<span>Número de administraciones <em>(número de pacientes por número de evaluaciones) *</em></span>
+							<input type="text" name="NUM_ADMINISTRACIONES" id="NUM_ADMINISTRACIONES" value="1" class="short required number" />
+						</label>
+						<!-- preguntas adicionales -->
+<?php
+
+	// obtenim preguntes
+	$questionsQuery = db_query("
+		SELECT `PREGUNTA`, `ID`
+		FROM `$taula_preguntes`
+		WHERE
+			`ID_CUEST` = '" . mysql_real_escape_string($_GET['id_cuest']) . "'
+		ORDER BY `ID` ASC
+	");
+	if (db_num_rows($questionsQuery) > 0) {
+
+		while ($questionsRow = db_fetch_array($questionsQuery)) {
+
+			// obtenim respostes de la pregunta
+			$answersQuery = db_query("
+				SELECT `RESPUESTA`, `ID`
+				FROM `$taula_respostes`
+				WHERE
+					`ID_PREGUNTA` = $questionsRow[ID]
+					AND `ID_CUEST` = '" . mysql_real_escape_string($_GET['id_cuest']) . "'
+			");
+			if (db_num_rows($answersQuery) > 0) {
+
+?>
+						<p class="label"><strong><?php echo htmlspecialchars($questionsRow['PREGUNTA']); ?></strong></p>
+						<div class="indent clearfix">
+<?php
+
+				while ($answersRow = db_fetch_array($answersQuery)) {
+
+?>
+							<label for="QUEST<?php echo $questionsRow['ID']; ?>ANS<?php echo $answersRow['ID']; ?>" class="checkbox clearfix">
+								<input
+									type="checkbox"
+									name="ANSWERS[<?php echo $questionsRow['ID']; ?>][]"
+									value="<?php echo $answersRow['ID']; ?>"
+									id="QUEST<?php echo $questionsRow['ID']; ?>ANS<?php echo $answersRow['ID']; ?>"
+								/>
+								<span><?php echo htmlspecialchars($answersRow['RESPUESTA']); ?></span>
+							</label>
+<?php
+
+				}
+
+?>
+						</div>
+<?php
+
+			}
+
+		}
+
+	}
+
+?>
+						<!-- descripción población -->
+						<label for="POBLACION">
+							<span>Descripción de la población <em>*</em></span>
+							<input type="text" name="POBLACION" id="POBLACION" maxlength="255" class="required" />
+						</label>
+						<!-- enfermedad o síntoma -->
+						<label for="ENFERMEDAD">
+							<span>Enfermedad o síntoma en el que está interesado</span>
+									<select name="ENFERMEDAD" id="ENFERMEDAD">
+										<option value="0">Todas las enfermedades o síntomas</option>
+<?php
+
+	$itemsQuery = db_query ("
+		SELECT ID, VALOR
+		FROM `$taula_malalties`
+		ORDER BY VALOR ASC
+	");
+	if (db_num_rows($itemsQuery) > 0) {
+
+		while ($itemsRow = db_fetch_array($itemsQuery)) {
+
+?>
+										<option value="<?php echo htmlspecialchars($itemsRow['ID']); ?>"><?php echo htmlspecialchars($itemsRow['VALOR']); ?></option>
+<?php
+
+		}
+
+	}
+
+?>
+									</select>
+						</label>
+						<!-- modo administración -->
+						<label for="MODO_ADMIN">
+							<span>Modo de administración del cuestionario</span>
+							<select name="MODO_ADMIN" id="MODO_ADMIN">
+								<option value="">Indique el modo de administración</option>
+								<option>Autoadministrado</option>
+								<option>Por entrevistador</option>
+								<option>Por teléfono</option>
+								<option>Por correo</option>
+								<option>Otro</option>
+							</select>
+						</label>
+						<!-- soporte tećnico -->
+						<label for="SOPORTE_TECNICO">
+							<span>Soporte técnico</span>
+							<select name="SOPORTE_TECNICO" id="SOPORTE_TECNICO">
+								<option value="">Indique el soporte</option>
+								<option>Papel impreso</option>
+								<option>Plataforma digital</option>
+								<option>Otro</option>
+							</select>
+						</label>
+						<!-- comentarios -->
+						<label for="COMENTARIOS">
+							<span>Comentarios</span>
+							<input type="text" name="COMENTARIOS" id="COMENTARIOS" maxlength="255" />
+						</label>
+					</div>
+
+					<div class="broken border clearfix">
+						<label for="ACEPTA_CONDICIONES" class="checkbox">
+							<input type="checkbox" name="ACEPTA_CONDICIONES" id="ACEPTA_CONDICIONES" class="required" />
+							<span>Entiendo y acepto las condiciones de adquisión de esta sublicencia</span>
+						</label>
+						<label for="ACEPTA_LEGAL" class="checkbox">
+							<input type="checkbox" name="ACEPTA_LEGAL" id="ACEPTA_LEGAL" class="required" />
+							<span>Entiendo y acepto los <a href="|CONFIG_NOMCARPETA|/avisos-legales.html" rel="window">avisos legales</a> de BiblioPRO</span>
+						</label>
+					</div>
+
+					<div><input type="submit" value="Solicitar sublicencia" class="send" /></div>
+
+				</form>
+<?php
+
+					}
+
+				}
+				// si l'usuari ja ha adquirit la subllicència, l'informem
+				else {
+
+?>
+				<h2 class="card orange">Sublicencia del cuestionario <?php echo htmlspecialchars($cRow['NOM_CAST']); ?></h2>
+				<div class="broken border clearfix">
+					<div class="warning">
+						|Missatge error subllicencia ja adquirida|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+				}
+
+			}
+			// si l'usuari no està identificat, mostrem error
+			else {
+
+?>
+				<h2 class="card orange">Sublicencia del cuestionario <?php echo htmlspecialchars($cRow['NOM_CAST']); ?></h2>
+				<div class="broken border clearfix">
+					<div class="warning">
+						|Missatge error usuari no identificat|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+			}
+
+		}
+		// si la subllicència no existeix o no és adquirible, mostrem error
+		else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="warning">
+						|Missatge subllicencia no trobada o no adquirible|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+		}
+
+	}
+	// si no s'ha indicat subllicència, mostrem error
+	else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge error parametre|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+	}
+
+?>
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

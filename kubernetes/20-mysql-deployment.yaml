@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: bibliopro
+  labels:
+    app: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        backup.velero.io/backup-volumes: mysql-persistent-storage
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mariadb:10.1
+        name: biblioprodb
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: Ym6WMHSLxtb9voU59TaK
+        - name: MYSQL_PASSWORD
+          value: VeptOmriga
+        - name: MYSQL_DATABASE
+          value: bibliopro
+        - name: MYSQL_USER
+          value: deploy
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql/
+          subPath: data
+        - name: initdb
+          mountPath: /docker-entrypoint-initdb.d
+      initContainers:
+      - name: initdatabase
+        image: registry.io.imim.cloud/bibliopro-data:1.1
+        args: [ "sh", "-c", 'cp /data/biblioprodb.sql.gz /docker-entrypoint-initdb.d' ]
+        volumeMounts:
+        - name: initdb
+          mountPath: /docker-entrypoint-initdb.d
+      imagePullSecrets:
+      - name: registryioimimcloud
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+      - name: initdb
+        emptyDir: {}

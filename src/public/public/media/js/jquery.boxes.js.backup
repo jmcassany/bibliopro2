@@ -1,0 +1,432 @@
+(function($) {
+
+	// default settings
+	var settings = {
+		/* box structure */
+		boxStructure: {
+			column: {
+				element: 'ul.boxes.clearfix',
+				childs: {
+					box: {
+						element: 'li.box.removable.renamable.collapsible',
+						childs: {
+							heading: {
+								element: 'div.heading',
+								html: '<h3>Change this title by clicking on it</h3>'
+							},
+							content: {
+								element: 'div.content'
+							}
+						}
+					}
+				}
+			}
+		},
+		/* elements */
+		/* IMPORTANT: if only a class or id is specified, element will be considered a DIV when creating a new box */
+		elements: {
+			// columns container
+			columns: 'ul.boxes',
+			// boxes container
+			boxes: 'li.box',
+			// controls container; controls ul will be prepended here (needs to be inside elements.box)
+			controls_container: 'div.heading',
+			// heading container (needs to be inside elements.box)
+			heading_container: 'div.heading',
+			// title of the box element(needs to be inside elements.heading_container)
+			title: 'h3',
+			// content container (needs to be inside elements.box)
+			content_container: 'div.content',
+			// collapsing button container; collapsing button will be prepended here (needs to be inside elements.box)
+			collapsing_button_container: 'div.heading'
+		},
+		// controls' classes
+		classes: {
+			controls: 'box-controls', // ul
+			not_connected: 'not-connected', // ul
+			collapse: 'collapse', // li
+			push: 'push', // li
+			push_off: 'push_off', // li
+			pop: 'pop', // li
+			pop_off: 'pop_off', // li
+			remove: 'remove', // li
+			// autodetection classes, only used if code at the end of the script is uncommented
+			auto_collapsible: 'collapsible',
+			auto_resizable: 'resizable',
+			auto_removable: 'removable'
+		},
+		// translations
+		i18n: {
+			collapse: 'Collapse',
+			push: 'Add one element',
+			pop: 'Remove one element',
+			remove: 'Close',
+			remove_confirm: 'This box will be deleted. Are you sure?',
+			remove_element_confirm: 'This element will be deleted. Are you sure?',
+			ui_not_included: 'You need to include the jQuery UI (Core and Sortable only required) script to be able to use the makeSortable() function. You can download it from http://jqueryui.com/download',
+		},
+		// default non-hidden elements when resizing lists
+		resize_limit: 3
+	};
+
+	// sortable elements default settings (check documentantion at http://jqueryui.com/demos/sortable/)
+	var sortable_settings = {
+		receive: function(event, ui) {
+			if (ui.sender.hasClass(settings.classes.not_connected)) {
+				$(ui.sender).sortable('cancel');
+			}
+		},
+		cursor: 'move',
+		delay: 150,
+		dropOnEmpty: true, // when a column becomes empty, items can still be moved into it
+		forceHelperSize: true, // helper inherits size from sender
+		forcePlaceholderSize: true, // placeholder inherits size from sender
+// 		handle: settings.elements.controls_container,
+		opacity: 0.75,
+		placeholder: 'placeholder',
+		tolerance: 'pointer',
+		revert: 250 // item gets into position with a smooth animation
+	}
+
+	// create a new box inside each element matched by selector
+	$.fn.createBox = function(options) {
+
+		// settings
+		$.extend(settings, options);
+
+		// build a 'content' html string for jquery append, prepend, etc... methods (returns a string)
+		function buildHtml (structure) {
+
+			// build a 'content' tag for jquery append, prepend, etc... methods (returns 2 element array)
+			function buildTag(selector, content) {
+
+				content = content ? content : '';
+
+				var html = new Array();
+
+				// try to guess box's elements
+				cols_c = selector.split('.');
+				cols_i = selector.split('#');
+				if (cols_c.length >= 1) {
+
+					var tag = cols_c[0];
+					for (i = 1, classes = ''; i < cols_c.length; i++) { classes = (i == 1) ? classes + cols_c[i] : classes + ' '+cols_c[i]; }
+
+					if (!classes) {
+
+						html[0] = tag ? '<'+tag+'>'+content : '<div>'+content;
+
+					}
+					else {
+
+						html[0] = tag ? '<'+tag+(classes ? ' class="'+classes+'"' : '')+'>'+content : '<div'+(classes ? ' class="'+classes+'"' : '')+'>'+content;
+						html[1] = tag ? '</'+tag+'>' : '</div>';
+
+					}
+
+				}
+				else if (cols_i.length >= 1) {
+
+					var tag = cols_i[0];
+					// allow only 1 id
+					var pre_id = cols_i[1].split(' ');
+					var id = pre_i[0];
+
+					html[0] = tag ? '<'+tag+(id ? ' id="'+id+'"' : '')+'>'+content : '<div'+(id ? ' id="'+id+'"' : '')+'>'+content;
+					html[1] = tag ? '</'+tag+'>' : '</div>';
+
+				}
+				else { return false; }
+
+				return html;
+
+			}
+
+			var ret = '';
+			var final = '';
+
+			for (var i in structure) {
+
+				if ((typeof structure[i]) == 'string') {
+
+					// if parameter is element selector, build tag
+					if (i == 'element') {
+
+						// if element got childs, don't close it till the end
+						if (typeof(structure['childs']) == 'object') {
+
+							// build with html content if specified
+							pre = structure['html'] ? buildTag(structure[i], structure['html']) : buildTag(structure[i]);
+							ret = pre[0]+ret;
+							final = pre[1] + final;
+
+						}
+						else {
+
+							// build with html content if specified
+							pre = structure['html'] ? buildTag(structure[i], structure['html']) : buildTag(structure[i]);
+							ret = (pre[0]+ret+pre[1]);
+
+						}
+
+					}
+
+				}
+				else {
+
+					// continue checking only the box (initial) or childs maps
+					ret = ret + buildHtml(structure[i]);
+					ret = ret + final;
+
+				}
+
+			}
+
+			return ret;
+
+		}
+
+		return this.each(function() {
+
+			var new_box_html = buildHtml(settings.boxStructure.column.childs);
+
+// 			alert (new_box_html);
+
+			$(this).prepend(new_box_html);
+
+		});
+
+	}
+
+	// make collapsible
+	$.fn.makeCollapsible = function(options) {
+
+		// settings
+    $.extend(settings, options);
+
+		return this.each(function() {
+
+			// create folding button
+			var collapsing_container = $(this).find(settings.elements.collapsing_button_container);
+
+			// check if remove button already exists
+			if (collapsing_container.children('.'+settings.classes.collapse).length == 0) {
+				collapsing_container.prepend('<span class="'+settings.classes.collapse+'"><a href="#">'+settings.i18n.collapse+'</a></span>');
+			}
+
+			// fold box when clicking folding button
+			$(this).find(settings.elements.collapsing_button_container).children('span.'+settings.classes.collapse).click(function() {
+				$(this).closest(settings.elements.boxes).find(settings.elements.content_container).slideToggle('fast');
+				$(this).toggleClass('collapsed');
+				return false;
+			});
+
+		});
+
+	};
+
+	// make removable
+	$.fn.makeRemovable = function(options) {
+
+		// settings
+		$.extend(settings, options);
+
+		return this.each(function() {
+
+			// create or add remove button to the controls list
+			var controls_container = $(this).find(settings.elements.controls_container);
+			// if specified controls container not found, make the removable element the container
+			if (controls_container.length == 0) controls_container = $(this);
+			var controls = controls_container.find('ul.'+settings.classes.controls);
+			// check if controls list already exists
+			if (controls.length > 0) {
+				// check if remove button already exists
+				if (controls.children('li.'+settings.classes.remove).length == 0) {
+					controls.append('<li class="'+settings.classes.remove+'"><a href="#">'+settings.i18n.remove+'</a></li>');
+				}
+			}
+			else {
+				controls_container.prepend('<ul class="'+settings.classes.controls+'"><li class="'+settings.classes.remove+'"><a href="#">'+settings.i18n.remove+'</a></li></ul>');
+			}
+			// reassing controls var in case it didnt exist
+			var controls = controls_container.find('ul.'+settings.classes.controls);
+
+			// delete box when clicking remove button
+			controls.find('li.'+settings.classes.remove+' > a').click(function() {
+				if (confirm(settings.i18n.remove_confirm)) {
+					$(this).closest(settings.elements.boxes).remove();
+				}
+				return false;
+			});
+
+		});
+
+	};
+
+	// make renamable
+	$.fn.makeRenamable = function(options) {
+
+		// settings
+		$.extend(settings, options);
+
+		return this.each(function() {
+
+			$(this).find(settings.elements.title).click(function() {
+
+				var title = $(this);
+				var pretxt = title.text();
+				var random_number = Math.floor(Math.random()*9999);
+
+				var input = title.parent().children('input[type="text"]');
+				if (input.length > 0) {
+     title.hide();
+				}
+				else {
+					title.after('<input type="text" name="title'+random_number+'" id="title'+random_number+'" value="'+pretxt+'">');
+					title.hide();
+					var input = $(this).parent().children('#title'+random_number);
+				}
+
+				input.show();
+				input.focus();
+				input.keyup(function(event) {
+					// if ENTER was pressed, hide input and change title
+					if (event.keyCode == 13) {
+						title.text($(this).val());
+						$(this).hide();
+						title.show();
+					}
+				});
+				input.blur(function() {
+					title.text($(this).val());
+					$(this).hide();
+					title.show();
+				});
+
+			});
+
+		});
+
+	};
+
+	// make resizable
+	$.fn.makeResizable = function(limit, options) {
+
+		// settings
+		$.extend(settings, options);
+
+		var limit = limit || settings.resize_limit;
+
+		return this.each(function() {
+
+			$(this).resizeList(limit);
+
+			// the list
+			var resizable_list = $(this);
+
+			// create/add more/less buttons to controls list
+			var controls_container = $(this).closest(settings.elements.boxes).find(settings.elements.controls_container);
+			var controls = controls_container.find('ul.'+settings.classes.controls);
+			if (controls.length > 0) {
+				controls.append('<li class="'+settings.classes.push+'"><a href="#">'+settings.i18n.push+'</a></li><li class="'+settings.classes.pop+'"><a href="#">'+settings.i18n.pop+'</a></li>');
+			}
+			else {
+				controls_container.prepend('<ul class="'+settings.classes.controls+'"><li class="'+settings.classes.push+'"><a href="#">'+settings.i18n.push+'</a></li><li class="'+settings.classes.pop+'"><a href="#">'+settings.i18n.pop+'</a></li></ul>');
+			}
+			// reassing controls var in case it didnt exist
+			var controls = controls_container.find('ul.'+settings.classes.controls);
+
+			// append the next element to the list
+			controls.children('li.'+settings.classes.push).children('a').click(function() {
+				var lis = resizable_list.children('li');
+				var last = lis.filter('li.last');
+				var max = lis.length;
+				var ind = lis.index(last);
+				if (ind <= (max-2)) {
+					last.next().addClass('last');
+					last.next().slideDown('fast');
+					last.removeClass('last');
+					if (ind == (max-2)) {
+						$(this).parent().addClass(settings.classes.push_off);
+						$(this).css('cursor', 'text');
+					}
+					if (ind == 0) {
+						var li_pop = $(this).parent().parent().children('li.'+settings.classes.pop);
+						li_pop.removeClass(settings.classes.pop_off);
+						li_pop.children('a').css('cursor', 'pointer');
+					}
+				}
+				return false;
+			});
+
+			// remove the last element from list
+			controls.children('li.'+settings.classes.pop).children('a').click(function() {
+				var lis = resizable_list.children('li');
+				var first = lis.filter('li:first');
+				var last = lis.filter('li.last');
+				var max = lis.length;
+				var ind = lis.index(last);
+				if (ind > 0) {
+					last.removeClass('last');
+					last.prev().addClass('last');
+					last.slideUp('fast');
+					if (ind == 1) {
+						$(this).parent().addClass(settings.classes.pop_off);
+						$(this).css('cursor', 'text');
+					}
+					if (ind == (max-1)) {
+						var li_push = $(this).parent().parent().children('li.'+settings.classes.push);
+						li_push.removeClass(settings.classes.push_off);
+						li_push.children('a').css('cursor', 'pointer');
+					}
+				}
+				return false;
+			});
+
+		});
+
+	};
+
+	// make sortable
+	$.fn.makeSortable = function(sortable_options, options) {
+
+		// check if jQueryUI's sortable function exist
+		if (typeof $().sortable != 'function') { alert(settings.i18n.ui_not_included); return false; }
+
+		// settings and sortable_settings
+		$.extend(settings, options);
+		$.extend(sortable_settings, sortable_options);
+
+		return this.each(function() {
+
+			// if not-connected class specified, disallow connection with other elements
+			if ($(this).hasClass(settings.classes.not_connected)) { $.extend(sortable_settings, { connectWith: '' }); }
+			else { $.extend(sortable_settings, sortable_options); }
+
+			$(this).sortable(sortable_settings); // you can add .disableSelection() to disable the selection of the boxes' content, making dragging easier
+
+		});
+
+	};
+
+	// hide list elements exceeding specified limit, show the rest
+	$.fn.resizeList = function(limit, options) {
+
+		// non-hidden elements
+		var limit = limit || settings.resize_limit;
+
+		// settings
+		$.extend(settings, options);
+
+		return this.each(function() {
+
+			$(this).children('li:gt('+(limit-1)+')').removeClass('last');
+			$(this).children('li:gt('+(limit-1)+')').hide();
+			$(this).children('li:eq('+(limit-1)+')').addClass('last');
+			$(this).children('li:lt('+(limit)+')').show();
+
+		});
+
+	};
+
+})(jQuery);

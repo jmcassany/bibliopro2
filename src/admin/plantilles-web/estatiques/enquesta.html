@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+<head>
+
+	|block-static-metas_css|
+
+</head>
+<body>
+<div id="marc"><a name="dalt" id="dalt"></a>
+
+	|block-static-capsalera|
+
+	|block-static-etsa|
+	<div id="cos">
+		<div id="barraLateral-1">
+			<div id="navPrincipal">
+				|MENUESQUERRA|
+			</div>
+		</div>
+		<div id="caixaContingut">
+		<div id="contingut">
+			<div class="subTitol clearfix">
+				<span class="dreta"><a href="index.html">&lt;&lt; Tornar</a></span>
+				<h2>|Titol|</h2>
+			</div>
+			
+			<?php
+			$CONFIG_PATHBASE = '|CONFIG_PATHBASE|';
+			
+			$num_opcions = "";
+			$veure_anteiors = "";
+			$anteriors = "";
+			
+			@include_once($CONFIG_PATHBASE.'/media/enquesta/result-enquesta.inc');
+			?>
+
+		 <div class="pujar"><a href="#dalt">Pujar</a></div>
+		</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+	|block-static-peu|
+
+</div>
+</body>
+</html>

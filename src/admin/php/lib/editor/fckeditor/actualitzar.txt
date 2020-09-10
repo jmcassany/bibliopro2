@@ -1,0 +1,8 @@
+﻿Normes per afavorir l'actualització del fckeditor:
+
+- Tots els canvis de configuració posar-los a editor.php o al houdini.js
+- no es modifica cap fitxer de la carpeta fckeditor_263b, fer-los a la carpeta plugins
+
+Realitzar el canvi:
+- posar la nova versió de l'editor
+- comprovar que els plugins funcionen

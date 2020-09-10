@@ -1,0 +1,722 @@
+	/* controls caixes portada */
+	#page #frontpage_controls {
+		border-bottom: 2px solid #ccc;
+		padding: 12px 15px;
+		background: #e5e5e5;
+	}
+			#page #frontpage_controls ul.actions {
+				display: inline;
+				clear: left;
+				float: left;
+			}
+				#page #frontpage_controls ul.actions li {
+					display: inline; /* ie6fh */
+					float: left;
+					margin: 0 15px 0 0;
+				}
+						#page #frontpage_controls ul.actions li.add a {
+							width: 172px;
+							height: 34px;
+							padding: 0;
+							text-indent: -9999em;
+							background: url('img/bg_add_boxes.png') no-repeat 100% 50%;
+						}
+							#page #frontpage_controls ul.actions li.add a:hover {
+								background: url('img/bg_add_boxes_hover.png') no-repeat 100% 50%;
+							}
+					#page #frontpage_controls ul.actions li a {
+						display: inline; /* ie6fh */
+						float: left;
+						padding: 7px 0 7px;
+						color: #444;
+					}
+			#page #frontpage_controls ul.extra {
+				display: inline;
+				clear: right;
+				float: right;
+			}
+				#page #frontpage_controls ul.extra li {
+					display: inline; /* ie6fh */
+					float: left;
+					margin: 2px 0 0 30px;
+				}
+						#page #frontpage_controls ul.extra li.help a {
+							padding: 6px 42px 6px 0;
+							background: url('img/bg_help.jpg') no-repeat 100% 50%;
+						}
+						#page #frontpage_controls ul.extra li.preview a {
+							padding: 6px 42px 6px 0;
+							background: url('img/bg_preview.png') no-repeat 100% 50%;
+						}
+					#page #frontpage_controls ul.extra li a {
+						display: inline; /* ie6fh */
+						float: left;
+						padding: 6px 0;
+						color: #0d4499;
+						font-weight: bold;
+					}
+						#page #frontpage_controls ul.extra li a:hover {
+							color: #000;
+						}
+	/* contenidor afegir caixa */
+	#page #addBox {
+		margin: 0 0 1em 0;
+		border-bottom: 2px solid #cacaca;
+		padding: 18px 20px;
+		background: #efefef;
+	}
+			#page #addBox input.chooseEntries, #page #addBox input.applyChanges {
+				width: 172px;
+				height: 34px;
+				text-indent: -9999em;
+				color: #fff;
+				cursor: pointer;
+				background: url('img/bg_add_box.png') no-repeat;
+			}
+				#page #addBox input.chooseEntries:hover, #page #addBox input.applyChanges:hover {
+					background: url('img/bg_add_box_hover.png') no-repeat;
+				}
+		#page #addBox legend {
+			display: block;
+			width: 100%;
+			margin: 0 0 1em 0;
+			padding: 0 0 .75em 0;
+			color: #333;
+			font-size: 1.25em; /* 15px */
+			font-weight: bold;
+			background: url('img/bg_addbox_legend.gif') repeat-x 0 100%;
+		}
+			#page #addBox #newItemsForm fieldset {
+				margin: 0 0 15px 0;
+			}
+			#page #addBox #newItemsForm label {
+				display: block;
+				vertical-align: middle;
+				margin: 0 0 5px 0;
+				border: 1px solid #fff;
+				border-radius: .5em;
+				-khtml-border-radius: .5em;
+				-moz-border-radius: .5em;
+				-webkit-border-radius: .5em;
+				padding: .5em 10px;
+				color: #333;
+				background: #fff;
+			}
+				#page #addBox #newItemsForm label:hover {
+					border: 1px solid #c1edaf;
+					background: #e7f8e0;
+				}
+					#page #addBox #newItemsForm label.checked:hover {
+						border: 1px solid #eeb0ae;
+						background: #f9e0df;
+					}
+				#page #addBox #newItemsForm label input {
+					width: auto;
+					vertical-align: middle;
+					margin: 0 .5em 0 0;
+					border: 0;
+					padding: 0;
+				}
+			#page #addBox #newBoxForm label {
+				display: inline;
+				float: left;
+				margin: 0 3% 1em 0;
+				padding: 0;
+				color: #333;
+			}
+				#page #addBox #newBoxForm label input, #page #addBox #newBoxForm label select {
+					width: 180px;
+					margin: 0 0 0 .333em;
+					border: 1px solid #ccc;
+					padding: .333em .5em;
+					color: #666;
+					font-size: 1em;
+					background: #fff;
+				}
+					#page #addBox #newBoxForm label input:focus, #page #addBox #newBoxForm label select:focus {
+						border: 1px solid #666;
+						color: #333;
+					}
+				#page #addBox #newBoxForm label select {
+					cursor: pointer;
+					width: auto !important;
+				}
+				#page #addBox #newBoxForm label span {
+
+				}
+				#page #addBox #newBoxForm label.nomargin {
+					margin-right: 0;
+				}
+	/* contenidor principal */
+	#page #content {
+		margin: 18px 24px;
+		padding: 0;
+	}
+		#page a {
+			outline: 0;
+			color: #006699;
+		}
+		#page a.boto{
+		  color:#FFF;
+		}
+		#page #content input {
+			outline: 0;
+		}
+		/* DOM */
+		/* contenidors */
+			/* columna de caixes esquerra */
+			#page #content div.column_left {
+				display: inline; /* ie6fh */
+				clear: left;
+				float: left;
+				width: 619px;
+			}
+			/* columna de caixes dreta */
+			#page #content div.column_right {
+				display: inline; /* ie6fh */
+				clear: right;
+				float: right;
+				width: 304px;
+			}
+		/* formularis */
+				#page form #content div.previewButton {
+					margin: 0 0 15px 0;
+					border-bottom: 1px solid #666;
+					border-radius: 8px;
+					-khtml-border-radius: 8px;
+					-moz-border-radius: 8px;
+					-webkit-border-radius: 8px;
+					background: #0e449a url('img/bg_preview_button_fade.png') repeat-x;
+				}
+				#page form #content input.send {
+					cursor: pointer;
+					min-width: 100%;
+					margin: 0;
+					border: 0;
+					padding: .692em 80px;
+					color: #fff;
+					font-size: 2.167em; /* 26px */
+					font-weight: normal;
+					text-align: center;
+					text-shadow: #000 1px 1px 1px;
+					background: url('img/bg_preview_button.png') no-repeat 10px 50%;
+				}
+					#page form #content input.send:hover {
+						color: #333;
+						text-shadow: #efefef 1px 1px 1px;
+					}
+			#page form #content label {
+				display: block;
+				margin: 0 0 1.5em 0;
+			}
+		/* imatges */
+			#page #content img.left {
+				display: inline; /* ie6fh */
+				float: left;
+				margin: 2px 20px 10px 0;
+			}
+			#page #content img.right {
+				display: inline; /* ie6fh */
+				float: right;
+				margin: 2px 0 10px 20px;
+			}
+		/* llistes ordenades */
+		#page #content ol {
+			margin: 0 0 1.25em 30px;
+		}
+			#page #content ol li {
+				margin: 0 0 .167em 0;
+			}
+		/* paràgrafs */
+			/* data */
+			#page #content p.date {
+				margin: 0 0 .75em 0;
+				color: #666;
+			}
+			/* poc marge (¡no moure!) */
+			#page #content p.littlemargin {
+				margin: 0 0 .333em 0;
+			}
+			/* sense marge (¡no moure!) */
+			#page #content p.nomargin {
+				margin: 0;
+			}
+			/* caixes portada */
+				#page #content div.column_right ul.boxes li.box div.content ul.gallery li.box,
+				#page #content div.column_right ul.boxes li.box div.content ul.caixes li.box {
+					width: 94%;
+				}
+			#page #content ul.boxes  {
+				display: inline; /* ie6fh */
+				float: left;
+				width: 100%;
+				min-height: 40px; height: auto !important; height: 40px;
+				margin: 0 11px 0 0;
+				padding: 0 0 6px 0;
+				background: url('img/bg_boxes_ul.gif') no-repeat;
+			}
+			/* doble amplada */
+					/* caixa normal */
+					#page #content ul.boxes li.box {
+						position: relative;
+						margin: 0 0 12px 0;
+						padding: 0;
+						background: #fff url('img/bg_boxes_li.png') repeat-y 50% 100%;
+					}
+							#page #content ul.boxes li.box div.addEntries {
+								position: relative;
+								clear: both;
+								border: 1px solid #ccc;
+								border-top: 1px solid #fafafa;
+								padding: 12px 14px;
+								background: #efefef;
+							}
+								#page #content ul.boxes li.box div.addEntries fieldset {
+									margin: 0 0 10px 0;
+								}
+									#page #content ul.boxes li.box div.addEntries input.applyChanges {
+										width: 172px;
+										height: 34px;
+										text-indent: -9999em;
+										color: #fff;
+										cursor: pointer;
+										background: url('img/bg_add_entries_button.png') no-repeat;
+									}
+										#page #content ul.boxes li.box div.addEntries input.applyChanges:hover {
+											background: url('img/bg_add_entries_button_hover.png') no-repeat;
+										}
+								#page #content ul.boxes li.box div.addEntries label {
+									vertical-align: middle;
+									margin: 0 0 5px 0;
+									border: 1px solid #fff;
+									border-radius: .5em;
+									-khtml-border-radius: .5em;
+									-moz-border-radius: .5em;
+									-webkit-border-radius: .5em;
+									padding: .5em 10px;
+									color: #333;
+									background: #fff;
+								}
+									#page #content ul.boxes li.box div.addEntries label:hover {
+										border: 1px solid #c1edaf;
+										background: #e7f8e0;
+									}
+										#page #content ul.boxes li.box div.addEntries label.checked:hover {
+											border: 1px solid #eeb0ae;
+											background: #f9e0df;
+										}
+									#page #content ul.boxes li.box div.addEntries label input {
+										width: auto !important;
+										vertical-align: middle;
+										margin: 0 .5em 0 0;
+										border: 0;
+										padding: 0;
+									}
+								#page #content ul.boxes li.box div.addEntries legend {
+									margin: 0 0 .75em 0;
+									color: #333;
+									font-size: 1.083em; /* 13px */
+									font-weight: bold;
+								}
+							#page #content ul.boxes li.box div.content {
+								position: relative;
+								clear: both;
+								border: 1px solid #ccc;
+								border-top: 0;
+								padding: 10px 12px 4px 12px;
+								background: #fff;
+							}
+							/* variations */
+							#page #content ul.boxes li.highlighted div.content {
+								background: #ccccff; /* e6dbdb */
+							}
+							#page #content ul.boxes li.extra div.content {
+								background: #ffffcc; /* e6dbdb */
+							}
+							#page #content ul.boxes li.superextra div.content {
+								background: #ccffff; /* e6dbdb */
+							}
+											#page #content ul.boxes li.box div.content ul li.box img {
+												max-width: 100%;
+											}
+									/* galeria */
+									#page #content ul.boxes li.box div.content ul.gallery {
+										position: relative;
+										margin: 0 -5% 0 0;
+									}
+										#page #content ul.boxes li.box div.content ul.gallery li.box {
+											display: inline; /* ie6fh */
+											float: left;
+											width: 29.5%;
+											margin: 0 3% 10px 0;
+											border: 1px solid #e0e0e0;
+											padding: 0;
+											line-height: 0;
+											text-align: center;
+											background: #fff;
+										}
+												#page #content ul.boxes li.box div.content ul.gallery li.box div.spacer {
+													padding: 10px;
+												}
+										#page #content ul.boxes li.box div.content ul.gallery li.highlighted {
+											background: #cc0000;
+										}
+										#page #content ul.boxes li.box div.content ul.gallery li.extra {
+											background: #000;
+										}
+									/* caixes */
+									#page #content ul.boxes li.box div.content ul.caixes {
+										position: relative;
+										margin: 0 -5% 0 0;
+									}
+										#page #content ul.boxes li.box div.content ul.caixes li.box {
+											display: inline; /* ie6fh */
+											float: left;
+											width: 95%;
+											margin: 0 3% 10px 0;
+											border: 1px solid #e0e0e0;
+											padding: 0;
+											line-height: 0;
+											text-align: center;
+											background: #f0f0f0;
+										}
+												#page #content ul.boxes li.box div.content ul.caixes li.box div.spacer {
+													padding: 1em 12px .5em 12px;
+												}
+										#page #content ul.boxes li.box div.content ul.caixes li.highlighted {
+											background: #f8e0e8;
+										}
+										#page #content ul.boxes li.box div.content ul.caixes li.extra {
+											background: #e0e0e0;
+										}
+									/* llistat (format notícies) */
+									#page #content ul.boxes li.box div.content ul.listing {
+										position: relative;
+										margin: 0 0 .25em 0;
+									}
+										#page #content ul.boxes li.box div.content ul.listing li.box {
+											position: relative;
+											margin: 0 0 12px 0;
+											border: 1px solid #ccc;
+											padding: 0;
+											background: #fff;
+										}
+												#page #content ul.boxes li.box div.content ul.listing li.box div.spacer {
+													padding: 1em 12px .5em 12px;
+												}
+											#page #content ul.boxes li.box div.content ul.listing li.box h4 {
+												margin: 0 0 .15em 0;
+											}
+										#page #content ul.boxes li.box div.content ul.listing li.highlighted {
+											background: #fff url('img/bg_boxes_highlighted.png') repeat-x;
+										}
+										#page #content ul.boxes li.box div.content ul.listing li.extra {
+											background: #deebcb;
+										}
+										#page #content ul.boxes li.box div.content ul.listing li.last {
+											margin-bottom: 5px;
+										}
+									#page #content ul.boxes li.box div.content ul.double {
+										margin: 0 -4% 0 1%;
+										padding: 0;
+									}
+										#page #content ul.boxes li.box div.content ul.double li.box {
+											position: relative;
+											display: inline;
+											z-index: 0;
+											float: left;
+											width: 46%;
+											margin: 0 2.5% 12px 0;
+										}
+										#page #content div.column_left li.box div.content ul.double li.box {
+											width: 45.5%;
+											margin: 0 3% 12px 0;
+										}
+										#page #content ul.boxes li.box div.content ul.double li.placeholder {
+											width: 46%;
+											margin: 0 2.5% 12px 0;
+										}
+										#page #content div.column_left li.box div.content ul.double li.placeholder {
+											width: 45.5%;
+											margin: 0 3% 12px 0;
+										}
+											#page #content ul.boxes li.box div.content ul.double li.clear {
+												clear: both;
+											}
+										#page #content ul.boxes li.box div.content ul.noir li.box {
+											border-color: #000;
+										}
+									/* controls inside listings */
+									#page #content ul.boxes li.box div.content div.elementControls {
+										clear: both;
+										position: relative;
+										background: #ccc;
+									}
+											#page #content ul.boxes li.box div.content div.elementControls ul.box-controls {
+												position: relative;
+												bottom: 0;
+												margin: 0;
+												border-left: 1px solid #fff;
+												padding: .75em .25em .75em 1.25em;
+											}
+											#page #content ul.boxes li.box div.content div.elementControls ul.stylingControls {
+
+											}
+												#page #content ul.boxes li.box div.content div.elementControls ul.box-controls li {
+													position: relative;
+													margin: 0 5px 0 0;
+													border: 0;
+													padding: 0;
+													background: none;
+												}
+														#page #content ul.boxes li.box div.content div.elementControls ul.box-controls li.remove a {
+															width: auto !important;
+															height: auto !important;
+															padding: 0 22px 0 0;
+															color: #000;
+															line-height: 1.4em;
+															text-indent: inherit;
+															background: url('img/bg_boxes_box_remove.png') no-repeat 100% 50%;
+														}
+							#page #content ul.boxes li.box div.heading {
+								position: relative;
+								clear: both;
+								height: 1%;
+								cursor: move;
+								border: 1px solid #ccc;
+								padding: 6px 14px;
+								background: #efefef;
+							}
+								#page #content ul.boxes li.box div.heading input {
+									display: inline-block;
+									width: 300px;
+									margin: 0;
+									border: 1px solid #ccc;
+									padding: 3px;
+									color: #666;
+									font-family: verdana, sans-serif;
+									font-size: 1.25em; /* 15px */
+									font-weight: bold;
+									line-height: 1.2em;
+									background: #fff;
+								}
+								#page #content div.column_right ul.boxes li.box div.heading input {
+									width: 180px;
+								}
+									#page #content ul.boxes li.box div.heading input:focus {
+										border: 1px solid #999;
+										color: #000;
+									}
+									#page #content ul.boxes li.box div.heading span.add {
+										display: inline;
+										float: right;
+										margin: 4px 0 2px 6px;
+									}
+										#page #content ul.boxes li.box div.heading span.add a {
+											float: left;
+											width: 22px;
+											height: 22px;
+											text-indent: -9999em;
+											background: url('img/bg_box_actions_push.png') no-repeat;
+										}
+								#page #content ul.boxes li.box div.heading h3 {
+									display: inline-block;
+									cursor: help;
+								}
+							#page #content ul.boxes li.box div.stylingControls {
+								background: #ccc;
+							}
+						#page #content ul.boxes li.box ul {
+							margin: 0 0 1em 0;
+						}
+							#page #content ul.boxes li.box ul.elementStylingControls,
+							#page #content ul.boxes li.box ul.listStylingControls,
+							#page #content ul.boxes li.box ul.boxStylingControls {
+								display: inline;
+								clear: left;
+								float: left;
+								margin: 0;
+								padding: .75em;
+								font-size: .927em; /* 11px */
+								background: #ccc;
+							}
+							#page #content ul.boxes li.box ul.elementStylingControls {
+								padding: .5em .75em;
+							}
+							#page #content ul.boxes li.box ul.listStylingControls {
+								clear: right;
+								float: right;
+								border-left: 1px solid #e6e6e6;
+								padding: .75em .75em .75em 1em;
+								background: #ccc url('img/bg_list_styling_controls.png') no-repeat 0 50%;
+							}
+								#page #content ul.boxes li.box ul.elementStylingControls li,
+								#page #content ul.boxes li.box ul.listStylingControls li,
+								#page #content ul.boxes li.box ul.boxStylingControls li {
+									display: inline;
+									float: left;
+									margin: 0 .75em 0 0;
+									border-right: 1px solid #ccc;
+									padding: 0;
+									line-height: 1em;
+								}
+										#page #content ul.boxes li.box ul.elementStylingControls li.current a,
+										#page #content ul.boxes li.box ul.listStylingControls li.current a,
+										#page #content ul.boxes li.box ul.boxStylingControls li.current a,
+										#page #content ul.boxes li.box ul.elementStylingControls li.current a:hover,
+										#page #content ul.boxes li.box ul.listStylingControls li.current a:hover,
+										#page #content ul.boxes li.box ul.boxStylingControls li.current a:hover
+										{
+											color: #fff;
+											background: #333;
+										}
+									#page #content ul.boxes li.box ul.elementStylingControls li a,
+									#page #content ul.boxes li.box ul.listStylingControls li a,
+									#page #content ul.boxes li.box ul.boxStylingControls li a {
+										display: block;
+										border-radius: .5em;
+										-khtml-border-radius: .5em;
+										-moz-border-radius: .5em;
+										-webkit-border-radius: .5em;
+										padding: .25em .5em;
+										color: #666;
+										line-height: 1.667em;
+										box-shadow: 2px 2px 5px #bbb;
+										-khtml-box-shadow: 2px 2px 5px #bbb;
+										-moz-box-shadow: 2px 2px 5px #bbb;
+										-webkit-box-shadow: 2px 2px 5px #bbb;
+										background: #e0e0e0;
+									}
+										#page #content ul.boxes li.box ul.elementStylingControls li a:hover,
+										#page #content ul.boxes li.box ul.listStylingControls li a:hover,
+										#page #content ul.boxes li.box ul.boxStylingControls a:hover {
+											color: #444;
+											text-decoration: none;
+											background: #fff;
+										}
+							#page #content ul.boxes li.box ul li.element {
+								margin: 0 0 .5em 0;
+								padding: 0;
+								background: none;
+							}
+							#page #content ul.boxes li.box ul.box-controls {
+								display: inline; /* ie6fh */
+								float: right;
+								margin: 0;
+							}
+								#page #content ul.boxes li.box ul.box-controls li {
+									display: inline; /* ie6fh */
+									float: left;
+									margin: 3px 0 3px 6px;
+									border: 0;
+									padding: 0;
+								}
+										#page #content ul.boxes li.box ul.box-controls li.add a {
+											float: left;
+											width: 22px;
+											height: 22px;
+											text-indent: -9999em;
+											background: url('img/bg_box_actions_push.png') no-repeat;
+										}
+										#page #content ul.boxes li.box ul.box-controls li.add_off a {
+											background: url('img/bg_box_actions_push_off.png') no-repeat;
+										}
+										#page #content ul.boxes li.box ul.box-controls li.remove a {
+											float: left;
+											width: 22px;
+											height: 22px;
+											text-indent: -9999em;
+											background: url('img/bg_box_actions_remove.png') no-repeat;
+										}
+					#page #content ul.boxes li.placeholder {
+						border: 1px dotted #bbb;
+						padding: 0;
+						background: #efefef;
+					}
+					#page #content ul.boxes li h3 {
+						clear: none;
+						margin: 0;
+						padding: 5px;
+						color: #000;
+						font-size: 1.25em; /* 15px */
+						font-weight: bold;
+					}
+					#page #content ul.boxes li h4 {
+						font-size: 1.167em; /* 14px */
+						font-weight: bold;
+					}
+					#page #content ul.boxes li h6 {
+						margin: 0 12px 1em 12px;
+						color: #00528d;
+						font-size: 1.083em;
+						font-weight: bold;
+					}
+						#page #content ul.boxes li span.collapse {
+							cursor: pointer;
+							display: inline; /* ie6fh */
+							float: left;
+							width: 10px;
+							height: 1.25em;
+							margin: 7px .333em 0 0;
+							padding: 0;
+							text-indent: -9999em;
+							background: url('img/bg_box_actions_collapse.gif') no-repeat 0 50%;
+						}
+						#page #content ul.boxes li span.collapsed {
+							background: url('img/bg_box_actions_collapsed.gif') no-repeat 1px 50%;
+						}
+			/* dos columnes (netes) */
+			#page #content ul.double {
+				margin: 0;
+				padding: 0 0 .25em 0;
+			}
+				#page #content ul.double li.box {
+					display: inline; /* ie6fh */
+					float: left;
+					width: 48%;
+					height: 1%;
+					margin: 0 3% 10px 0;
+					padding: 0;
+					background: none;
+				}
+					#page #content ul.double li.placeholder {
+						display: inline; /* ie6fh */
+						width: 48%;
+						margin: 0 3% 10px 0;
+						padding: 0;
+					}
+			/* llistat simple editores */
+			#page #content ul.listing {
+				position: relative;
+				margin: 0 0 1.5em 0;
+			}
+					#page #content ul.listing li.element {
+						margin: 0 0 1em 0;
+						padding: 0 0 15px 0;
+						background: url('img/bg_listing_separator.jpg') no-repeat 100% 100%;
+					}
+						#page #content ul.listing li.element h3 {
+							clear: none;
+							margin: 0 0 .375em 0;
+						}
+							#page #content ul.listing li.element h3.big {
+								margin: 0 0 .222em 0;
+								font-size:
+							}
+							#page #content ul.listing li.element h3 span {
+								display: inline;
+							}
+						#page #content ul.listing li.element h6 {
+							margin: 0 0 .5em 0;
+						}
+						#page #content ul.listing li.highlighted h6 {
+							display: inline;
+							float: left;
+							margin: 0 .75em 0 0;
+						}
+					#page #content ul.listing li.last {
+						border: none;
+					}
+			#page #content ul.nomargin {
+				margin-right: 0;
+			}

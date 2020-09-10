@@ -1,0 +1,17 @@
+## activar registrar les variables globals
+php_value register_globals 1
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase //servicios/noticias
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^calendar/([0-9]+)$ vcalendar.php?id=$1 [QSA]
+RewriteRule ^calendar/([0-9]+)/(.*)$ vcalendar.php?id=$1 [QSA]
+
+RewriteRule ^([0-9]+)$ view.php?ID=$1 [QSA]
+RewriteRule ^([0-9]+)/(.*)$ view.php?ID=$1 [QSA]
+RewriteRule ^cat/([0-9]+)$ index.php?CATEGORY2=$1 [QSA]
+RewriteRule ^cat/([0-9]+)/(.*)$ index.php?CATEGORY2=$1 [QSA]
+</IfModule>

@@ -1,0 +1,416 @@
+<?php
+require_once("/var/www/html//media/php/formmail.php");
+gestionaFormulari("Servicio de entrada de datos", "bibliopro@imim.es", "/respuesta.html");
+?><?php
+require_once('/var/www/html//config.php');
+$id = '12';
+$idioma = 'es';
+$pare = '1';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '' , 'title' => 'Servicio de entrada de datos' , 'nom' => 'Servicio de entrada de datos'));
+$folderArray = array();
+$folderIds = array();
+$folderUrl = '//contacto_entrada_datos.html';
+$pageUrl = '/contacto_entrada_datos.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><?php
+
+	$envia = "Enviar";
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Servicio de entrada de datos - BiblioPRO</title>
+		<meta name="description" content="" />
+		<meta name="Keywords" content="" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// fill and hide simple captcha
+				var sum1 = <?php echo $captcha['sum1']; ?>;
+				var sum2 = <?php echo $captcha['sum2']; ?>;
+				var captcha = $('#captchaContainer');
+				captcha.find('input[type="text"]').val(sum1 + sum2);
+				captcha.hide();
+			});
+		</script>
+
+	
+		<script src="/media/js/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="/media/js/jquery.metadata.min.js" type="text/javascript"></script>
+
+		<script src="/media/js/jquery.validate.messages_es.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+		$().ready(function() {
+			// validate the comment form when it is submitted
+			$("#form1").validate();
+		});
+		</script>
+</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="broken border clearfix">
+					<h2>Servicio de entrada de datos</h2>
+					<p>Por favor, para <strong>solicitar el <a rel="external" href="http://www.antaviana.com/servicios/entrada-datos.html">servicio de entrada de datos </a></strong>&nbsp;ofrecido por BiblioPRO, rellene los datos siguientes.</p>
+				</div>
+
+				<form action="contacto_entrada_datos.html" method="post" id="form1" enctype="multipart/form-data">
+
+					<div class="broken border clearfix">
+		<p class="textFormulari">1. Descripción del servicio solicitado</p>
+		
+		<label for="siglas">
+			<span>Siglas del cuestionario</span>
+			<input type="text" name="siglas" id="siglas" value="" class="formulari normal"  tabindex="1"  />
+		</label>
+
+		<label for="cuestionario">
+			<span>Nombre del cuestionario</span>
+			<input type="text" name="cuestionario" id="cuestionario" value="" class="formulari normal"  tabindex="2"  />
+		</label>
+
+		<label for="número">
+			<span>Número de cuestionarios</span>
+			<input type="text" name="número" id="número" value="" class="formulari normal {required:true}"  tabindex="3"  />
+		</label>
+
+		<label for="formato"><span>Formato de envío</span>
+			<select name="formato" id="formato"   tabindex="4">
+
+			<option value="papel">papel</option>
+			<option value="electrónico">electrónico</option>
+			</select>
+		</label>
+
+		<label for="devolucion"><span>En caso de enviarnos la documentación en papel, por favor, indique si al finalizar el servicio: </span>
+			<select name="devolucion" id="devolucion"   tabindex="5">
+
+			<option value="quiere que le sea devuelta (costes a su cargo)">quiere que le sea devuelta (costes a su cargo)</option>
+			<option value=" prefiere que la destruyamos"> prefiere que la destruyamos</option>
+			</select>
+		</label>
+
+		<label for="solicitud">
+			<span>Fecha de Solicitud</span>
+			<input type="text" name="solicitud" id="solicitud" value="" class="formulari normal"  tabindex="6"  />
+		</label>
+
+		<label for="archivo"><span>Tipo de archivo solicitado</span>
+			<select name="archivo" id="archivo"   tabindex="7">
+
+			<option value="Excel">Excel</option>
+			<option value=" SPSS"> SPSS</option>
+			<option value=" Otros"> Otros</option>
+			</select>
+		</label>
+
+		<label for="otros">
+			<span>Otros</span>
+			<input type="text" name="otros" id="otros" value="" class="formulari normal"  tabindex="8"  />
+		</label>
+
+		<p class="textFormulari">2. Datos del solicitante</p>
+		
+		<label for="nombre-apellidos">
+			<span>Nombre y Apellidos</span>
+			<input type="text" name="nombre-apellidos" id="nombre-apellidos" value="" class="formulari normal"  tabindex="9"  />
+		</label>
+
+		<label for="correo electrónico">
+			<span>Correo Electrónico</span>
+			<input type="text" name="correo electrónico" id="correo electrónico" value="" class="formulari normal"  tabindex="10"  />
+		</label>
+
+		<label for="telefono">
+			<span>Teléfono de contacto</span>
+			<input type="text" name="telefono" id="telefono" value="" class="formulari normal {required:true}"  tabindex="11"  />
+		</label>
+
+		<p class="textFormulari">3. Datos de facturación (FIMIM le enviará una factura en cuanto hayamos finalizado el servicio)</p>
+		
+		<label for="nombre">
+			<span>Nombre</span>
+			<input type="text" name="nombre" id="nombre" value="" class="formulari normal"  tabindex="12"  />
+		</label>
+
+		<label for="razón social">
+			<span>Razón Social</span>
+			<input type="text" name="razón social" id="razón social" value="" class="formulari normal"  tabindex="13"  />
+		</label>
+
+		<label for="NIF">
+			<span>NIF / NIE / VAT</span>
+			<input type="text" name="NIF" id="NIF" value="" class="formulari normal"  tabindex="14"  />
+		</label>
+
+		<label for="domicilio">
+			<span>Domicilio</span>
+			<input type="text" name="domicilio" id="domicilio" value="" class="formulari normal"  tabindex="15"  />
+		</label>
+
+		<label for="ciudad">
+			<span>Ciudad</span>
+			<input type="text" name="ciudad" id="ciudad" value="" class="formulari normal"  tabindex="16"  />
+		</label>
+
+		<label for="código postal">
+			<span>Código Postal</span>
+			<input type="text" name="código postal" id="código postal" value="" class="formulari normal"  tabindex="17"  />
+		</label>
+
+		<label for="telefono">
+			<span>Teléfono/Fax</span>
+			<input type="text" name="telefono" id="telefono" value="" class="formulari normal"  tabindex="18"  />
+		</label>
+
+		<label for="correo">
+			<span>Correo Electrónico</span>
+			<input type="text" name="correo" id="correo" value="" class="formulari normal"  tabindex="19"  />
+		</label>
+
+		<p class="textFormulari">4. Archivo y otros</p>
+		
+		<label for="descuento"><span>Soy investigador PSMAR o CIBERESP (y adjunto información)</span> <input type="file" name="descuento" id="descuento" value="" /></label>
+
+		<div class="textarea">
+			<label for="adjunto"><span>Otros</span></label>
+			<textarea cols="40" rows="8" name="adjunto" id="adjunto" class=""   tabindex="20"></textarea>
+		</div>
+</div>
+
+					<div id="captchaContainer" class="clearfix">
+						<label for="captcha">
+							<span>¿Cuánto suman <?php echo $captcha['sum1']; ?> + <?php echo $captcha['sum2']; ?>?</span>
+							<input type="text" id="captcha" name="captcha" class="required" />
+						</label>
+						<input type="hidden" name="timestamp" id="timestamp" value="<?php echo $captcha['timestamp']; ?>" />
+					</div>
+
+					<div><input type="submit" name="enviar" value="<?php echo $envia; ?>" class="buttonSubmit send" /></div>
+
+				</form>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

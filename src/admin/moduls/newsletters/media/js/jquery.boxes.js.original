@@ -1,0 +1,429 @@
+(function($) {
+
+	// box structure
+	var boxStructure = {
+		column: {
+			element: 'ul.boxes.clearfix',
+			childs: {
+				box: {
+					element: 'li.box.removable.renamable.collapsible',
+					childs: {
+						heading: {
+							element: 'div.heading',
+							html: '<h3>Change this title by clicking on it</h3>'
+						},
+						content: {
+							element: 'div.content'
+						}
+					}
+				}
+			}
+		}
+	}
+
+	function getFirstClass (selector) { var parts = selector.split('.'); return ((parts.length > 1) ? parts[0]+'.'+parts[1] : selector); }
+
+	// default settings
+	var settings = {
+		// translations
+		i18n: {
+			collapse: 'Collapse',
+			push: 'Add one element',
+			pop: 'Remove one element',
+			remove: 'Close',
+			removeConfirm: 'This box will be deleted. Are you sure?',
+			removeElementConfirm: 'This element will be deleted. Are you sure?',
+			uiNotIncluded: 'You need to include the jQuery UI (Core and Sortable only required) script to be able to use the makeSortable() function. You can download it from http://jqueryui.com/download'
+		},
+		// IMPORTANT: if only classes or an id is specified, element will be considered a DIV when creating a new box
+		elements: {
+			boxes: getFirstClass(boxStructure.column.childs.box.element), // box element (needs to match boxStructure.column.childs.box.element)
+			controlsContainer: getFirstClass(boxStructure.column.childs.box.childs.heading.element), // controls container: controls' ul will be prepended here (needs to be a child of elements.boxes)
+			headingContainer: getFirstClass(boxStructure.column.childs.box.childs.heading.element), // heading container (needs to be a child of elements.boxes)
+			title: 'h3', // box's title (needs to be a child of elements.headingContainer)
+			contentContainer: getFirstClass(boxStructure.column.childs.box.childs.content.element), // content container (needs to be a child of elements.boxes in boxStructure)
+			collapsingButtonContainer: getFirstClass(boxStructure.column.childs.box.childs.heading.element) // collapsing button container; collapsing button will be prepended here (needs to be a child of elements.boxes in boxStructure)
+		},
+		// controls' classes (IF YOU WANT TO STYLE BOXES' CONTROLS, CHECK THIS VALUES AND ADAPT TO YOUR NEEDS)
+		classes: {
+			controls: 'box-controls', // ul
+			notConnected: 'not-connected', // ul
+			collapse: 'collapse', // li
+			push: 'push', // li
+			pushOff: 'push-off', // li
+			pop: 'pop', // li
+			popOff: 'pop-off', // li
+			remove: 'remove', // li
+			// autodetection classes, only used if code at the end of the script is uncommented
+			autoCollapsible: 'collapsible',
+			autoRemovable: 'removable',
+			autoRenamable: 'renamable',
+			autoResizable: 'resizable',
+			autoSortable: 'sortable'
+		},
+		// default non-hidden elements when resizing lists
+		resizeLimit: 3
+	};
+
+	// create a new box inside each element matched by selector
+	$.fn.createBox = function() {
+
+		// build a 'content' html string for jquery append, prepend, etc... methods (returns a string)
+		function buildHtml (structure) {
+
+			// build a 'content' tag for jquery append, prepend, etc... methods (returns 2 element array)
+			function buildTag(selector, content) {
+
+				content = content ? content : '';
+
+				var html = new Array();
+
+				// try to guess box's elements
+				classesParts = selector.split('.');
+				idParts = selector.split('#');
+				if (classesParts.length >= 1) {
+
+					var tag = classesParts[0];
+					// get html class(es) attribute string
+					for (i = 1; i < classesParts.length; i++) { classes = (i == 1) ? classesParts[i] : classes + ' ' + classesParts[i]; }
+
+					if (!classes) {
+
+						html[0] = tag ? '<'+tag+'>'+content : '<div>'+content;
+
+					}
+					else {
+
+						html[0] = tag ? '<'+tag+(classes ? ' class="'+classes+'"' : '')+'>'+content : '<div'+(classes ? ' class="'+classes+'"' : '')+'>'+content;
+						html[1] = tag ? '</'+tag+'>' : '</div>';
+
+					}
+
+				}
+				else if (idParts.length >= 1) {
+
+					var tag = idParts[0];
+					// allow only 1 id
+					var preId = idParts[1].split(' ');
+					var id = preId[0];
+
+					html[0] = tag ? '<'+tag+(id ? ' id="'+id+'"' : '')+'>'+content : '<div'+(id ? ' id="'+id+'"' : '')+'>'+content;
+					html[1] = tag ? '</'+tag+'>' : '</div>';
+
+				}
+				else { return false; }
+
+				return html;
+
+			}
+
+			var ret = '';
+			var end = '';
+
+			for (var i in structure) {
+
+				if ((typeof structure[i]) == 'string') {
+
+					// if parameter is element selector, build tag
+					if (i == 'element') {
+
+						// if element got childs, don't close it till the end
+						if (typeof(structure['childs']) == 'object') {
+
+							// build with html content if specified
+							pre = structure['html'] ? buildTag(structure[i], structure['html']) : buildTag(structure[i]);
+							ret = pre[0] + ret;
+							end = pre[1] + end;
+
+						}
+						else {
+
+							// build with html content if specified
+							pre = structure['html'] ? buildTag(structure[i], structure['html']) : buildTag(structure[i]);
+							ret = (pre[0] + ret + pre[1]);
+
+						}
+
+					}
+
+				}
+				else {
+
+					// continue checking only the box (initial) or childs maps
+					ret = ret + buildHtml(structure[i]);
+					ret = ret + end;
+
+				}
+
+			}
+
+			return ret;
+
+		}
+
+		return this.each(function() {
+
+			var newBoxHtml = buildHtml(boxStructure.column.childs);
+
+			$(this).prepend(newBoxHtml);
+
+		});
+
+	}
+
+	// make collapsible
+	$.fn.makeCollapsible = function(options) {
+
+		// settings
+    $.extend(settings, options);
+
+		return this.each(function() {
+
+			// create folding button
+			var collapsingContainer = $(this).find(settings.elements.collapsingButtonContainer);
+
+			// check if collapse button already exists
+			if (collapsingContainer.children('.'+settings.classes.collapse).length == 0) {
+				collapsingContainer.prepend('<span class="'+settings.classes.collapse+'"><a href="#" title="'+settings.i18n.collapse+'">'+settings.i18n.collapse+'</a></span>');
+			}
+
+			// fold box when clicking folding button
+			$(this).find(settings.elements.collapsingButtonContainer).children('span.'+settings.classes.collapse).click(function() {
+				$(this).closest(settings.elements.boxes).find(settings.elements.contentContainer).slideToggle('fast');
+				$(this).toggleClass('collapsed');
+				return false;
+			});
+
+		});
+
+	};
+
+	// make removable
+	$.fn.makeRemovable = function(options, callback) {
+
+		// settings
+		$.extend(settings, options);
+
+		return this.each(function() {
+
+			var box = $(this);
+
+			// create or add remove button to the controls list
+			var controlsContainer = $(this).find(settings.elements.controlsContainer);
+			// if specified controls container not found, make the removable element the container
+			if (controlsContainer.length == 0) controlsContainer = $(this);
+			var controls = controlsContainer.find('ul.'+settings.classes.controls);
+			// check if controls list already exists
+			if (controls.length > 0) {
+				// check if remove button already exists
+				if (controls.children('li.'+settings.classes.remove).length == 0) {
+					controls.append('<li class="'+settings.classes.remove+'"><a href="#" title="'+settings.i18n.remove+'">'+settings.i18n.remove+'</a></li>');
+				}
+			}
+			else {
+				controlsContainer.prepend('<ul class="'+settings.classes.controls+'"><li class="'+settings.classes.remove+'"><a href="#" title="'+settings.i18n.remove+'">'+settings.i18n.remove+'</a></li></ul>');
+			}
+			// reassing controls var in case it didnt exist
+			var controls = controlsContainer.find('ul.'+settings.classes.controls);
+
+			// delete box when clicking remove button
+			controls.find('li.'+settings.classes.remove+' > a').click(function() {
+				if (confirm(settings.i18n.removeConfirm)) {
+					$(this).closest(settings.elements.boxes).remove();
+					callback(box);
+				}
+				return false;
+			});
+
+		});
+
+	};
+
+	// make renamable
+	$.fn.makeRenamable = function(options, callback) {
+
+		// settings
+		$.extend(settings, options);
+
+		return this.each(function() {
+
+			var box = $(this);
+
+			box.find(settings.elements.title).click(function() {
+
+				var title = $(this);
+				var pretxt = title.text();
+				var randomNumber = Math.floor(Math.random()*9999);
+
+				var inp = title.parent().children('input[type="text"]');
+				if (inp.length > 0) {
+					title.hide();
+				}
+				else {
+					title.after('<input type="text" name="title'+randomNumber+'" id="title'+randomNumber+'" value="'+pretxt+'">');
+					title.hide();
+					var inp = $(this).parent().children('#title'+randomNumber);
+				}
+
+				inp.show();
+				inp.focus();
+				inp.blur(function() {
+					var newTitle = $.trim($(this).val());
+					if (newTitle.length > 0) title.text(newTitle);
+					$(this).hide();
+					title.show();
+					// execute callback function
+					callback(newTitle, box);
+				});
+				inp.keydown(function(e) {
+					// if ENTER was pressed, hide input and change title
+					if (window.event) { var key = window.event.keyCode; } // ie
+					else { var key = e.which; } // rest of non-terrible browsers
+					if (key == 13) {
+						$(this).blur();
+						return false;
+					}
+				});
+
+			});
+
+		});
+
+	};
+
+	// make resizable
+	$.fn.makeResizable = function(lmt, options) {
+
+		// settings
+		$.extend(settings, options);
+
+		var lmt = lmt || settings.resizeLimit;
+
+		return this.each(function() {
+
+			$(this).resizeList(lmt);
+
+			// the list
+			var resizableList = $(this);
+
+			// create/add more/less buttons to controls list
+			var controlsContainer = $(this).closest(settings.elements.boxes).find(settings.elements.controlsContainer);
+			var controls = controlsContainer.find('ul.'+settings.classes.controls);
+			if (controls.length > 0) {
+				controls.append('<li class="'+settings.classes.push+'"><a href="#">'+settings.i18n.push+'</a></li><li class="'+settings.classes.pop+'"><a href="#">'+settings.i18n.pop+'</a></li>');
+			}
+			else {
+				controlsContainer.prepend('<ul class="'+settings.classes.controls+'"><li class="'+settings.classes.push+'"><a href="#">'+settings.i18n.push+'</a></li><li class="'+settings.classes.pop+'"><a href="#">'+settings.i18n.pop+'</a></li></ul>');
+			}
+			// reassing controls var in case it didnt exist
+			var controls = controlsContainer.find('ul.'+settings.classes.controls);
+
+			// append the next element to the list
+			controls.children('li.'+settings.classes.push).children('a').click(function() {
+				var lis = resizableList.children('li');
+				var last = lis.filter('li.last');
+				var max = lis.length;
+				var ind = lis.index(last);
+				if (ind <= (max-2)) {
+					last.next().addClass('last');
+					last.next().slideDown('fast');
+					last.removeClass('last');
+					if (ind == (max-2)) {
+						$(this).parent().addClass(settings.classes.pushOff);
+						$(this).css('cursor', 'text');
+					}
+					if (ind == 0) {
+						var popLi = $(this).parent().parent().children('li.'+settings.classes.pop);
+						popLi.removeClass(settings.classes.popOff);
+						popLi.children('a').css('cursor', 'pointer');
+					}
+				}
+				return false;
+			});
+
+			// remove the last element from list
+			controls.children('li.'+settings.classes.pop).children('a').click(function() {
+				var lis = resizableList.children('li');
+				var first = lis.filter('li:first');
+				var last = lis.filter('li.last');
+				var max = lis.length;
+				var ind = lis.index(last);
+				if (ind > 0) {
+					last.removeClass('last');
+					last.prev().addClass('last');
+					last.slideUp('fast');
+					if (ind == 1) {
+						$(this).parent().addClass(settings.classes.popOff);
+						$(this).css('cursor', 'text');
+					}
+					if (ind == (max-1)) {
+						var pushLi = $(this).parent().parent().children('li.'+settings.classes.push);
+						pushLi.removeClass(settings.classes.pushOff);
+						pushLi.children('a').css('cursor', 'pointer');
+					}
+				}
+				return false;
+			});
+
+		});
+
+	};
+
+	// make sortable
+	$.fn.makeSortable = function(sortableOptions, options) {
+
+		// check if jQueryUI's sortable function exist
+		if (typeof $().sortable != 'function') { alert(settings.i18n.uiNotIncluded); return false; }
+
+		// sortable elements default settings (check documentantion @ http://jqueryui.com/demos/sortable/)
+		var sortableSettings = {
+			receive: function(event, ui) {
+				if (ui.sender.hasClass(settings.classes.notConnected)) {
+					$(ui.sender).sortable('cancel');
+				}
+			},
+			cursor: 'move',
+			delay: 150,
+			dropOnEmpty: true, // when a column becomes empty, items can still be moved into it
+			forceHelperSize: true, // helper inherits size from sender
+			forcePlaceholderSize: true, // placeholder inherits size from sender
+			opacity: 0.75,
+			placeholder: 'placeholder',
+			tolerance: 'pointer',
+			revert: 250 // item gets into position with a smooth animation
+		}
+
+		// settings and sortableSettings
+		$.extend(settings, options);
+		$.extend(sortableSettings, sortableOptions);
+
+		return this.each(function() {
+
+			// if not-connected class specified, disallow connection to other boxes (only disables "external" connections, from this box to other ones, not the other way)
+			if ($(this).hasClass(settings.classes.notConnected)) { $.extend(sortableSettings, { connectWith: '' }); }
+			else { $.extend(sortableSettings, sortableOptions); }
+
+			$(this).sortable(sortableSettings); // you can add .disableSelection() to disable the selection of the boxes' content, making dragging easier
+
+		});
+
+	};
+
+	// hide list elements exceeding specified limit, show the rest
+	$.fn.resizeList = function(lmt) {
+
+		// non-hidden elements
+		var lmt = lmt || settings.resizeLimit;
+
+		return this.each(function() {
+
+			$(this).children('li:gt('+(lmt-1)+')').removeClass('last');
+			$(this).children('li:gt('+(lmt-1)+')').hide();
+			$(this).children('li:eq('+(lmt-1)+')').addClass('last');
+			$(this).children('li:lt('+(lmt)+')').show();
+
+		});
+
+	};
+
+})(jQuery);

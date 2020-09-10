@@ -1,0 +1,73 @@
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="|CONFIG_NOMCARPETA|/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="|CONFIG_NOMCARPETA|/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="|CONFIG_NOMCARPETA|/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="|CONFIG_NOMCARPETA|/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="|CONFIG_NOMCARPETA|/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="|CONFIG_NOMCARPETA|/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->

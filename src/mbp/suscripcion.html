@@ -1,0 +1,1010 @@
+<?php
+require_once('/var/www/html//config.php');
+$id = '42';
+$idioma = 'es';
+$pare = '12';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '/mbp/index.html' , 'title' => 'Mi BiblioPRO' , 'nom' => 'Mi BiblioPRO') , 2 => array('link' => '' , 'title' => 'Suscribirse a BiblioPRO' , 'nom' => 'Suscribirse a BiblioPRO'));
+$folderArray = array(12 => 'mbp');
+$folderIds = array(0 => 12);
+$folderUrl = '/mbp';
+$pageUrl = '/mbp/suscripcion.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><?php
+
+	require('questionnaires_vars.inc');
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver atrás</a></li>
+						<li><a href="/mbp">Ir a Mi BiblioPRO</a></li>
+						<li><a href="/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Suscribirse a BiblioPRO - BiblioPRO</title>
+		<meta name="description" content="Suscribirse a BiblioPRO" />
+		<meta name="Keywords" content="bibliopro, suscripcion, BiblioPRO, registro, identificación, espacio personal, modificación datos, datos de facturación, histórico, mis descargas, mis sublicencias, mis suscripciones" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://www.bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+	</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+<?php
+$directori = '12';
+$url = '/mbp/suscripcion.html';
+$rutaplana = ($pos = strpos('/mbp/suscripcion.html', '?')) ? substr('/mbp/suscripcion.html', 0, ($pos-1)) : '/mbp/suscripcion.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_principal.inc")
+?>
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">Mi BiblioPRO</p>
+<?php
+$directori = '12';
+$url = '/mbp/suscripcion.html';
+$rutaplana = ($pos = strpos('/mbp/suscripcion.html', '?')) ? substr('/mbp/suscripcion.html', 0, ($pos-1)) : '/mbp/suscripcion.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//mi_bibliopro.inc")
+?>
+<?php
+$directori = '12';
+$url = '/mbp/suscripcion.html';
+$rutaplana = ($pos = strpos('/mbp/suscripcion.html', '?')) ? substr('/mbp/suscripcion.html', 0, ($pos-1)) : '/mbp/suscripcion.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//informacio.inc")
+?>
+					<p class="button"><a href="/buscador/">Buscar cuestionario</a></p>
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix"><a href="/index.html" title="Portada">Portada</a> > <a href="/mbp/index.html" title="Mi BiblioPRO">Mi BiblioPRO</a></div>
+						<h2><span>Suscribirse a BiblioPRO</span></h2>
+					</div></div>
+<?php
+
+	$userInfo = getUserInfo($taula_usuaris);
+
+	// mirem si hi ha preu definit pel tipus d'usuari
+	$priceCheckQuery = db_query ("
+		SELECT ID
+		FROM `$taula_subscripcions_tipus`
+		WHERE TIPO_ENTIDAD = '$userInfo[TIPO_ENTIDAD]'
+	");
+	// si s'ha trobat un preu definit per l'usuari, continuem
+	if (db_num_rows($priceCheckQuery) > 0) {
+
+		// comprovem que l'usuari no tingui una subscripció activa o pendent
+		$currentSubsCheckQuery = db_query("
+			SELECT
+				STATUS,
+				FECHA_ACTIVACION,
+				FACTURA,
+				FECHA_FACTURA,
+				FICHERO_FACTURA,
+				NUM_ALBARAN,
+				PRECIO,
+				IVA,
+				TIPO_IVA,
+				TOTAL,
+				IBAN,
+				SWIFT
+			FROM `$taula_subscripcions`
+			WHERE
+				ID_USUARIO = $userInfo[ID]
+				AND NOW() < DATE_ADD(FECHA_ACTIVACION, INTERVAL 1 YEAR)
+			ORDER BY FECHA_ACTIVACION DESC
+			LIMIT 1
+		");
+
+		// si l'usuari no té subscripció activa, processem
+		if (db_num_rows($currentSubsCheckQuery) == 0) {
+
+			// si s'han enviat les dades del formulari, processem el registre
+			if (isset($_POST['enviar'])) {
+
+				// comprovem que totes les dades siguin vàlides
+				if (
+					!empty($_POST['ENTIDAD_NOMBRE']) and
+					!empty($_POST['TIPO_CENTRO_TRABAJO']) and
+					!empty($_POST['ENTIDAD_DIRECCION']) and
+					!empty($_POST['ENTIDAD_CIUDAD']) and
+					!empty($_POST['ENTIDAD_CP']) and
+					!empty($_POST['ENTIDAD_TELEFONO']) and
+					!empty($_POST['FACTURACION_NOMBRE']) and
+					!empty($_POST['FACTURACION_CIF']) and
+					!empty($_POST['FACTURACION_DIRECCION']) and
+					!empty($_POST['FACTURACION_CP']) and
+					!empty($_POST['FACTURACION_CIUDAD']) and
+					!empty($_POST['FACTURACION_PAIS']) and
+					!empty($_POST['FACTURACION_TELEFONO']) and
+					!empty($_POST['FACTURACION_EMAIL']) and
+					isValidEmail($_POST['FACTURACION_EMAIL']) and
+					!empty($_POST['METODO_PAGO'])
+				) {
+
+					// gestio alta/baixa NL
+					if (isset($_POST['NEWSLETTER']) and $_POST['NEWSLETTER'] != '') {
+						$id_llista_newsletter = $_POST['NEWSLETTER'];
+						$QuerySelectSubsNL = db_query("SELECT * FROM `news_SUBSCRIPTORS` WHERE IdLli=".$id_llista_newsletter." and email='".accessGetLogin()."' and dh_alta='0000-00-00 00:00:00' and tipus=1");
+						$NumRowsSelectSubsNL = db_num_rows($QuerySelectSubsNL);
+						if ($NumRowsSelectSubsNL == 0) {
+							$QueryInsertSubsNL = db_query("INSERT INTO `news_SUBSCRIPTORS`
+								(IdUsu,IdLli,estat,tipus,email)
+								VALUES
+								('admin',$id_llista_newsletter,1,1,'".accessGetLogin()."')
+							");
+						}
+					}
+					else {
+						$QueryDelSubsNL = db_query("DELETE FROM `news_SUBSCRIPTORS` WHERE email='".accessGetLogin()."' and dh_alta='0000-00-00 00:00:00' and tipus=1");
+					}
+
+					// actualitzem la informació de l'usuari introduïda
+					$userInfoUpdateQuery = db_query("
+						UPDATE `$taula_usuaris`
+						SET
+							ENTIDAD_NOMBRE = '" . mysql_real_escape_string($_POST['ENTIDAD_NOMBRE']) . "',
+							TIPO_CENTRO_TRABAJO = '" . mysql_real_escape_string($_POST['TIPO_CENTRO_TRABAJO']) . "',
+							ENTIDAD_DIRECCION = '" . mysql_real_escape_string($_POST['ENTIDAD_DIRECCION']) . "',
+							ENTIDAD_CIUDAD = '" . mysql_real_escape_string($_POST['ENTIDAD_CIUDAD']) . "',
+							ENTIDAD_CP = '" . mysql_real_escape_string($_POST['ENTIDAD_CP']) . "',
+							ENTIDAD_TELEFONO = '" . mysql_real_escape_string($_POST['ENTIDAD_TELEFONO']) . "',
+							FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+							FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+							FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+							FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+							FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+							FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+							FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+							FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+							FACTURACION_FAX = '" . mysql_real_escape_string($_POST['FACTURACION_FAX']) . "',
+							FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "'
+							" . (isset($_POST['NEWSLETTER']) ? ', NEWSLETTER = 1' : '') . "
+						WHERE EMAIL = '" . accessGetLogin() . "'
+					");
+
+					$userInfo = getUserInfo($taula_usuaris);
+
+					// mirem si el pais de facturacion indicat té reducció AL
+					// i si és de la Comunitat Europea
+					$countryCheckQuery = db_query("
+						SELECT REDUCCION_AL, CE
+						FROM `$taula_paisos`
+						WHERE ID = $_POST[FACTURACION_PAIS]
+					");
+					if (db_num_rows($countryCheckQuery) > 0) {
+						$countryCheckRow = db_fetch_array($countryCheckQuery);
+					}
+
+					// calculem preu subscripció
+					$priceCheckQuery = db_query ("
+						SELECT PRECIO, PRECIO_AL
+						FROM `$taula_subscripcions_tipus`
+						WHERE TIPO_ENTIDAD = '$userInfo[TIPO_ENTIDAD]'
+					");
+					$priceCheckRow = db_fetch_array($priceCheckQuery);
+
+					if (isset($countryCheckRow) and $countryCheckRow['REDUCCION_AL'] == 1) {
+						$subsBasePrice = (float) $priceCheckRow['PRECIO_AL'];
+					}
+					else {
+						$subsBasePrice = (float) $priceCheckRow['PRECIO'];
+					}
+
+					// CÀLCUL IVA
+					// si és professsional...
+					if (isset($_POST['FACTURACION_PROFESIONAL'])) {
+						// ... de fora d'espanya, sense iva
+						if ($_POST['FACTURACION_PAIS'] != $spainID) {
+							$iva = 0;
+						}
+					}
+					// si NO és professional...
+					else {
+						if ($_POST['FACTURACION_PAIS'] != $spainID) {
+							// ... de fora de la CE, sense iva
+							if (empty($countryCheckRow['CE'])) {
+								$iva = 0;
+							}
+						}
+						else {
+							// ... de Canàries, Ceuta o Melilla, sense iva
+							if (!empty($_POST['FACTURACION_OTRO_PAIS'])) {
+								$iva = 0;
+							}
+						}
+					}
+
+					// CÀLCUL PREU
+					$subsIva = round(($subsBasePrice * $iva) / 100, 2);
+					$subsPrice = $subsBasePrice + $subsIva;
+
+					// número d'albarà
+					$numAlbara = date('Y-m-d') . '-SUSC-' . $userInfo['ID'];
+
+					// canaries, ceuta, melilla?
+					if (isset($_POST['FACTURACION_OTRO_PAIS'])) {
+						$_POST['FACTURACION_OTRO_PAIS'] = 1;
+					}
+					else {
+						$_POST['FACTURACION_OTRO_PAIS'] = 0;
+					}
+
+					// empresa o profesional?
+					if (isset($_POST['FACTURACION_PROFESIONAL'])) {
+						$_POST['FACTURACION_PROFESIONAL'] = 1;
+					}
+					else {
+						$_POST['FACTURACION_PROFESIONAL'] = 0;
+					}
+
+					// procedim segons el mètode de pagament indicat
+					switch ($_POST['METODO_PAGO']) {
+
+						// tarja crèdit
+						case 1:
+
+							// dades pagament
+							$order = '1' . rand(0, 9) . date('mdHis');
+							$amount = round($subsPrice, 2) * 100;
+							$urlOK = 'http://www.bibliopro.org/mbp/pagook.html';
+							$urlKO = 'http://www.bibliopro.org/mbp/pagoko.html';
+							$merchantURL = 'http://www.bibliopro.org/mbp/pago.html';
+							$producto = 'BiblioPRO - Suscripción usuario ' . $userInfo['EMAIL'];
+
+							// introduïm la subscripció a la base de dades, inactiva fins que es comprovi el pagament
+							$subscriptionQuery = db_query("
+								INSERT INTO `$taula_subscripcions`
+								SET
+									ID_USUARIO = $userInfo[ID],
+									IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+									NOMBRE_ENTIDAD = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+									TIPO_ENTIDAD = $userInfo[TIPO_ENTIDAD],
+									CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+									EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+									PRECIO = $subsBasePrice,
+									TIPO_IVA = $iva,
+									IVA = $subsIva,
+									TOTAL = $subsPrice,
+									ID_TPV = '$order',
+									METODO_PAGO = $_POST[METODO_PAGO],
+									SOLICITA_FACTURA = " . (isset($_POST['SOLICITA_FACTURA']) ? 1 : 0) . ",
+									NUM_ALBARAN = '$numAlbara',
+									FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+									FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+									FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+									FACTURACION_PROFESIONAL = '" . mysql_real_escape_string($_POST['FACTURACION_PROFESIONAL']) . "',
+									FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+									FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+									FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+									FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+									FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+									FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+									FACTURACION_FAX = '" . mysql_real_escape_string($_POST['FACTURACION_FAX']) . "',
+									STATUS = 0,
+									FECHA_ACTIVACION = NOW(),
+									FECHA_SOLICITUD = NOW(),
+									CREATION = NOW(),
+									USUARICREAR = 'admin'
+							");
+
+?>
+						<input type="hidden" name="Ds_Merchant_MerchantSignature" value='<?php echo $signature; ?>' />
+
+						<div class="broken border clearfix">
+							<p>A continuación desglosamos el importe del pago que ha elegido realizar mediante tarjeta de crédito.</p>
+<p>El pago es <strong>totalmente seguro </strong>gracias al sistema <a href="http://empresa.lacaixa.es/comercios/cyberpac_es.html" rel="external">CIBERPAC </a>de &ldquo;La Caixa&rdquo;.</p>
+<p>BiblioPRO no tiene acceso ni almacena números de tarjeta de crédito.</p>
+<p>Aceptamos las tarjetas <em>MASTERCARD </em>y <em>VISA</em>.</p>
+							<ul>
+								<li>
+									Precio de la suscripción:
+									<ul>
+										<li>Base imponible: <?php echo number_format($subsBasePrice, 2, ',', '.'); ?>€</li>
+										<li>IVA: <?php echo number_format($iva, 2, ',', '.'); ?>% (<?php echo number_format($subsIva, 2, ',', '.'); ?>€)</li>
+										<li>Total: <strong><?php echo number_format($subsPrice, 2, ',', '.'); ?>€</strong></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+<?php
+
+/*
+ * Establim els paràmetres de pagament per al formulari per TPV
+*/
+
+$pagamentImport = round($subsPrice, 2);
+$pagamentDescripcio = htmlspecialchars($producto);
+$tpv->setUrlConfirmCallback($merchantURL);
+$tpv->setUrlOk($urlOK);
+$tpv->setUrlError($urlKO);
+$form = $tpv->getFormPagament($order, $pagamentImport, $pagamentDescripcio, array('value="Realizar pago"', 'class="buttonSubmit send"'), $idioma);
+
+echo $form;
+
+
+							break;
+
+						// transferència bancària
+						case 2:
+
+							// introduïm la subscripció a la base de dades, inactiva fins que es comprovi la transferència
+							$subscriptionQuery = db_query("
+								INSERT INTO `$taula_subscripcions`
+								SET
+									ID_USUARIO = $userInfo[ID],
+									IP_USUARIO = '$_SERVER[REMOTE_ADDR]',
+									NOMBRE_ENTIDAD = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+									TIPO_ENTIDAD = $userInfo[TIPO_ENTIDAD],
+									CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+									EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+									PRECIO = $subsBasePrice,
+									TIPO_IVA = $iva,
+									IVA = $subsIva,
+									TOTAL = $subsPrice,
+									METODO_PAGO = $_POST[METODO_PAGO],
+									IBAN = '" . mysql_real_escape_string($IBAN) . "',
+									SWIFT = '" . mysql_real_escape_string($SWIFT) . "',
+									SOLICITA_FACTURA = " . (isset($_POST['SOLICITA_FACTURA']) ? 1 : 0) . ",
+									FACTURACION_EMAIL = '" . mysql_real_escape_string($_POST['FACTURACION_EMAIL']) . "',
+									FACTURACION_NOMBRE = '" . mysql_real_escape_string($_POST['FACTURACION_NOMBRE']) . "',
+									FACTURACION_CIF = '" . mysql_real_escape_string($_POST['FACTURACION_CIF']) . "',
+									FACTURACION_PROFESIONAL = '" . mysql_real_escape_string($_POST['FACTURACION_PROFESIONAL']) . "',
+									FACTURACION_DIRECCION = '" . mysql_real_escape_string($_POST['FACTURACION_DIRECCION']) . "',
+									FACTURACION_CP = '" . mysql_real_escape_string($_POST['FACTURACION_CP']) . "',
+									FACTURACION_CIUDAD = '" . mysql_real_escape_string($_POST['FACTURACION_CIUDAD']) . "',
+									FACTURACION_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_PAIS']) . "',
+									FACTURACION_OTRO_PAIS = '" . mysql_real_escape_string($_POST['FACTURACION_OTRO_PAIS']) . "',
+									FACTURACION_TELEFONO = '" . mysql_real_escape_string($_POST['FACTURACION_TELEFONO']) . "',
+									FACTURACION_FAX = '" . mysql_real_escape_string($_POST['FACTURACION_FAX']) . "',
+									NUM_ALBARAN = '$numAlbara',
+									STATUS = 0,
+									FECHA_ACTIVACION = NOW(),
+									FECHA_SOLICITUD = NOW(),
+									CREATION = NOW(),
+									USUARICREAR = 'admin'
+							");
+
+							// enviem email amb dades per realitzar la transferència
+							include_once ("mail.php");
+							$cos = '
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+		<h1>Suscripción de usuario en BiblioPRO</h1>
+		<hr />
+		<h2>Datos para realizar la transferencia</h2>
+		<ul>
+			<li>
+				Precio de la suscripción:
+				<ul>
+					<li>Base imponible: ' . number_format($subsBasePrice, 2, ',', '.') . '€</li>
+					<li>IVA: ' . number_format($iva, 2, ',', '.') . '% (' . number_format($subsIva, 2, ',', '.') . '€)</li>
+					<li>Total: <strong>' . number_format($subsPrice, 2, ',', '.') . '€</strong></li>
+				</ul>
+			</li>
+			<li>Número de albarán interno: <strong>' . $numAlbara . '</strong></li>
+			<li>Entidad bancaria: <strong>' . htmlspecialchars($bankName) . '</strong></li>
+			<li>Cuenta bancaria: <strong>' . htmlspecialchars($bankAccountNumber) . '</strong></li>
+			<li>IBAN: <strong>' . $IBAN . '</strong></li>
+			<li>SWIFT: <strong>' . $SWIFT . '</strong></li>
+		</ul>
+		<hr />
+		<p>Su suscripción a BiblioPRO se ha realizado con éxito.</p>
+		<hr />
+		<p>Si usted no se ha suscrito como usuario en el sitio web de BiblioPRO, por favor ignore este mensaje.</p>
+	</body>
+</html>';
+							$destinatari = $_POST['FACTURACION_EMAIL'];
+							$from = '"BiblioPRO" <bibliopro@imim.es>';
+							$assumpte = 'Información para realizar el pago de suscripción a BiblioPRO';
+			// 				$cos = utf8_decode($cos);
+			// 				$assumpte = utf8_decode($assumpte);
+							// enviem el correu
+							sendMail($destinatari, $assumpte, $cos, $from, null, true);
+							if (!empty($userInfo['FACTURACION_EMAIL']) and $userInfo['FACTURACION_EMAIL'] != $destinatari) {
+								sendMail($userInfo['FACTURACION_EMAIL'], $assumpte, $cos, $from, null, true);
+							}
+
+?>
+					<div class="broken border clearfix">
+						<div class="ok">
+							<p>Su suscripción a BiblioPRO se ha realizado con éxito.</p>
+							<h5>Datos para realizar la transferencia</h5>
+							<ul>
+								<li>
+									Precio de la suscripción:
+									<ul>
+										<li>Base imponible: <?php echo number_format($subsBasePrice, 2, ',', '.'); ?>€</li>
+										<li>IVA: <?php echo number_format($iva, 2, ',', '.'); ?>% (<?php echo number_format($subsIva, 2, ',', '.'); ?>€)</li>
+										<li>Total: <strong><?php echo number_format($subsPrice, 2, ',', '.'); ?>€</strong></li>
+									</ul>
+								</li>
+								<li>Número de albarán interno: <strong><?php echo $numAlbara; ?></strong></li>
+								<li>Entidad bancaria: <strong><?php echo htmlspecialchars($bankName); ?></strong></li>
+								<li>Cuenta bancaria: <strong><?php echo htmlspecialchars($bankAccountNumber); ?></strong></li>
+								<li>IBAN: <strong><?php echo $IBAN; ?></strong></li>
+								<li>SWIFT: <strong><?php echo $SWIFT; ?></strong></li>
+							</ul>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+							break;
+
+						default:
+?>
+					<div class="broken border clearfix">
+						<div class="error">
+							<p>Los datos introducidos son incorrectos o no ha introducido alguno de los campos obligatorios.</p>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+							break;
+
+					}
+
+				}
+				else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="error">
+							<p>Los datos introducidos son incorrectos o no ha introducido alguno de los campos obligatorios.</p>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+				}
+
+			}
+			// si no s'ha enviat, mostrem el formulari
+			else {
+
+?>
+					<div class="broken border clearfix">
+						<p>La suscripción a BiblioPRO permite tener acceso con descuento, durante un año, a los siguientes&nbsp;descargables.</p>
+<p>Puedes ver el listado de descargables de cuestionarios incluidos en la suscripción aquí.</p>
+					</div>
+
+					<form action="" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+
+						<div class="broken border clearfix">
+							<h3>Datos del usuario</h3>
+							<!-- nom entitat -->
+							<label for="ENTIDAD_NOMBRE">
+								<span>Nombre de su entidad</span>
+								<input type="text" name="ENTIDAD_NOMBRE" id="ENTIDAD_NOMBRE" value="<?php echo htmlspecialchars($userInfo['ENTIDAD_NOMBRE']); ?>" class="required" maxlength="255" />
+							</label>
+							<!-- tipus centre -->
+							<label for="TIPO_CENTRO_TRABAJO">
+								<span>Tipo de centro de trabajo</span>
+								<select name="TIPO_CENTRO_TRABAJO">
+<?php
+
+ $tpc = $userInfo['TIPO_CENTRO_TRABAJO'];
+
+?>
+									<option value="">Indique un tipo de centro de trabajo</option>
+									<option value="1"<?php if ($tpc == 1) { echo ' selected="selected"'; } ?>>Centro de Investigación</option>
+									<option value="2"<?php if ($tpc == 2) { echo ' selected="selected"'; } ?>>Universidad u otros centros académicos</option>
+									<option value="3"<?php if ($tpc == 3) { echo ' selected="selected"'; } ?>>CRO (Contract Research Organisation)</option>
+									<option value="4"<?php if ($tpc == 4) { echo ' selected="selected"'; } ?>>Empresa Farmacéutica o de Tecnología Médica</option>
+									<option value="5"<?php if ($tpc == 5) { echo ' selected="selected"'; } ?>>Hospital</option>
+									<option value="6"<?php if ($tpc == 6) { echo ' selected="selected"'; } ?>>Centro de Salud</option>
+									<option value="7"<?php if ($tpc == 7) { echo ' selected="selected"'; } ?>>Organismo/Administración Pública</option>
+									<option value="8"<?php if ($tpc == 8) { echo ' selected="selected"'; } ?>>Fundación</option>
+									<option value="9"<?php if ($tpc == 9) { echo ' selected="selected"'; } ?>>Sociedad Científica</option>
+									<option value="10"<?php if ($tpc == 10) { echo ' selected="selected"'; } ?>>Asociación de Pacientes</option>
+									<option value="11"<?php if ($tpc == 11) { echo ' selected="selected"'; } ?>>Aseguradora/Mútua</option>
+									<option value="12"<?php if ($tpc == 12) { echo ' selected="selected"'; } ?>>Otros</option>
+								</select>
+							</label>
+							<!-- dirección -->
+							<label for="ENTIDAD_DIRECCION">
+								<span>Dirección</span>
+								<input type="text" name="ENTIDAD_DIRECCION" id="ENTIDAD_DIRECCION" value="<?php echo htmlspecialchars($userInfo['ENTIDAD_DIRECCION']); ?>" class="required gran" maxlength="255" />
+							</label>
+							<!-- ciudad -->
+							<label for="ENTIDAD_CIUDAD">
+								<span>Población</span>
+								<input type="text" name="ENTIDAD_CIUDAD" id="ENTIDAD_CIUDAD" value="<?php echo htmlspecialchars($userInfo['ENTIDAD_CIUDAD']); ?>" class="required" maxlength="128" />
+							</label>
+							<!-- código posatl -->
+							<label for="ENTIDAD_CP">
+								<span>Código postal</span>
+								<input type="text" name="ENTIDAD_CP" id="ENTIDAD_CP" value="<?php echo htmlspecialchars($userInfo['ENTIDAD_CP']); ?>" class="required petit" maxlength="16" />
+							</label>
+							<!-- teléfono -->
+							<label for="ENTIDAD_TELEFONO">
+								<span>Teléfono</span>
+								<input type="text" name="ENTIDAD_TELEFONO" id="ENTIDAD_TELEFONO" value="<?php echo htmlspecialchars($userInfo['ENTIDAD_TELEFONO']); ?>" class="required petit" maxlength="16" />
+							</label>
+						</div>
+
+						<div class="broken border clearfix">
+							<h3>Datos de facturación</h3>
+							<!-- nombre -->
+							<label for="FACTURACION_NOMBRE">
+								<span>Nombre y apellidos</span>
+								<input type="text" name="FACTURACION_NOMBRE" id="FACTURACION_NOMBRE" class="required" maxlength="255" value="<?php echo $userInfo['FACTURACION_NOMBRE']; ?>" />
+							</label>
+							<!-- cif -->
+							<label for="FACTURACION_CIF">
+								<span>CIF/NIF/VAT</span>
+								<input type="text" name="FACTURACION_CIF" id="FACTURACION_CIF" class="required petit" maxlength="20" value="<?php echo htmlspecialchars($userInfo['FACTURACION_CIF']); ?>" />
+							</label>
+							<!-- empresario o profesional? -->
+							<label for="FACTURACION_PROFESIONAL" class="radio checkbox clearfix">
+<?php
+
+									if ($userInfo['FACTURACION_PROFESIONAL'] == 1) {
+
+?>
+								<input type="checkbox" name="FACTURACION_PROFESIONAL" id="FACTURACION_PROFESIONAL" value="1" checked="checked" />
+<?php
+
+									}
+									else {
+
+?>
+								<input type="checkbox" name="FACTURACION_PROFESIONAL" id="FACTURACION_PROFESIONAL" value="1" />
+<?php
+
+									}
+
+?>
+								<span>Soy empresario o profesional</span>
+							</label>
+							<!-- dirección -->
+							<label for="FACTURACION_DIRECCION">
+								<span>Dirección</span>
+								<input type="text" name="FACTURACION_DIRECCION" id="FACTURACION_DIRECCION" class="required gran" maxlength="255" value="<?php echo htmlspecialchars($userInfo['FACTURACION_DIRECCION']); ?>" />
+							</label>
+							<!-- código postal -->
+							<label for="FACTURACION_CP">
+								<span>Código postal</span>
+								<input type="text" name="FACTURACION_CP" id="FACTURACION_CP" class="required petit" maxlength="16" value="<?php echo htmlspecialchars($userInfo['FACTURACION_CP']); ?>" />
+							</label>
+							<!-- ciudad -->
+							<label for="FACTURACION_CIUDAD">
+								<span>Población</span>
+								<input type="text" name="FACTURACION_CIUDAD" id="FACTURACION_CIUDAD" class="required" maxlength="128" value="<?php echo htmlspecialchars($userInfo['FACTURACION_CIUDAD']); ?>" />
+							</label>
+							<!-- país -->
+							<label for="FACTURACION_PAIS">
+								<span>País</span>
+								<select name="FACTURACION_PAIS" id="FACTURACION_PAIS" class="required">
+<?php
+
+			$countriesQuery = db_query("SELECT ID, PAIS FROM `$taula_paisos` ORDER BY PAIS ASC");
+			if (db_num_rows($countriesQuery) > 0) {
+
+				while ($countriesRow = db_fetch_array($countriesQuery)) {
+
+					if ($countriesRow['ID'] == $userInfo['FACTURACION_PAIS']) {
+
+?>
+									<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>" selected="selected"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+					}
+					else {
+
+?>
+									<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+					}
+
+				}
+
+			}
+
+?>
+								</select>
+							</label>
+							<!-- otro país -->
+							<label for="FACTURACION_OTRO_PAIS" class="radio checkbox clearfix">
+<?php
+
+									if ($userInfo['FACTURACION_OTRO_PAIS'] == 1) {
+
+?>
+								<input type="checkbox" name="FACTURACION_OTRO_PAIS" id="FACTURACION_OTRO_PAIS" value="1" checked="checked" />
+<?php
+
+									}
+									else {
+
+?>
+								<input type="checkbox" name="FACTURACION_OTRO_PAIS" id="FACTURACION_OTRO_PAIS" value="1" />
+<?php
+
+									}
+
+?>
+								<span>Resido en Canarias, Ceuta o Melilla <em>(sólo en caso de que su país sea España)</em></span>
+							</label>
+							<!-- telefono -->
+							<label for="FACTURACION_TELEFONO">
+								<span>Teléfono</span>
+								<input type="text" name="FACTURACION_TELEFONO" id="FACTURACION_TELEFONO" class="required petit" maxlength="16" value="<?php echo htmlspecialchars($userInfo['FACTURACION_TELEFONO']); ?>" />
+							</label>
+							<!-- telefono -->
+							<label for="FACTURACION_FAX">
+								<span>Fax</span>
+								<input type="text" name="FACTURACION_FAX" id="FACTURACION_FAX" class="petit" maxlength="16" value="<?php echo htmlspecialchars($userInfo['FACTURACION_FAX']); ?>" />
+							</label>
+							<!-- email -->
+							<label for="FACTURACION_EMAIL">
+								<span>Correo electrónico</span>
+								<input type="text" name="FACTURACION_EMAIL" id="FACTURACION_EMAIL" class="required" maxlength="255" value="<?php echo htmlspecialchars($userInfo['FACTURACION_EMAIL']); ?>" />
+							</label>
+						</div>
+
+						<div class="broken border clearfix">
+							<!-- ¿solicita factura? -->
+							<label for="SOLICITA_FACTURA" class="checkbox">
+								<input type="checkbox" name="SOLICITA_FACTURA" id="SOLICITA_FACTURA" />
+								<span>Deseo poder descargar la factura en formato <acronym title="Portable Document Format">PDF</acronym></span>
+							</label>
+						</div>
+
+						<div class="broken border clearfix">
+							<!-- forma pago -->
+							<label for="METODO_PAGO">
+								<span>Forma de pago</span>
+								<select name="METODO_PAGO" id="METODO_PAGO" class="required">
+									<option value="1">Tarjeta de crédito</option>
+									<option value="2">Transferencia bancaria</option>
+								</select>
+							</label>
+						</div>
+
+						<div class="broken border clearfix">
+							<!-- forma pago -->
+							<label for="NEWSLETTER" class="checkbox">
+								<input type="checkbox" name="NEWSLETTER" id="NEWSLETTER" checked="checked" value="2" />
+								<span>Deseo recibir el newsletter de BiblioPRO</span>
+							</label>
+						</div>
+
+						<div><input type="submit" name="enviar" value="Suscribirse" class="buttonSubmit send" /></div>
+
+					</form>
+
+					<p class="top"><a href="#content">Subir</a></p>
+<?php
+
+			}
+
+		}
+		// si l'usuari ja té una subscripció activa o en espera, l'informem
+		else {
+
+			$currentSubsCheckRow = db_fetch_array($currentSubsCheckQuery);
+
+			if ($currentSubsCheckRow['STATUS'] == 1) {
+
+				if (empty($currentSubsCheckRow['FACTURA'])) {
+
+					$currentSubsCheckRow['FACTURA'] = $billDate = $billLink = 'No emitida';
+
+				}
+				else {
+
+					if (
+						!empty($currentSubsCheckRow['FECHA_FACTURA'])
+						and $currentSubsCheckRow['FECHA_FACTURA'] != '0000-00-00 00:00:00'
+					) {
+						$billDate = strftime('%e de %B de %Y a las %H:%M', strtotime($currentSubsCheckRow['FECHA_FACTURA']));
+					}
+					else {
+						$billDate = 'No indicada';
+					}
+					if (!empty($currentSubsCheckRow['FICHERO_FACTURA'])) {
+						$billLink = '<a href="/media/upload/pdf/facturas/'. htmlspecialchars($currentSubsCheckRow['FICHERO_FACTURA']) . '">Descargar</a>';
+					}
+					else {
+						$billLink = 'No suministrada';
+					}
+
+				}
+
+?>
+					<div class="broken border clearfix">
+						<div class="ok">
+							<p>Su usuario ya está suscrito a BiblioPRO.</p>
+							<p>Su suscripción expira el <strong><?php echo date('d-m-Y \a \l\a\s H:i:s', strtotime('+1 year', strtotime($currentSubsCheckRow['FECHA_ACTIVACION']))); ?></strong></p>
+							<h5>Información sobre el pago</h5>
+							<ul>
+								<li>
+									<strong>Precio de la suscripción:</strong>
+									<ul>
+										<li><strong>Base imponible:</strong> <?php echo $currentSubsCheckRow['PRECIO']; ?>€</li>
+										<li><strong>IVA:</strong> <?php echo $currentSubsCheckRow['TIPO_IVA']; ?>% (<?php echo $currentSubsCheckRow['IVA']; ?>€)</li>
+										<li><strong>Total:</strong> <?php echo $currentSubsCheckRow['TOTAL']; ?>€</li>
+									</ul>
+								</li>
+								<li><strong>Importe total:</strong> <?php echo $currentSubsCheckRow['TOTAL']; ?>€</li>
+								<li><strong>Número de la factura:</strong> <?php echo $currentSubsCheckRow['FACTURA']; ?></li>
+								<li><strong>Fecha de la factura:</strong> <?php echo $billDate; ?></li>
+								<li><strong>Factura en PDF:</strong> <?php echo $billLink; ?></li>
+								<li><strong>Número de albarán interno:</strong> <?php echo $currentSubsCheckRow['NUM_ALBARAN']; ?></li>
+							</ul>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+			}
+			else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							<p>La activación de su suscripción a BiblioPRO esta pendiente de confirmación de su transferencia bancaria.</p>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+			}
+
+		}
+
+	}
+	// si no hi ha cap preu definit pel tipus d'usuari, mostrem error
+	else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							<p>En estos momentos no ofrecemos ningún tipo de suscripción de acceso a los productos y servicios BiblioPRO.</p>
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				<?php @include("/var/www/html//media/caixetes//logos-peu.inc") ?>
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

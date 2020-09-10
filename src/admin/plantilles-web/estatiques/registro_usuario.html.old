@@ -1,0 +1,422 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	// tablas usuarios
+	$usersTable = 'Usuarios';
+	$houdiniUsersTable = 'USERS';
+
+	// tabla países
+	$countriesTable = 'Paises';
+
+	// simple captcha
+	if (!isset ($_SESSION)) { session_start(); }
+	$captcha = array();
+	$captcha['seconds'] = 6;
+	if (!isset($_SESSION['SUM1']) or !isset($_SESSION['SUM2'])) {
+		$captcha['sum1'] = $_SESSION['SUM1'] = rand(0, 98);
+		$captcha['sum2'] = $_SESSION['SUM2'] = rand(0, (99 - $captcha['sum1']));
+	}
+	else {
+		$captcha['sum1'] = $_SESSION['SUM1'];
+		$captcha['sum2'] = $_SESSION['SUM2'];
+	}
+	$captcha['timestamp'] = time();
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver al formulario</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.messages_es.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// form validation
+				$('#registrationForm').validate();
+				// fill and hide simple captcha
+				var sum1 = <?php echo $captcha['sum1']; ?>;
+				var sum2 = <?php echo $captcha['sum2']; ?>;
+				var captcha = $('#captchaContainer');
+				captcha.find('input[type="text"]').val(sum1 + sum2);
+				captcha.hide();
+			});
+		</script>
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+<?php
+
+	// si s'han enviat les dades del formulari, processem el registre
+	if (isset($_POST['enviar'])) {
+
+		// comprovem no existeix cap usuari amb l'email introduït
+// 		$checkEmailQuery = db_query("
+// 			SELECT EMAIL
+// 			FROM `$usersTable`
+// 			WHERE EMAIL = '" . mysql_real_escape_string($_POST['EMAIL']) . "'
+// 		");
+
+		$checkEmailQuery = db_query("
+			SELECT LOGIN
+			FROM `$houdiniUsersTable`
+			WHERE LOGIN = '" . mysql_real_escape_string($_POST['EMAIL']) . "'
+		");
+
+		if (db_num_rows($checkEmailQuery) > 0) {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge usuari existeix|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+		}
+		// si no hi ha cap usuari amb l'email introduït, continuem el registre
+		else {
+
+			// comprovem que totes les dades siguin vàlides
+			if (
+				!empty($_POST['EMAIL']) and
+				isValidEmail($_POST['EMAIL']) and
+				!empty($_POST['EMAIL_CONFIRM']) and
+				($_POST['EMAIL_CONFIRM'] == $_POST['EMAIL']) and
+				!empty($_POST['PWD']) and
+				!empty($_POST['PWD_CONFIRM']) and
+				($_POST['PWD'] == $_POST['PWD_CONFIRM']) and
+				!empty($_POST['NOMBRE']) and
+				$captcha['timestamp'] > ($_POST['timestamp'] + $captcha['seconds']) and
+				$_POST['captcha'] == ($captcha['sum1'] + $captcha['sum2'])
+			) {
+
+				// generar codi activació usuari
+				$activationKey = md5(mt_rand() . mt_rand() . mt_rand() . mt_rand() . mt_rand());
+
+
+				// encriptar contrasenya
+				require_once('aw/dbusers.php');
+				$pwd = $CONFIG_ENCRIPTAR($_POST['PWD']);
+
+				// introduïm usuari a la taula de houdini
+				$houdiniInsertQuery = db_query("
+				    INSERT INTO `$houdiniUsersTable`
+				    (
+				    LOGIN,
+				    PASSWD,
+				    USERLEVEL,
+				    STATUS,
+				    EXPIRATION,
+				    EMAIL,
+				    REALNAME
+				)
+				    VALUES (
+				    '" . mysql_real_escape_string($_POST['EMAIL']) . "',
+							'" . $pwd . "',
+							'0',
+							'1',
+							'2065-10-10 00:00:00',
+							'" . mysql_real_escape_string($_POST['EMAIL']) . "',
+							'" . mysql_real_escape_string($_POST['NOMBRE']) . "'
+						)
+					");
+
+				// introduïm usuari a la taula d'usuaris de bibliopro
+				$now = date('Y-m-d H:i:s', time());
+				if (!isset($_POST['OTRO_PAIS'])) { $_POST['OTRO_PAIS'] = ''; }
+
+				if (isset($_POST['NEWSLETTER']) and $_POST['NEWSLETTER']!=''){
+				    if($_POST['EMAIL'] != ''){
+				        $id_llista_newsletter = $_POST['NEWSLETTER'];
+				        $QuerySelectSubsNL = db_query("SELECT * FROM `newsletter_subscriptors` WHERE IdLli=".$id_llista_newsletter." and email='" . $_POST['EMAIL'] . "' and tipus=1");
+				        $NumRowsSelectSubsNL = db_num_rows($QuerySelectSubsNL);
+				        if ($NumRowsSelectSubsNL == 0) {
+				            $QueryInsertSubsNL = db_query("INSERT INTO `newsletter_subscriptors` (IdUsu,IdLli,estat,tipus,email,dh_alta,nom) VALUES ('" . $_POST['EMAIL'] . "',$id_llista_newsletter,1,1,'".$_POST['EMAIL']."','" . date('Y-m-d H:i:s') . "','" . $_POST['NOMBRE'] . "')");
+				        }
+				    }
+				}
+				// fi gestio alta/baixa NL
+
+
+				//                     comprovem no existeix cap usuari amb l'email introduït
+				$checkEmailQuery = db_query("
+				    SELECT EMAIL
+				    FROM `$usersTable`
+				    WHERE EMAIL = '" . mysql_real_escape_string($_POST['EMAIL']) . "'
+            		");
+
+				if (db_num_rows($checkEmailQuery) == 0) {
+
+				    $insertQuery = db_query("
+				        INSERT INTO `$usersTable`
+				        (
+				        EMAIL,
+				        PWD,
+				        NOMBRE,
+				        WEB,
+				        TIPO_ENTIDAD,
+				        PAIS,
+				        OTRO_PAIS,
+				        CODIGO_ACTIVACION,
+				        CREATION,
+				        MODIFICAT,
+				        NEWSLETTER
+				    )
+				        VALUES (
+				        '" . mysql_real_escape_string($_POST['EMAIL']) . "',
+    							'" . $pwd . "',
+    							'" . mysql_real_escape_string($_POST['NOMBRE']) . "',
+    							'" . mysql_real_escape_string($_POST['WEB']) . "',
+    							'" . mysql_real_escape_string($_POST['TIPO_ENTIDAD']) . "',
+    							'" . mysql_real_escape_string($_POST['PAIS']) . "',
+    							'" . mysql_real_escape_string($_POST['OTRO_PAIS']) . "',
+    							'" . mysql_real_escape_string($activationKey) . "',
+    							'" . $now . "',
+    							'" . $now . "',
+                                '" . (isset($_POST['NEWSLETTER']) ? '1' : '0') . "'
+    						)
+    					");
+				} else {
+
+				    $updateQuery = db_query("
+				        UPDATE `$usersTable`
+				        SET
+				        PWD = '" . $pwd . "',
+                                NOMBRE = '" . mysql_real_escape_string($_POST['NOMBRE']) . "',
+                                WEB = '" . mysql_real_escape_string($_POST['WEB']) . "',
+                                TIPO_ENTIDAD = '" . mysql_real_escape_string($_POST['TIPO_ENTIDAD']) . "',
+                                PAIS = '" . mysql_real_escape_string($_POST['PAIS']) . "',
+                                OTRO_PAIS = '" . mysql_real_escape_string($_POST['OTRO_PAIS']) . "',
+                                CODIGO_ACTIVACION = '" . mysql_real_escape_string($activationKey) . "',
+                                MODIFICAT = '" . $now . "',
+                                NEWSLETTER = '" . (isset($_POST['NEWSLETTER']) ? '1' : '0') . "'
+
+                            WHERE EMAIL = '" . mysql_real_escape_string($_POST['EMAIL']) . "'
+    					");
+				}
+
+				// enviem email de confirmació
+				include_once ("mail.php");
+
+				$cos = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+		<h1>Registro de usuario en BiblioPRO</h1>
+		<hr />
+		|Missatge email registre|
+		<p><strong><a href="|CONFIG_URLBASE|/mbp/activar-usuario.html?email=' . htmlspecialchars(urlencode($_POST['EMAIL'])) . '&amp;key=' . htmlspecialchars(urlencode($activationKey)) . '">|CONFIG_URLBASE|/mbp/activar-usuario.html?email=' . htmlspecialchars(urlencode($_POST['EMAIL'])) . '&amp;key=' . htmlspecialchars(urlencode($activationKey)) . '</a></strong></p>
+		<hr />
+		<p>Si usted no se ha registrado como usuario en el sitio web de BiblioPRO, por favor ignore este mensaje.</p>
+	</body>
+</html>';
+
+				$destinatari = $_POST['EMAIL'];
+				$from = '"BiblioPRO" <bibliopro@imim.es>';
+				$assumpte = 'Confirmación del registro de usuario en BiblioPRO';
+// 				$cos = utf8_decode($cos);
+// 				$assumpte = utf8_decode($assumpte);
+				// si el correu s'envia correctament...
+				if (sendMail($destinatari, $assumpte, $cos, $from, null, true)) {
+
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="ok">
+						|Missatge registre ok|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+				}
+				// si el correu no s'envia correctament...
+				else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge registre error|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+				}
+
+			}
+			else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="warning">
+						|Missatge error dades|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+			}
+
+		}
+
+	}
+	// si no s'han enviat les dades de registre, mostrem el formulari
+	else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					|Introduccio|
+				</div>
+
+				<form action="" method="post" enctype="multipart/form-data" accept-charset="UTF-8" id="registrationForm">
+
+					<div class="broken border clearfix">
+						<!-- email -->
+						<label for="EMAIL">
+							<span>Correo electrónico <em>(para activar tu usuario debes tener acceso a la dirección de correo introducida)</em></span>
+							<input type="text" name="EMAIL" id="EMAIL" class="required email" maxlength="128" />
+						</label>
+						<!-- confirmar email -->
+						<label for="EMAIL_CONFIRM">
+							<span>Confirmar correo electrónico <em>(repetir campo anterior)</em></span>
+							<input type="text" name="EMAIL_CONFIRM" id="EMAIL_CONFIRM" class="required email" maxlength="128" />
+						</label>
+						<!-- contraseña -->
+						<label for="PWD">
+							<span>Contraseña</span>
+							<input type="password" name="PWD" id="PWD" class="required petit" maxlength="32" />
+						</label>
+						<!-- confirmar contraseña -->
+						<label for="PWD_CONFIRM">
+							<span>Confirmar contraseña <em>(repetir campo anterior)</em></span>
+							<input type="password" name="PWD_CONFIRM" id="PWD_CONFIRM" class="required petit" maxlength="32" />
+						</label>
+					</div>
+
+					<div class="broken border clearfix">
+						<!-- nom -->
+						<label for="NOMBRE">
+							<span>Nombre y apellidos</span>
+							<input type="text" name="NOMBRE" id="NOMBRE" class="required" />
+						</label>
+						<!-- web -->
+						<label for="WEB">
+							<span>Página web</span>
+							<input type="text" name="WEB" id="WEB" class="url" />
+						</label>
+						<!-- tipus entitat -->
+						<label for="TIPO_ENTIDAD">
+							<span>Tipo de entidad</span>
+							<select name="TIPO_ENTIDAD" id="TIPO_ENTIDAD" class="required">
+								<option value="1">Con ánimo de lucro</option>
+								<option value="2">Sin ánimo de lucro</option>
+								<option value="3">Académico</option>
+							</select>
+						</label>
+						<!-- país -->
+						<label for="PAIS">
+							<span>País</span>
+							<select name="PAIS" id="PAIS" class="required">
+<?php
+
+		$countriesQuery = db_query("SELECT ID, PAIS FROM `$countriesTable` ORDER BY PAIS ASC");
+		if (db_num_rows($countriesQuery) > 0) {
+
+			while ($countriesRow = db_fetch_array($countriesQuery)) {
+
+?>
+								<option value="<?php echo htmlspecialchars($countriesRow['ID']); ?>"><?php echo htmlentities($countriesRow['PAIS'], ENT_NOQUOTES, 'UTF-8'); ?></option>
+<?php
+
+			}
+
+		}
+
+?>
+							</select>
+						</label>
+						<!-- otro país -->
+						<label for="OTRO_PAIS" class="radio checkbox clearfix">
+							<input type="checkbox" name="OTRO_PAIS" id="OTRO_PAIS" value="1" />
+							<span>Resido en Canarias, Ceuta o Melilla <em>(sólo en caso de que su país sea España)</em></span>
+						</label>
+					</div>
+
+					<div class="broken border clearfix">
+                        <!-- newsletter -->
+                        <label for="NEWSLETTER" class="radio checkbox clearfix">
+                            <input type="checkbox" name="NEWSLETTER" id="NEWSLETTER" value="|Llista|" checked />
+                            <span>Deseo recibir la Newsletter de BiblioPRO</span>
+                        </label>
+                    </div>
+
+					<div id="captchaContainer" class="clearfix">
+						<label for="captcha">
+							<span>¿Cuánto suman <?php echo $captcha['sum1']; ?> + <?php echo $captcha['sum2']; ?>?</span>
+							<input type="text" id="captcha" name="captcha" class="required" />
+						</label>
+						<input type="hidden" name="timestamp" id="timestamp" value="<?php echo $captcha['timestamp']; ?>" />
+					</div>
+
+					<div class="broken border clearfix">
+						<p><strong>NOTA:</strong> Una vez completado el registro, deberá activar su usuario mediante un correo electrónico que recibirá en la dirección indicada.<br /> Por favor asegúrese de que la dirección es válida y puede acceder a los correos.</p>
+					</div>
+
+					<div><input type="submit" name="enviar" value="Regístrese" class="buttonSubmit send" /></div>
+
+				</form>
+<?php
+
+	}
+
+?>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

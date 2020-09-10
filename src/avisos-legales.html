@@ -1,0 +1,352 @@
+<?php
+require_once('/var/www/html//config.php');
+$id = '38';
+$idioma = 'es';
+$pare = '1';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '' , 'title' => 'Avisos legales' , 'nom' => 'Avisos legales'));
+$folderArray = array();
+$folderIds = array();
+$folderUrl = '/';
+$pageUrl = '/avisos-legales.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Avisos Legales - BiblioPRO</title>
+		<meta name="description" content="Avisos Legales que todo usuario debe aceptar antes de acceder al permiso de uso de un cuestionario" />
+		<meta name="Keywords" content="BiblioPRO, avisos legales, responsabilidad del usuario, biblioteca virtual, cuestionarios en español, resultados percibidos por los pacientes, patient reported outcomes, PRO, CVRS, HRQL, calidad de vida relacionada con la salud" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://www.bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+	</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+<?php
+$directori = '';
+$url = '/avisos-legales.html';
+$rutaplana = ($pos = strpos('/avisos-legales.html', '?')) ? substr('/avisos-legales.html', 0, ($pos-1)) : '/avisos-legales.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_principal.inc")
+?>
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+<?php
+$directori = '';
+$url = '/avisos-legales.html';
+$rutaplana = ($pos = strpos('/avisos-legales.html', '?')) ? substr('/avisos-legales.html', 0, ($pos-1)) : '/avisos-legales.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//informacio.inc")
+?>
+
+					<p class="button"><a href="/buscador/">Buscar cuestionario</a></p>
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix"><a href="/index.html" title="Portada">Portada</a></div>
+						<h2><span>Avisos legales</span></h2>
+					</div></div>
+
+					<h3>POLÍTICA DE PRIVACIDAD Y PROTECCIÓN DE DATOS</h3>
+<h4>1. Derecho de información</h4>
+<p>De conformidad con lo establecido por la Ley Orgánica 15/1999, de 13 de diciembre, de Protección de Datos de Carácter Personal (en adelante, LOPD),&nbsp;la Fundación IMIM (en adelante FIMIM), titular del sitio Web de BiblioPRO <a href="http://www.bibliopro.org">http://www.bibliopro.org</a> (en adelante, el sitio Web), informa al usuario de este sitio de la existencia de un fichero automatizado de datos de carácter personal, bajo su responsabilidad.</p>
+<h4>2. Finalidad</h4>
+<p>Los datos de los usuarios registrados a través de los formularios habilitados al efecto en el sitio Web son recabados por el personal a cargo del proyecto BiblioPRO con la finalidad de facilitar el manejo del sitio Web a sus usuarios, poder mantener una comunicación adecuada con ellos, así como para proteger el contenido ofrecido a través del sitio Web. Estos datos podrán ser facilitados a los propietarios intelectuales de los cuestionarios CVRS incluidos en BiblioPRO.</p>
+<h4>3. Carácter obligatorio o facultativo de la información facilitada por el usuario y veracidad de los datos</h4>
+<p>Los campos marcados con un asterisco (*) en los formularios de registro u otros a cumplimentar por el usuario son estrictamente necesarios para atender las peticiones relevantes a dichos formularios, siendo voluntaria la inclusión de datos en los campos restantes.</p>
+<p>El usuario garantiza que los datos personales facilitados a BiblioPRO son veraces y se hace responsable de comunicar al mismo cualquier modificación de los mismos.</p>
+<h4>4. Consentimiento del usuario</h4>
+<p>El envío de datos personales, mediante el uso de los formularios electrónicos de BiblioPRO o, en su caso, mensajes de correo electrónico, supone el consentimiento expreso del remitente al tratamiento automatizado de los datos incluidos en los medios de comunicación indicados, para las finalidades antes descritas así como para el envío de comunicaciones vía electrónica acerca de información y/o servicios relacionados con BiblioPRO.</p>
+<p>Asimismo, mediante la aceptación de la presente política de privacidad, el usuario autoriza expresamente a BiblioPRO a ceder los referidos datos personales a otras organizaciones presentes en el Estado Español o en el extranjero, para fines de protección y transparencia hacia los propietarios intelectuales de la documentación hecha pública a través del sitio Web (al utilizar la página Web de BiblioPRO, el usuario está expresamente autorizando la comunicación de los datos que proporciona a terceros, y su transferencia internacional, de acuerdo con los motivos aquí indicados).</p>
+<h4>5. Derechos de acceso, rectificación, oposición y cancelación de los usuarios.</h4>
+<p>El usuario podrá ejercer sus derechos de acceso, rectificación, oposición y cancelación al tratamiento de sus datos personales, en los términos y condiciones previstos en la LOPD.</p>
+<p>Podrá ejercer dichos derechos dirigiéndose a BiblioPRO, Fundació IMIM, Parc de Recerca Biomèdica de Barcelona, Doctor Aiguader, 88 1&ordf; Planta| 08003 Barcelona o bien a la siguiente dirección de correo electrónico <a   href="mailto:bibliopro(ELIMINAR)@imim.es" >bibliopro(ELIMINAR)@imim.es</a></p>
+<h4>6. Seguridad</h4>
+<p>La FIMIM mantiene los niveles de seguridad de protección de datos personales conforme al Real Decreto 994/1999, de 11 de junio, relativo a las medidas de seguridad de los ficheros automatizados que contengan datos de carácter personal, y ha establecido todos los medios técnicos a su alcance para evitar la pérdida, mal uso, alteración, acceso no autorizado y robo de los datos que el usuario facilite a través del sitio Web, sin perjuicio de informarle de que las medidas de seguridad en Internet no son inexpugnables.</p>
+<p>La FIMIM se compromete a cumplir con el deber de secreto y confidencialidad respecto de los datos personales contenidos en el fichero automatizado de acuerdo con la legislación aplicable, así como a conferirles un tratamiento seguro en las cesiones, que en su caso, puedan producirse.</p>
+<h4>7. Newsletter</h4>
+<p>BiblioPRO pondrá a disposición de los usuarios el servicio de envío de un Boletín en el que se incluyen las noticias, novedades e información más relevantes del sitio Web, en el que se incluye un apartado con publicidad, debidamente señalizado como tal.<br />
+El usuario podrá darse de baja o modificar los datos de suscripción al mencionado Boletín a través de los formularios interactivos incluidos en el sitio Web, o desde el propio Boletín.<br />
+Asimismo, BiblioPRO informa que remitirá comunicaciones comerciales por medios electrónicos con información sobre otros productos, servicios y eventos que puedan ser de interés para los usuarios del sitio Web cuando así lo soliciten expresamente. Dicho consentimiento podrá ser revocado en cualquier momento por el usuario, con la simple notificación de su voluntad a BiblioPRO, y no tendrá carácter retroactivo.</p>
+<h4>8. Información sobre cookies y técnicas de &ldquo;spamming&rdquo;</h4>
+<p>El usuario consiente el uso de cookies, que en ningún caso permitirán su identificación, con la exclusiva finalidad de facilitar su navegación por las diferentes páginas del presente sitio Web y que en ningún caso permitirán la identificación del usuario. En cualquier caso, el usuario podrá denegar o impedir la instalación de estas cookies modificando la configuración de su navegador.</p>
+<p>BiblioPRO tampoco utiliza técnicas de &ldquo;spamming&rdquo; y únicamente tratará los datos que el usuario transmita mediante los formularios electrónicos habilitados en este sitio Web o mensajes de correo electrónico.</p>
+<h4>9. Modificación de la presente política de privacidad</h4>
+<p>En caso de duda o controversia relativas a nuestra política de privacidad y de protección de datos personales el usuario puede ponerse en contacto con nosotros dirigiéndose a BiblioPRO, Fundació IMIM, Parc de Recerca Biomèdica de Barcelona, Doctor Aiguader, 88 1&ordf; Planta| 08003 Barcelona o bien a la siguiente dirección de correo electrónico <a   href="mailto:Bibliopro(ELIMINAR)@imim.es" >bibliopro(ELIMINAR)@imim.es</a>.</p>
+<p>El tratamiento de los datos de carácter personal, así como el envío de comunicaciones realizadas por medios electrónicos, son conformes a la Ley Orgánica 15/1999, de 13 de diciembre, de Protección de Datos de Carácter Personal (B.O.E. de 14 de diciembre de 1999) y a la Ley 34/2002, de 11 de julio, de servicios de la Sociedad de Información y de Comercio Electrónico (B.O.E. de 12 de julio de 2002).</p>
+<p>La FIMIM se reserva el derecho a modificar la presente política para adaptarla a futuras novedades legislativas o jurisprudenciales, así como a prácticas de la industria, informando previamente a los usuarios de los cambios que en ella se produzcan.</p>
+<h3>Aviso Legal: Términos y condiciones generales del uso del portal.</h3>
+<h4>1. IDENTIDAD DEL TITULAR DEL WEB:</h4>
+<p>El portal Web <a href="http://www.bibliopro.org">http://www.bibliopro.org</a> &nbsp;es propiedad&nbsp;de la Fundación IMIM (en adelante FIMIM) con domicilio social en BiblioPRO, Fundació IMIM, Parc de Recerca Biomèdica de Barcelona, Doctor Aiguader, 88 1&ordf; Planta| 08003 Barcelona y con la siguiente dirección de correo electrónico <a   href="mailto:bibliopro(ELIMINAR)@imim.es" >bibliopro(ELIMINAR)@imim.es</a></p>
+<p>La titularidad de esta página web es de <strong>Caixabank, S.A. </strong>Av. Diagonal,<br />
+621 08028-Barcelona <strong>NIF A08663619 </strong>e inscrita en el Registro Administrativo Especial del Banco de España con el número 2100 e inscrita en el Registro Mercantil de Barcelona, tomo 42.657, folio 33, hoja B-41232, inscripción 109&ordf; y con número de identificación fiscal A-08663619.<br />
+&nbsp;</p>
+<h4>2. PROPIEDAD INDUSTRIAL E INTELECTUAL:</h4>
+<p>El contenido de <a href="http://www.bibliopro.org">http://www.bibliopro.org</a>, los logotipos, su diseño, programación, sonidos, imágenes, textos, marcas y demás elementos que lo componen, son propiedad industrial e intelectual de CIBERESP y FIMIM o en su caso, de terceros que han otorgado la debida autorización para su uso.</p>
+<p>Por consiguiente se encuentra prohibido copiar, reproducir o publicar cualquier contenido de <a href="http://www.bibliopro.org">http://www.bibliopro.org</a>&nbsp;sin la previa y debida autorización a sus titulares, la que podrá solicitarse dirigiéndose por correo a BiblioPRO, Fundació IMIM, Parc de Recerca Biomèdica de Barcelona, Doctor Aiguader, 88 1&ordf; Planta| 08003 Barcelona, o bien a la siguiente dirección de correo electrónico <a   href="mailto:bibliopro(ELIMINAR)@imim.es" >bibliopro(ELIMINAR)@imim.es</a>.</p>
+<h4>3. ACEPTACIÓN DE LAS CONDICIONES DE USO:</h4>
+<p>Las presentes Condiciones (en adelante denominado como Aviso Legal) tienen por objeto regular el uso de este Web que su titular pone a disposición del público en la presente URL.<br />
+La utilización del Web por un tercero le atribuye la condición de Usuario y, supone la aceptación plena por dicho Usuario, de todas y cada una de las condiciones que se incorporan en el presente Aviso Legal.</p>
+<h4>4. PROTECCION DE LOS DATOS DISPONIBLES A TRAVÉS DEL SITIO WEB (SUBLICENCIAS):</h4>
+<p>El Usuario se compromete expresamente a SOLICITAR el debido PERMISO DE USO (SUBLICENCIA) de cualquier cuestionario de resultados percibidos por los pacientes o calidad de vida relacionada con la salud,&nbsp;y/o materiales adicionales&nbsp;a los que acceda a través de este sitio Web, admitiendo su entera responsabilidad legal en caso de no realizar este paso previo a la utilización del cuestionario.</p>
+<p>El usuario podrá solicitar la debida SUBLICENCIA para un estudio restringido en el tiempo rellenando un formulario (proporcionado en castellano) cuyos datos podrá modificar desde su página personal de usuario mientras ésta no se haya otorgado, o bien dirigiéndose al autor del cuestionario, según las indicaciones proporcionadas por BiblioPRO para cada cuestionario.</p>
+<p>En el caso de las sublicencias gestionadas por BiblioPRO, el usuario recibirá un correo electrónico informándole del estado de su otorgación, y el usuario podrá descargar el archivo correspondiente a la SUBLICENCIA&nbsp;desde su apartado &quot;Mi BiblioPRO&quot; protegido por un nombre de usuario y contraseña. El documento se almacenará en una base de datos propiedad de la FIMIM, siendo accesible por el usuario desde su cuenta personal.</p>
+<p>El usuario se compromete a no transformar, reproducir, distribuir o comercializar los documentos descargados desde este sitio Web, y a utilizarlos únicamente de acuerdo con las condiciones establecidas en la SUBLICENCIA acordada exclusivamente para el estudio y durante el tiempo declarados en ésta.</p>
+<p>El usuario declara no ser residente, nacional, o encontrarse en ninguno de los países afectados por sanciones económicas internacionales o por parte de los Estados Unidos de América, y se compromete a no compartir la información descargada desde este sitio con residentes o nacionales de estos países.</p>
+<p>Asimismo, el usuario se compromete a citar a BiblioPRO en cualquier comunicación o publicación pública de los resultados del estudio realizado mediante los cuestionarios obtenidos a través de este sitio Web o de la información facilitada por el personal a su cargo.</p>
+<h4>5. COBROS Y DONACIONES</h4>
+<p>De acuerdo con la la Ley 34/2002, de 11 de julio, de servicios de la Sociedad de Información y de Comercio Electrónico (B.O.E. de 12 de julio de 2002) se pone a disposición de los usuarios información clara y exacta sobre el precio del producto o servicio, indicando si incluye o no los impuestos aplicables y, en su caso, sobre los gastos de envío.</p>
+<p>Las facturas correspondientes a los pagos realizados online podrán descargarse desde el apartado &ldquo;Mi BiblioPro&rdquo; o serán enviadas a los usuarios bajo petición.</p>
+<h4>6. USO CORRECTO DEL SITIO WEB:</h4>
+<h5>6.1. Conformidad con la Ley vigente</h5>
+<p>El Usuario se compromete a utilizar el Web, los contenidos y servicios de conformidad con la Ley, el presente Aviso Legal, las buenas costumbres y el orden público. Del mismo modo, el Usuario se obliga a no utilizar el Web o los servicios que se presten a través de él con fines o efectos ilícitos o contrarios al contenido del presente Aviso Legal, lesivos de los intereses o derechos de terceros, o que de cualquier forma pueda dañar, inutilizar o deteriorar el Web o sus servicios, o impedir un normal disfrute del Web por otros Usuarios.</p>
+<h5>6.2. Responsabilidad por el funcionamiento del Web</h5>
+<p>El titular del Web excluye toda responsabilidad que se pudiera derivar de interferencias, omisiones, interrupciones, virus informáticos, averías telefónicas o desconexiones en el funcionamiento operativo del sistema electrónico, motivado por causas ajenas al titular de la Web.</p>
+<p>Asimismo, el titular del Web también excluye cualquier responsabilidad que pudiera derivarse por retrasos o bloqueos en el funcionamiento operativo de este sistema electrónico causado por deficiencias o sobre carga en las líneas telefónicas o en Internet, así como de daños causados por terceras personas mediante intromisiones ilegitimas fuera del control del titular del Web.</p>
+<p>El titular del Web esta facultado para suspender temporalmente, y sin previo aviso, la accesibilidad al Web con motivo de operaciones de mantenimiento, reparación, actualización o mejora.</p>
+<p>El Usuario se compromete expresamente a no destruir, alterar, inutilizar o, de cualquier otra forma, dañar los datos, programas o documentos electrónicos y demás que se encuentren en la presente Web.</p>
+<p>Asimismo, el Usuario se compromete a no obstaculizar el acceso de otros usuarios al servicio de acceso mediante el consumo masivo de los recursos informáticos a través de los cuales el titular del Web presta el servicio, así como realizar acciones que dañen, interrumpan o generen errores en dichos sistemas.</p>
+<p>El Usuario se compromete a no introducir programas, virus, macros, applets, controles ActiveX o cualquier otro dispositivo lógico o secuencia de caracteres que causen o sean susceptibles de causar cualquier tipo de alteración en los sistemas informáticos del titular del Web o de terceros.</p>
+<h5>6.3. Cancelación cuenta de usuario</h5>
+<p>Al enviar los datos, el usuario acepta las condiciones de uso expuestas aquí y en el apartado de Protección de Datos.</p>
+<p>El usuario no venderá, prestará o alquilará su cuenta de usuario.</p>
+<p>Si se incumple alguna de estas condiciones, el usuario perderá el derecho a usar su cuenta.</p>
+<p>La FIMIM se reserva el derecho de cancelar cualquier cuenta que vaya en contra de estos términos.</p>
+<h5>6.4. Responsabilidad sobre los contenidos y por enlaces</h5>
+<p>CIBERESP y FIMIM no controlan toda la información disponible en los servicios que ofrece a través de BiblioPRO. Cualquier opinión, anuncio, ofertas o cualquier otro tipo de información o contenido presentado en cualquier servicio, son propiedad exclusiva de sus respectivos autores, quienes son los únicos responsables de su contenido. Asimismo, el contenido de las notas de prensa que publicamos son responsabilidad exclusiva de la empresa, organización o persona que las emite. FIMIM se limita exclusivamente a reproducirlas parcial o totalmente.</p>
+<p>Los enlaces o links contenidos en el Web pueden conducir al Usuario a otros Web gestionados por terceros.</p>
+<p>El titular del Web declina cualquier responsabilidad respecto a la información que se halle fuera del Web, ya que la función de los enlaces que aparecen es únicamente la de informar al Usuario sobre la existencia de otras fuentes de información sobre un tema en concreto.<br />
+El titular del Web queda exonerado de toda responsabilidad por el correcto funcionamiento de tales enlaces, del resultado obtenido a través de dichos enlaces, de la veracidad y licitud del contenido o información a la que se puede acceder, así como de los perjuicios que pueda sufrir el Usuario en virtud de la información encontrada en la Web enlazada.</p>
+<h4>7. USO DE COOKIES:</h4>
+<p>El acceso a este Web puede implicar la utilización de cookies. Las cookies son pequeñas cantidades de información que se almacenan en el navegador utilizado por cada usuario para que el servidor recuerde cierta información que posteriormente únicamente el servidor que la implementó leerá. Las cookies tienen, generalmente, una duración limitada en el tiempo. Ninguna cookie permite que pueda contactarse con el número de teléfono del usuario, su dirección de correo electrónico o con cualquier otro medio de contacto. Ninguna cookie puede extraer información del disco duro del usuario o robar información personal. La única manera de que la información privada de un usuario forme parte del archivo cookie es que el usuario dé personalmente esa información al servidor. Aquellos usuarios que no deseen recibir cookies o quieran ser informados de su fijación pueden configurar su navegador a tal efecto.</p>
+<h4>8. VIGENCIA:</h4>
+<p>Se podrá modificar los términos y condiciones aquí estipulados, total o parcialmente, publicando cualquier cambio en la misma forma en que aparecen estas condiciones generales. La vigencia temporal de estas condiciones generales coincide, por lo tanto, con el tiempo de su exposición, hasta que sean modificadas total o parcialmente, momento en el cual pasarán a tener vigencia las condiciones generales modificadas.</p>
+<h4>9. LEGISLACIÓN APLICABLE Y COMPETENCIA JURISDICCIONAL:</h4>
+<p>Todas las controversias o reclamaciones surgidas de la interpretación o ejecución del presente Aviso Legal se regirán por la legislación española, y se someterán a la jurisdicción de los Juzgados y Tribunales de Barcelona.</p>
+<p class="destacat">Descarga los <a rel="external" href="/media/upload/arxius/Avisos Legales/Aviso Legal_BiblioPRO_07_02_2012.pdf">Avisos Legales</a> de BiblioPRO.</p>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				<?php @include("/var/www/html//media/caixetes//logos-peu.inc") ?>
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

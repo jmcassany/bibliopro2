@@ -1,0 +1,1 @@
+<p class="image"><img src="/media/caixetes//img/reservamos_este_espacio_120x.jpg" alt="" /></p>

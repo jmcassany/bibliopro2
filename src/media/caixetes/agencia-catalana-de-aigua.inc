@@ -1,0 +1,1 @@
+<p class="image"><a href="http://www.avui.cat"  rel="external" onClick="_gaq.push(['_trackEvent', 'Banners', '3/agencia-catalana-de-aigua']);"><img src="/media/caixetes//img/mostra_banner_lateral_dret.jpg" alt="Agencia Catalana de l'aigua" /></a></p>

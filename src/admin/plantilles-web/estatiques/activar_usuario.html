@@ -1,0 +1,131 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	// tablas usuarios
+	$usersTable = 'Usuarios';
+	$houdiniUsersTable = 'USERS';
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador-cuestionarios.html">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script src="|CONFIG_NOMCARPETA|/media/js/captcha/captcha.js" type="text/javascript"></script>
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+
+<?php
+
+	// si s'han indicat el correu i la clau...
+	if (isset($_GET['key']) and isset($_GET['email'])) {
+
+		$checkQuery = db_query("
+			SELECT CODIGO_ACTIVACION
+			FROM `$usersTable`
+			WHERE EMAIL = '" . mysql_real_escape_string($_GET['email']) . "'
+		");
+		// si hi ha un usuari amb el correu indicat...
+		if (db_num_rows($checkQuery) > 0) {
+
+			$checkRow = db_fetch_array($checkQuery);
+			// si el codi coincideix amb l'indicat, activem l'usuari
+			if ($checkRow['CODIGO_ACTIVACION'] == $_GET['key']) {
+
+				$activationQuery = db_query("
+					UPDATE `$houdiniUsersTable`
+					SET STATUS = 0
+					WHERE LOGIN = '" . mysql_real_escape_string($_GET['email']) . "'
+				");
+
+?>
+					<div class="ok">
+						|Missatge usuari activat|
+						<?php echo $continueBrowsing; ?>
+					</div>
+<?php
+
+			}
+			// si el codi no coincideix, mostrem error
+			else {
+
+?>
+					<div class="warning">
+						|Missatge codi invalid|
+						<?php echo $continueBrowsing; ?>
+					</div>
+<?php
+
+			}
+
+		}
+		// si no hi ha cap usuari amb el correu indicat, mostrem error
+		else {
+
+?>
+					<div class="error">
+						|Missatge usuari no existeix|
+						<?php echo $continueBrowsing; ?>
+					</div>
+<?php
+
+		}
+
+	}
+	// si no s'ha indicat codi o email, mostrem error
+	else {
+
+?>
+					<div class="error">
+						|Missatge falten dades|
+						<?php echo $continueBrowsing; ?>
+					</div>
+<?php
+
+	}
+
+?>
+
+				</div>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

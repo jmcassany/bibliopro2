@@ -1,0 +1,10 @@
+
+$mail_sendtype = 'smtp';
+$mail_port = '587';
+$mail_host = 'smtp.mailgun.org';
+$mail_SMTPAuth = true;
+$mail_username = 'postmaster@bibliopro.org';
+$mail_password = '32adce013f0993ed79a9e12caa949c7d';
+$mail_hostName = 'antaviana.com';
+$mail_defaultFrom = 'houdini@antaviana.net';
+$mail_encode = 'utf-8';

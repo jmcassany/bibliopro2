@@ -1,0 +1,84 @@
+|PHP_VARS||block-static-gestioUsuaris|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+	</head>
+
+	<body id="single">
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="border clearfix">
+					<h2 class="search orange">|Titol|</h2>
+				</div>
+
+                <!-- 
+                ><p class="alert">Actualmente estamos realizando tareas de mantenimiento de la página web, sugerimos no descargarse ni solicitar ninguna licencia de ningún cuestionario hasta nueva información</p>
+                 -->
+<?php
+
+	$idioma= '|IDIOMA_PAG|';
+	|begin_isset Text no resultats|
+	function text_no_result ()
+	{
+
+?>
+				<div class="warning clearfix">|Text no resultats|</div>
+<?php
+
+	}
+	|end_isset|
+
+	require('questionnaires_vars.inc');
+
+	$text_resultats = "|Resultats|";
+	$text_total = "|Total|";
+	$text_utilitzant = "|Utilitzant|";
+	$text_anterior = "|Anterior|";
+	$text_seguent = "|Següent|";
+	include_once('|CONFIG_PATHBASE|/media/php/cercador_questionaris.inc');
+
+?>
+
+				<ul class="resultsLegend clearfix">
+					<li><strong>Descargas disponibles</strong></li>
+					<li class="description">Descripción</li>
+					<li class="poll">Cuestionario</li>
+					<li class="manual">Manual</li>
+					<li class="score">Puntuación</li>
+					<li class="bibliography">Bibliografía</li>
+					<li class="links">Enlaces</li>
+					<li class="empro last">Evaluación EMPRO</li>
+				</ul>
+
+				<ul class="buttons clearfix">
+					<li><a href="index.html"><img src="|CONFIG_NOMCARPETA|/media/img/bt_nueva_busqueda.jpg" alt="Nueva búsqueda" /></a></li>
+				</ul>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

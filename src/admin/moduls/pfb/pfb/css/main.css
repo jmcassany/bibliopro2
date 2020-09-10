@@ -1,0 +1,71 @@
+body {
+   font: 11px Verdana, Tahoma;
+   background-color: #fefefe;
+}
+a {
+   text-decoration: none;
+   color: #000000;
+}
+a:hover {
+   text-decoration: none;
+   color: #777777;
+}
+a.listLink {
+   color: #4a4a4a;
+}
+a.listLink:hover {
+   color: #4a4a4a;
+}
+img, form {
+   border: 0px none;
+   margin: 0px;
+}
+td, input {
+   font: 11px Verdana, Tahoma;
+   white-space: nowrap;
+}
+tr.hover {
+   background-color: #eaeaea;
+   color: #000000;
+}
+tr.light {
+   background-color: #fafafa;
+   color: #4a4a4a;
+}
+tr.dark {
+   background-color: #f0f0f0;
+   color: #4a4a4a;
+}
+table.topTable {
+   width: 698px;
+   border: 0px none;
+   padding: 0px;
+   margin: 0px;
+   border-spacing: 0px;
+}
+table.mainTable {
+   width: 700px;
+   border: 0px none;
+   margin: 0px;
+   padding: 1px;
+}
+td.header {
+   color: #ffffff;
+   background-color: #0E449A;
+   padding-left: 2px;
+   font-weight: bold;
+   letter-spacing: 1px;
+}
+td.center {
+   text-align: center;
+}
+td.right {
+   text-align: right;
+}
+td.left {
+   text-align: left;
+}
+td.perms {
+   text-align: left;
+   width: 15px;
+}

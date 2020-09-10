@@ -1,0 +1,15 @@
+## activar registrar les variables globals
+php_value register_globals 1
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase //buscador
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+
+
+RewriteRule ^([0-9]+)$ ver.html?ID=$1 [QSA]
+RewriteRule ^([0-9]+)/(.*)$ ver.html?ID=$1 [QSA]
+
+</IfModule>

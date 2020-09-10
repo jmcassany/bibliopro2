@@ -1,0 +1,11 @@
+0.9.8 - 2006-11-27
+Allow datestamp as valid input to all calendar
+componets date[-time] properties setFunctions
+(setCompleted, setCreated, setDtend, setDtstamp,
+setDtstart, setDue, setExdate, setFreebusy,
+setLastModified, setRdate, setRecurrenceid,
+setTrigger) and function validDate.
+
+0.9.9 - 2006-11-28
+Function _date_time_string: improved ability
+to identify timezone within string.

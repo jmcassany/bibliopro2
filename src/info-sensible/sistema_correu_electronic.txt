@@ -1,0 +1,34 @@
+________________________________________
+De: Marc González Majoral [marc.gonzalez@antaviana.cat]
+Enviado el: jueves, 01 de diciembre de 2011 17:32
+Para: GARCIA-DURAN HUET, MIREYA
+Asunto: Dades accés panell de control TPV virtual.
+
+Hola Mireya.
+
+T'adjunto les dades per entrar al panell de control del TPV virtual de La
+Caixa. Aquí podràs veure les transferències realitzades i altres històries.
+Important no modificar res de la configuració, ja que podrien deixar de
+funcionar els pagaments.
+
+Adreça: https://canales.sermepa.es/lacaixa/
+Usuari: 322013483-001
+Contrasenya: SN09Q222N9NQ1N29
+
+Un cop _jo_ et doni l'avís (faré un mail), si us plau feu el que indico a
+continuació.
+
+IMPORTANT: Cal fer una prova de pagament amb una tarjeta real i no caducada
+per comprovar que funciona correctament. Un cop feta la prova, des del mòdul
+d'administració del panell de control es pot fer una devolució. També cal fer
+una operació fallida amb el número de tarjeta: 1111111111111111. Un cop fetes
+aquestes dos proves, cal entrar al mòdul d'administració i comprovar que hi
+apareixen, tant la transferència correcta com l'errònia.
+
+Com que de moment no hi ha descarregables, es poden fer aquestes proves a
+través de la plana de donacions. També és interessant que, aprofitant
+l'avinentesa, proveu a fer una donació indicant com a mètode de pagament
+transferència, i després des de MiBiblioPRO la pagueu a través del TPV, per
+comprovar que es pot fer.
+
+Salut.

@@ -1,0 +1,1 @@
+<p class="image"><a href="https://eprovide.mapi-trust.org"  onClick="_gaq.push(['_trackEvent', 'Banners', '6/proqolid']);"><img src="/media/caixetes//img/logo_eprovide.jpg" alt="" /></a></p>

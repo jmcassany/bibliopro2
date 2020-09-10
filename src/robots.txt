@@ -1,0 +1,7 @@
+# robots.txt for http://bibliopro.org
+
+User-agent: *
+Disallow: /lib/
+Disallow: /admin/
+
+Sitemap: http://bibliopro.org/sitemap.xml

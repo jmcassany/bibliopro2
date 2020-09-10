@@ -1,0 +1,186 @@
+|PHP_VARS|
+|block-static-gestioUsuaris|
+<?php
+$text = <<<EOF
+|Text|
+EOF;
+	$autoritzat = false;
+	$dadesInstrument = null;
+	$dadesAutor = null;
+	$insert = false;
+	$flagEnviat = false;
+	$codeAuth = false;
+	if(isset($_POST['auth']) || isset($_GET['auth'])){
+
+		$codeAuth = isset($_POST['auth']) ? $_POST['auth'] : $_GET['auth'];
+		$auth = json_decode(base64_decode($codeAuth));
+
+		$resultAutoritzat = db_query('SELECT * FROM Cuestionarios_autorizaciones WHERE id_cuestionario = ' . (int)$auth->idInstrument . ' AND id_autor = ' . (int)$auth->idAutor . '');
+
+		$resultsCuestionario = db_query('SELECT * FROM Cuestionarios WHERE ID_CUEST = ' . (int)$auth->idInstrument . ' AND (IDAUTORES_ORIGINAL LIKE "%' . (int)$auth->idAutor . '%" OR IDAUTORES_CAST LIKE "%' . (int)$auth->idAutor . '%") ORDER BY VERSION DESC LIMIT 0,1');
+
+		$resultsAutor = db_query('SELECT * FROM Autores WHERE ID = ' . (int)$auth->idAutor);
+
+		if(db_num_rows($resultsCuestionario) == 1){
+			$dadesInstrument = db_fetch_array($resultsCuestionario);
+		}
+		if(db_num_rows($resultsAutor) == 1){
+			$dadesAutor = db_fetch_array($resultsAutor);
+		}
+
+		if(db_num_rows($resultAutoritzat) > 0){
+			$autoritzat = true;
+		}
+	}
+	
+	if($codeAuth && isset($_POST['enviar']) && isset($_POST['permiso']) && !$autoritzat && $dadesInstrument && $dadesAutor){
+			$extra = '';
+			$autoritzacio = $_POST['permiso'];
+			if($_POST['permiso'] == 2 && isset($_POST['perm_distr'])){
+				$autoritzacio = $_POST['perm_distr'];
+				$extra = '';
+				if(isset($_POST['perm_distr_altres']) && $_POST['perm_distr_altres'] != ''){
+					$extra = $_POST['perm_distr_altres'];
+				}
+			}
+
+			$insert = db_query('INSERT INTO Cuestionarios_autorizaciones (id_cuestionario, id_autor, tipo_autorizacion, extra) VALUES (' . (int)$dadesInstrument['ID_CUEST'] . ',' . (int)$auth->idAutor . ',' . (int)$autoritzacio . ',"' . $extra . '")');
+			$flagEnviat = true;
+	}
+	if($codeAuth && $dadesInstrument && $dadesAutor){
+		$text= str_replace('#instrumento#', $dadesInstrument['NOM_ORIGINAL'], $text);
+	}
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Títol|</span></h2>
+					</div></div>
+					
+					<?php 
+					if(!$autoritzat){
+						if($codeAuth && !$flagEnviat) {
+							echo $text; 
+						}
+						if($dadesInstrument && $dadesInstrument != '' ) : 
+						?>
+						<ul>
+							<li>Instrumento: <strong><?php echo $dadesInstrument['NOM_ORIGINAL']; ?></strong></li>
+							<?php if(isset($dadesAutor['NOM']) && $dadesAutor['NOM'] != '') : ?>
+							<li>Autor: <strong><?php echo $dadesAutor['NOM']; ?></strong></li>
+							<?php endif; ?>
+						</ul>
+						<?php
+						if($flagEnviat || $autoritzat){
+							$missatge = '<p class="error">Se ha producido un error en la autorización del instrumento.</p>';
+							if($autoritzat){
+								$missatge = '<p class="error">El instrumento ya ha sido autorizado</p>';
+							}
+							if($insert){
+								$missatge = '<p class="ok">Gràcias por autorizar la distribución del instrumento <strong>' . $dadesInstrument['NOM_ORIGINAL'] . '</strong></p>';
+							}
+							?>
+							<div class="missatges">
+								<?php echo $missatge; ?>
+							</div>
+						<?php
+						} else { 
+						?>
+							<div>
+								<div class="wrapper clearfix">
+									<form id="autentificacio" name="autentificacio" action="" method="post">
+										<h3>Opciones de distribución a través de BIBLIOPRO</h3>
+										<ul>
+											<li><input type="radio" class="check" name="permiso" value="1" />PERMISO DE DIGITALIZACIÓN (Pueden leer el instrumento aunque no usarlo)</li>
+											<li><input type="radio" class="check" name="permiso" value="2" />PERMISO DE REPRODUCCIÓN Y DISTRIBUCIÓN DE SUBLICENCIAS A TERCEROS
+												<ul class="subgrup">
+													<li><input class="subcheck" type="radio" name="perm_distr" value="1" />La descarga  y la sublicencia de LOS MATERIALES será siempre gratuita</li>
+													<li><input class="subcheck" type="radio" name="perm_distr" value="2" />La descarga y la sublicencia de LOS MATERIALES será gratuita para estudios con financiación pública o uso clínico, pero comportará un  pago cuya tarifa se consensuará entre EL LICENCIANTE y la IMIM, al cual estarán obligadas las empresas con ánimo de lucro (ej: CROs, farmacéuticas, etc). EL LICENCIANTE acuerda compartir parte de los ingresos generados con la IMIM.</li>
+													<li><input class="subcheck" type="radio" name="perm_distr" value="3" />La descarga y la sublicencia de LOS MATERIALES comportará SIEMPRE un pago, cuyo precio puede variar según el tipo de solicitante, y que se consensuará entre EL LICENCIANTE y la IMIM. EL LICENCIANTE acuerda compartir parte de los ingresos generados con la IMIM.</li>
+													<li><input class="subcheck" type="radio" name="perm_distr" value="4" />Los usuarios podrán descargarse (reproducir) LOS MATERIALES pero deberán solicitar el permiso de uso (sub-licencia) a (distinto de  BiblioPRO)</li>
+													<li><input class="subcheck" type="radio" name="perm_distr" value="5" />Otra:  ESPECIFICAR<input class="formulari altres" type="text" id="perm_distr_altres" name="perm_distr_altres" value="" style=""/></li>
+												</ul>
+											</li>
+										</ul>
+										<input type="hidden" name="auth" value="<?php echo $_GET['auth']; ?>" />
+										<input type="submit" name="enviar" value="Autorizar" class="button" />
+									</form>
+								</div>
+							</div>
+						<?php
+							}
+						endif;
+						?>
+					<?php } else { ?>
+						<p class="error">Este instrumento ya ha sido autorizado previamente por este autor. Gracias por su interés.</p> 
+					<?php } ?>
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+	<script type="text/javascript">
+		$().ready(function(){
+			$('.subgrup input').prop('disabled', true);
+			$('#perm_distr_altres').prop('disabled', true);
+			$('.check').on('change', function(){
+				if($(this).val() == 1){
+					$('.subgrup input').prop('disabled', true);
+				} else {
+					$('.subgrup input').prop('disabled', false);
+					$('#perm_distr_altres').prop('disabled', true);
+				}
+			});
+			$('.subcheck').on('change', function(){
+				if($(this).val() == 5){
+					$('#perm_distr_altres').prop('disabled', false);
+				} else {
+					$('#perm_distr_altres').prop('disabled', true);
+				}
+			});
+		})
+	</script>
+	</body>
+
+</html>

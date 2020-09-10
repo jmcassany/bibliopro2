@@ -1,0 +1,1 @@
+<p class="image"><a href="http://www.bibliopro.org/sobre_empro"  onClick="_gaq.push(['_trackEvent', 'Banners', '7/empro']);"><img src="/media/caixetes//img/empro_216x168.jpg" alt="" /></a></p>

@@ -1,0 +1,62 @@
+
+Hola Joan Marc.
+
+Coses a fer per a importació exitosa:
+
+Crear la base de dades. Cal indicar la codificació "utf8_spanish2_ci".
+
+Importar fixter amb l'exportació de la base de dades. El millor és importar-lo
+directament amb el phpMyAdmin. Si vols fer-ho a mà només cal executar-ne tot
+l'SQL.
+
+Modificar fitxer /lib/configdb.php amb les dades de la base de dades que toqui.
+El que hi ha dins de "if (getenv('testserver'))" és pel servidor de proves,
+cal modificar el que hi ha a dins de "else {}". El format és:
+mysql://usuari:contrasenya@host/base_dades
+
+Anar a ADREÇA/admin/install/check_perm.php . Comprovar que tot està en verd
+excepte les 4 últimes files que de moment no són necessàries (fins que
+s'implementi el newsletter) i, en cas de no estar-ho, modificar els permisos on
+faci falta. Un cop fet això, cal esborrar aquesta carpeta install, ja que pot
+ser perillosa. NOTA: pel que està a /media/upload, també cal modificar els
+permisos de tot el que hi ha recursivament (chmod -R), ja que sino no es podrà
+modificar el contingut ja introduït.
+
+Amb el navegador web anar a:
+ADREÇA/admin/ i identificar-se com a admin, contrasenya admin.
+A continuació anar a:
+ADREÇA/admin/setup.php i fer click al botó "Regenerar".
+
+Un cop fet tot això, el web encara no es veurà. Cal entrar al houdini, anar a
+Utilitats (últim punt del menú superior) i publicar-ho tot en l'ordre que
+apareix a la caixa de "Publicació per blocs". Aquest pas potser és millor que
+el faci jo mateix per comprovar immediatament que tot s'ha generat
+correctament. És a dir si et sembla bé, un cop estigui tot apunt per fer
+aquest últim pas, em fas un mail avisant i jo faig la generació. També
+canviaré la contrasenya de l'usuari admin per a què no sigui tan evident.
+Després que la Mireya s'hi posi la que vulgui.
+
+Exportació base de dades: http://bibliopro.imim.antaviana.net/bibliopro.sql
+Fitxers web: http://bibliopro.imim.antaviana.net/BiblioPRO-web.zip
+
+NOTA: si et salta un avís a l'accedir a les adreces demanant usuari i
+contrasenya, són antaviana / anta.viana .
+
+Salut.
+
+
+
+--
+
+--------------------------------------------------------------
+Marc González  Majoral
+Can Antaviana
+marc.gonzalez@antaviana.cat
+
+Frase que cal posar en primera plana
+
+“¡Bienvenidos a la nueva Web de BiblioPRO!
+Durante las próximas semanas seguiremos ampliando nuestros contenidos
+para dar a conocer mejor los cuestionarios de calidad de vida en español”
+
+

@@ -1,0 +1,75 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	$envia = "Enviar";
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// fill and hide simple captcha
+				var sum1 = <?php echo $captcha['sum1']; ?>;
+				var sum2 = <?php echo $captcha['sum2']; ?>;
+				var captcha = $('#captchaContainer');
+				captcha.find('input[type="text"]').val(sum1 + sum2);
+				captcha.hide();
+			});
+		</script>
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="broken border clearfix">
+					<h2>|TITOL|</h2>
+					|DESCRIPCIOFORMULARI|
+				</div>
+
+				<form |CONFIGFORMULARI|>
+
+					<div class="broken border clearfix">|CAMPSFORMULARI|</div>
+
+					<div id="captchaContainer" class="clearfix">
+						<label for="captcha">
+							<span>¿Cuánto suman <?php echo $captcha['sum1']; ?> + <?php echo $captcha['sum2']; ?>?</span>
+							<input type="text" id="captcha" name="captcha" class="required" />
+						</label>
+						<input type="hidden" name="timestamp" id="timestamp" value="<?php echo $captcha['timestamp']; ?>" />
+					</div>
+
+					<div><input type="submit" name="enviar" value="<?php echo $envia; ?>" class="buttonSubmit send" /></div>
+
+				</form>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

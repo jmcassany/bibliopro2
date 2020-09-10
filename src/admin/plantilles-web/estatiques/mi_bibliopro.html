@@ -1,0 +1,130 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver atrás</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script src="|CONFIG_NOMCARPETA|/media/js/captcha/captcha.js" type="text/javascript"></script>
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+					<p class="section">|APARTAT|</p>
+|MENUESQUERRA|
+|block-static-navInfo|
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix">|SITUACIO|</div>
+						<h2><span>|Titol|</span></h2>
+					</div></div>
+<?php
+
+	// si l'usuari està identificat, mostrem la plana
+	if (accessGetLogin() != '') {
+
+?>
+					<ul class="mbp clearfix">
+						<li><div class="wrapper">
+							<div class="data">
+								<h3><a href="datos.html">|Text link dades|</a></h3>
+								|Text dades|
+								<p><a href="datos.html" tile="Entrar"><img src="|CONFIG_NOMCARPETA|/media/img/bt_go.png" alt="Ver datos" /></a></p>
+							</div>
+						</div></li>
+						<li class="nomargin"><div class="wrapper ">
+							<div class="downloads">
+								<h3><a href="descargas.html">|Text link descarregues|</a></h3>
+								|Text descarregues|
+								<p><a href="descargas.html" tile="Entrar"><img src="|CONFIG_NOMCARPETA|/media/img/bt_go.png" alt="Ver descargas" /></p></a>
+							</div>
+						</div></li>
+						<li><div class="wrapper">
+							<div class="licenses">
+								<h3><a href="sublicencias.html">|Text link subllicencies|</a></h3>
+								|Text subllicencies|
+								<p><a href="sublicencias.html" tile="Entrar"><img src="|CONFIG_NOMCARPETA|/media/img/bt_go.png" alt="Ver sublicencias" /></a></p>
+							</div>
+						</div></li>
+						<li class="nomargin"><div class="wrapper">
+							<div class="subscribe">
+								<h3><!--<a href="suscripcion.html">-->|Text link subscripcio|<!--</a>--></h3>
+								<!--|Text subscripcio|-->
+								Próximamente...
+								<!--<p><a href="suscripcion.html" tile="Entrar"><img src="|CONFIG_NOMCARPETA|/media/img/bt_go.png" alt="Ver suscripción" /></a></p>-->
+							</div>
+						</div></li>
+						<li><div class="wrapper">
+							<div class="donations">
+								<h3><a href="donaciones.html">|Text link donacions|</a></h3>
+								|Text donacions|
+								<p><a href="donaciones.html" tile="Entrar"><img src="|CONFIG_NOMCARPETA|/media/img/bt_go.png" alt="Ver donaciones" /></a></p>
+							</div>
+						</div></li>
+					</ul>
+<?php
+
+	}
+	// si l'usuari no està identificat, mostrem error
+	else {
+
+?>
+					<div class="broken border clearfix">
+						<div class="warning">
+							|Missatge usuari no identificat|
+							<?php echo $continueBrowsing; ?>
+						</div>
+					</div>
+<?php
+
+	}
+
+?>
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

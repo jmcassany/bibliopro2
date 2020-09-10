@@ -1,0 +1,33 @@
+                                     <!-- BLOCK_BEGIN_ROW0 -->
+                                     <table style="background: none repeat scroll 0% 0% |COLOR|; margin: 0pt;" border="0" cellpadding="0" cellspacing="0">
+                                        <tbody><tr>
+                                            <tr>
+                                                <td>
+                                                    <img alt="" src="|CONFIG_URLMODEL|img/lat_caixa_dalt.gif">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th style="background-color:#fb8e15;text-align:left">
+                                                    <h2 style="font-weight:bold; color:#fff; font-size:.9em; margin: 0;padding:5px 0px 5px 20px;">|TITOL_CAIXETA|</h2>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <img alt="" src="|CONFIG_URLMODEL|img/lat_caixa_baix.gif">
+                                                </td>
+                                            </tr>
+                                           
+                                            <tr style="margin: 5px 0px; padding: 0 0 10px 0;">
+                                                <td style="font-size:.7em; margin:0 0 10px; padding: 5px 10px; color:#000; |COLOR|">
+                                                    |TEXT_REGISTRE|
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    |TANCAMENT|
+                                                </td>
+                                            </tr>
+                                            <br/>
+                                       </tr></tbody>
+                                   </table>
+                                   <!-- BLOCK_END_ROW0 -->

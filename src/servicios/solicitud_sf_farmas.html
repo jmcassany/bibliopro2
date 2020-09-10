@@ -1,0 +1,443 @@
+<?php
+require_once("/var/www/html//media/php/formmail.php");
+gestionaFormulari("Solicitud cuestionario SF (financiación privada con ánimo de lucro)", "bibliopro@imim.es", "/respuesta.html");
+?><?php
+require_once('/var/www/html//config.php');
+$id = '16';
+$idioma = 'es';
+$pare = '3';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '/servicios/index.html' , 'title' => 'Servicios' , 'nom' => 'Servicios') , 2 => array('link' => '' , 'title' => 'Solicitud cuestionario SF (financiación privada con ánimo de lucro)' , 'nom' => 'Solicitud cuestionario SF (financiación privada con ánimo de lucro)'));
+$folderArray = array(3 => 'servicios');
+$folderIds = array(0 => 3);
+$folderUrl = '/servicios/solicitud_sf_farmas.html';
+$pageUrl = '/servicios/solicitud_sf_farmas.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><?php
+
+	$envia = "Enviar";
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>Solicitud cuestionario SF - BiblioPRO</title>
+		<meta name="description" content="formulario para solicitar el cuestionario SF si se tiene financiación con ánimo de lucro" />
+		<meta name="Keywords" content="SF36, SF12, farma, CRO, financiación, con ánimo de lucro, formulario de contacto, BiblioPRO, servicios, biblioteca, informacion básica, distribución, materiales de ayuda, cómo funciona, entrada de datos, newsletter, noticias, preguntas frecuentes" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// fill and hide simple captcha
+				var sum1 = <?php echo $captcha['sum1']; ?>;
+				var sum2 = <?php echo $captcha['sum2']; ?>;
+				var captcha = $('#captchaContainer');
+				captcha.find('input[type="text"]').val(sum1 + sum2);
+				captcha.hide();
+			});
+		</script>
+
+	
+		<script src="/media/js/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="/media/js/jquery.metadata.min.js" type="text/javascript"></script>
+
+		<script src="/media/js/jquery.validate.messages_es.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+		$().ready(function() {
+			// validate the comment form when it is submitted
+			$("#form1").validate();
+		});
+		</script>
+</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+<?php
+$directori = '3';
+$url = '/servicios/solicitud_sf_farmas.html';
+$rutaplana = ($pos = strpos('/servicios/solicitud_sf_farmas.html', '?')) ? substr('/servicios/solicitud_sf_farmas.html', 0, ($pos-1)) : '/servicios/solicitud_sf_farmas.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_principal.inc")
+?>
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div class="broken border clearfix">
+					<h2>Solicitud cuestionario SF (financiación privada con ánimo de lucro)</h2>
+					<p>Si tiene <strong>financiación privada con ánimo de lucro </strong>para su estudio (farmacéuticas, CROs, etc), y desea utilizar cualquiera de los cuestionarios en español de la <strong>familia SF</strong>, por favor, rellene y envienos el siguiente formulario.</p>
+				</div>
+
+				<form action="solicitud_sf_farmas.html" method="post" id="form1" enctype="multipart/form-data">
+
+					<div class="broken border clearfix">
+		<label for="First_name">
+			<span>Nombre</span>
+			<input type="text" name="First_name" id="First_name" value="" class="formulari normal {required:true}"  tabindex="1"  />
+		</label>
+
+		<label for="Last_name">
+			<span>Apellidos</span>
+			<input type="text" name="Last_name" id="Last_name" value="-" class="formulari normal {required:true}"  tabindex="2"  />
+		</label>
+
+		<label for="Company">
+			<span>Empresa</span>
+			<input type="text" name="Company" id="Company" value="" class="formulari normal {required:true}"  tabindex="3"  />
+		</label>
+
+		<label for="Telephone">
+			<span>Teléfono</span>
+			<input type="text" name="Telephone" id="Telephone" value="" class="formulari normal {required:true}"  tabindex="4"  />
+		</label>
+
+		<label for="Email">
+			<span>Correo electrónico:</span>
+			<input type="text" name="Email" id="Email" value="" class="formulari normal {required:true}"  tabindex="5"  />
+		</label>
+
+		<label for="patients_included">
+			<span>Número de pacientes incluidos: </span>
+			<input type="text" name="patients_included" id="patients_included" value="" class="formulari normal {required:true}"  tabindex="6"  />
+		</label>
+
+		<label for="administrations">
+			<span>Número de administraciones del cuestionario por paciente (basal y seguimientos): </span>
+			<input type="text" name="administrations" id="administrations" value="" class="formulari normal {required:true}"  tabindex="7"  />
+		</label>
+
+		<label for="start_date">
+			<span>Fecha estimada en la que se empezará a administrar el cuestionario solicitado:</span>
+			<input type="text" name="start_date" id="start_date" value="" class="formulari normal {required:true}"  tabindex="8"  />
+		</label>
+
+		<label for="end_date">
+			<span>Fecha en la que se obtendrá la puntuación del último paciente:</span>
+			<input type="text" name="end_date" id="end_date" value="" class="formulari normal {required:true}"  tabindex="9"  />
+		</label>
+
+		<label for="protocol">
+			<span>Número del protocolo o nombre del estudio: </span>
+			<input type="text" name="protocol" id="protocol" value="" class="formulari normal {required:true}"  tabindex="10"  />
+		</label>
+
+		<label for="language">
+			<span>Versiones lingüísticas del cuestionario que se solicita:</span>
+			<input type="text" name="language" id="language" value="" class="formulari normal {required:true}"  tabindex="11"  />
+		</label>
+
+		<label for="disease">
+			<span>Enfermedad o área terapéutica para este estudio: </span>
+			<input type="text" name="disease" id="disease" value="" class="formulari normal {required:true}"  tabindex="12"  />
+		</label>
+
+		<label for="study"><span>Tipo de estudio:</span>
+			<select name="study" id="study"   tabindex="13">
+
+			<option value="Fase 1">Fase 1</option>
+			<option value=" Fase 2"> Fase 2</option>
+			<option value=" Fase 3"> Fase 3</option>
+			<option value=" Fase 4"> Fase 4</option>
+			<option value=" Estudio observacional post-autorización"> Estudio observacional post-autorización</option>
+			<option value="  Estudio observacional carga de enfermedad">  Estudio observacional carga de enfermedad</option>
+			<option value=" Validación"> Validación</option>
+			<option value=" Registro"> Registro</option>
+			<option value=" Brand Marketing"> Brand Marketing</option>
+			<option value=" Epidemiológico"> Epidemiológico</option>
+			</select>
+		</label>
+
+		<label for="population"><span>Población del Estudio:</span>
+			<select name="population" id="population"   tabindex="14">
+
+			<option value="Adulta">Adulta</option>
+			<option value=" Pediátrica"> Pediátrica</option>
+			</select>
+		</label>
+
+		<label for="survey"><span>Cuestionario del que se solicita la  sublicencia:  </span>
+			<select name="survey" id="survey"   tabindex="15">
+
+			<option value="SF-36v2 (4 semanas)">SF-36v2 (4 semanas)</option>
+			<option value=" SF-36v2 (1 semana)"> SF-36v2 (1 semana)</option>
+			<option value=" SF-36v1 (4 semanas)"> SF-36v1 (4 semanas)</option>
+			<option value=" SF-36v1 (1 semana)"> SF-36v1 (1 semana)</option>
+			<option value=" SF-12v2 (4 semanas)"> SF-12v2 (4 semanas)</option>
+			<option value=" SF-12v2 (1 semana)"> SF-12v2 (1 semana)</option>
+			<option value=" SF-12v1 (4 semanas)"> SF-12v1 (4 semanas)</option>
+			<option value=" SF-12v1 (1 semana)"> SF-12v1 (1 semana)</option>
+			</select>
+		</label>
+
+		<label for="clinical_investigators">
+			<span>Número de investigadores clínicos:  </span>
+			<input type="text" name="clinical_investigators" id="clinical_investigators" value="" class="formulari normal {required:true}"  tabindex="16"  />
+		</label>
+
+		<div class="textarea">
+			<label for="Promoter"><span>¿Está solicitando la sublicencia en nombre de otra empresa?</span></label>
+			<textarea cols="40" rows="8" name="Promoter" id="Promoter" class="{required:true}"   tabindex="17">Si es el caso, por favor proporcione el nombre de la empresa, contactos y dirección, el número de teléfono y el correo electrónico:</textarea>
+		</div>
+
+		<div class="textarea">
+			<label for="CRO"><span>¿Está trabajando con una Organización de Investigación Clínica (Contract Research Organisation - CRO</span></label>
+			<textarea cols="40" rows="8" name="CRO" id="CRO" class="{required:true}"   tabindex="18">Si es el caso, por favor proporcione el nombre de la empresa, contactos y dirección, el número de teléfono y el correo electrónico.</textarea>
+		</div>
+
+		<div class="textarea">
+			<label for="ePRO"><span>¿Está trabajando con una empresa ePRO? (pudiendo trabajar con los cuestionarios online)</span></label>
+			<textarea cols="40" rows="8" name="ePRO" id="ePRO" class="{required:true}"   tabindex="19">Si es el caso, por favor proporcione el nombre de la empresa, contactos y dirección, el número de teléfono y el correo electrónico:</textarea>
+		</div>
+
+		<div class="textarea">
+			<label for="EDC"><span>¿Está trabajando con una empresa EDC? (le proporciona un software de aplicación)</span></label>
+			<textarea cols="40" rows="8" name="EDC" id="EDC" class=""   tabindex="20">Si es el caso, por favor proporcione el nombre de la empresa, contactos y dirección, el número de teléfono y el correo electrónico</textarea>
+		</div>
+
+		<label for="data"><span>¿Cómo se recopilan los datos en los ensayos clínicos? </span>
+			<select name="data" id="data"   tabindex="21">
+
+			<option value="Cuaderno de Recogida de Datos (CRF) versión papel">Cuaderno de Recogida de Datos (CRF) versión papel</option>
+			<option value=" Cuaderno de Recogida de Datos (CRF) versión online"> Cuaderno de Recogida de Datos (CRF) versión online</option>
+			<option value=" Tablet"> Tablet</option>
+			<option value=" Diario electrónico"> Diario electrónico</option>
+			<option value=" Fax"> Fax</option>
+			<option value=" Respuesta de Voz Interactiva (IVR)"> Respuesta de Voz Interactiva (IVR)</option>
+			<option value=" Otros"> Otros</option>
+			</select>
+		</label>
+
+		<div class="textarea">
+			<label for="other"><span>Otros</span></label>
+			<textarea cols="40" rows="8" name="other" id="other" class=""   tabindex="22"></textarea>
+		</div>
+</div>
+
+					<div id="captchaContainer" class="clearfix">
+						<label for="captcha">
+							<span>¿Cuánto suman <?php echo $captcha['sum1']; ?> + <?php echo $captcha['sum2']; ?>?</span>
+							<input type="text" id="captcha" name="captcha" class="required" />
+						</label>
+						<input type="hidden" name="timestamp" id="timestamp" value="<?php echo $captcha['timestamp']; ?>" />
+					</div>
+
+					<div><input type="submit" name="enviar" value="<?php echo $envia; ?>" class="buttonSubmit send" /></div>
+
+				</form>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				<?php @include("/var/www/html//media/caixetes//logos-peu.inc") ?>
+			</div>
+		</div></div>
+
+	</body>
+
+</html>

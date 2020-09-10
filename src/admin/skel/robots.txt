@@ -1,0 +1,7 @@
+# robots.txt for |CONFIG_URLBASE|
+
+User-agent: *
+Disallow: /lib/
+Disallow: /admin/
+
+Sitemap: |CONFIG_URLBASE|/sitemap.xml

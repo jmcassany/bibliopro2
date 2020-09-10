@@ -1,0 +1,92 @@
+Passos a segir per instalar el houdini
+--------------------------------------
+
+1 - Creació de la base de dades
+
+Crear una base de dades en el servidor, amb un usuari amb permissos de lectura i escriptura.
+Apuntis les dades per poder configurar houdini.
+
+
+2 - Configuració de houdini
+
+Editar el fitxer media/php/config.php i modificar les variables per adaptar houdini a la configuració local.
+Les variables a modificar són les seguents:
+
+    $CONFIG_SITENAME = 'Houdini'; -> Nom de la web
+
+    $CONFIG_URLBASE = 'http://houdini.antaviana.net/'; -> adreça base on esta col·locada la web
+
+    $CONFIG_NOMCARPETA = '/'; -> carpeta en la qual està la web
+
+    $CONFIG_PATHBASE = '/var/www'; -> carpeta on hi han els fitxers de la web
+
+Configuració de la base de dades
+    $CONFIG_DBSERVER   = 'localhost'; -> servidor on hi ha la base de dades
+
+    $CONFIG_DBNAME     = 'houdini'; -> nom de la base de dades
+
+    $CONFIG_DBUSER     = 'usuari'; -> nom de l'usuari de la base de dades
+
+    $CONFIG_DBPASSWORD = 'password'; -> clau per conectar amb la base de dades
+
+
+3 - Creació de les taules de houdini
+
+A traves d'un navegador executar el programa d'instalació, accedint a l'adreça:
+
+http://'domini'/admin/install/install.php
+
+i seguir els passos indicats.
+
+
+5 - Crear les plantilles
+
+
+4 - Utilitzar houdini
+
+Un cop fets els tres passos anteriors es pot començar a treballar amb el houdini
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pàgines que s'ha de modificar a l'instalar el houdini:
+-------------------------------------------------------------------
+Media/php/config.php --> pàgina principal de configuració rutes
+Media/js/coolmenupro.js --> Ruta de la imatge transparent blanc
+
+
+OPCIONALS
+Media/php/formail.php --> domini i ruta de la pagina d'error
+Media/php/ampliar.php --> opcional utilizatzada per ampliar imatges
+
+
+
+
+
+
+
+
+Variables predefinides al crear pàgines:
+-------------------------------------------------------------------
+|MENUSUPERIOR| --> posa un menu superior
+|MENUESQUERRA| --> posa un menu esquerra
+|MENUDRETA| --> posa un menu dreta
+
+|BANNERSUPERIOR| --> posa un banner superior
+|BANNERESQUERRA| --> posa un banner esquerra
+|BANNERDRETA| --> posa un banner dreta
+
+|COLOR MENU ESQUERRA| --> posar el color del menu
+|METAS| --> posa el title, description y keys
+|SITUACIO| --> posa el link automàtic: ets a

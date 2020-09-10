@@ -1,0 +1,1 @@
+<p class="image"><a href="http://bibliopro.imim.es/publicidad.html"  onClick="_gaq.push(['_trackEvent', 'Banners', '2/banner-buscador-1']);"><img src="/media/caixetes//img/bibliopro-publicidad.jpg" alt="" /></a></p>

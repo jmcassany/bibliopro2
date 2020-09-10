@@ -1,0 +1,1 @@
+<p class="image"><a href="http://www.isoqol.org/education-events/online-education/archived-webinars"  onClick="_gaq.push(['_trackEvent', 'Banners', '13/isoqol_webinar_empro']);"><img src="/media/caixetes//img/logo_isoqol_WEBINAR.jpg" alt="" /></a></p>

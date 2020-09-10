@@ -1,0 +1,197 @@
+form.niceforms{
+	line-height: normal;
+}
+/*Forms defaults - change as needed*/
+.niceforms input, .niceforms textarea {
+	color: #404040;
+	border: 0px;
+	line-height: normal;
+}
+label {
+	color: #999;
+	cursor: pointer;
+	padding-left: 2px;
+}
+label.chosen {color: #333;}
+
+/*Transparent items*/
+.outtaHere {
+	position: absolute;
+	left: -6000px;
+}
+
+/*Radio buttons*/
+.radioArea, .radioAreaChecked {
+	display: block;
+	float: left;
+	clear: left;
+	width: 15px;
+	height: 14px;
+	font-size: 0;
+	cursor: pointer;
+}
+.radioArea {background: url("../img/jforms/radio.gif") no-repeat left top;}
+.radioAreaChecked {background: url("../img/jforms/radio.gif") no-repeat left bottom;}
+
+/*Checkboxes*/
+.checkboxArea, .checkboxAreaChecked {
+	display: block;
+	float: left;
+	clear: left;
+	width: 13px;
+	height: 13px;
+	font-size: 0;
+	padding: 0 2px 0 0;
+	margin: 0;
+	cursor: pointer;
+}
+.checkboxArea {background: url("../img/jforms/checkbox.gif") no-repeat left top;}
+.checkboxAreaChecked {background: url("../img/jforms/checkbox.gif") no-repeat left bottom;}
+.focused {border: 1px dotted #ddd;}
+
+/*Text inputs*/
+.textinput, .textinputHovered {
+	height: 15px;
+	background: url("../img/jforms/input_bg.gif") repeat-x left top;
+	border: none;
+	padding: 4px 0;
+	vertical-align: middle;
+}
+.textinputHovered {background-position: left bottom;}
+.inputCorner {
+	padding-bottom: 0;
+	vertical-align: middle;
+}
+
+/*Text areas*/
+.txtarea .tr, .txtarea .tr_xon {background: url("../img/jforms/txtarea_tr.gif") no-repeat top right;}
+.txtarea .tr_xon {background: url("../img/jforms/txtarea_tr_xon.gif") no-repeat top right;}
+.txtarea img.txt_corner {
+	width: 5px;
+	height: 5px;
+	display: block;
+}
+.txtarea .br, .txtarea .br_xon {background: url("../img/jforms/txtarea_br.gif") no-repeat top right;}
+.txtarea .br_xon {background: url("../img/jforms/txtarea_br_xon.gif") no-repeat top right;}
+.txtarea .cntr {background: url("../img/jforms/txtarea_cntr.gif") repeat-y right top;}
+.txtarea .cntr_xon {background: url("../img/jforms/txtarea_cntr_xon.gif") repeat-y right top;}
+.txtarea .cntr_l, .txtarea .cntr_l_xon {
+	width: 5px;
+	background: url("../img/jforms/txtarea_l.gif") repeat-y left top;
+	float: left;
+}
+.txtarea .cntr_l_xon {background: url("../img/jforms/txtarea_l_xon.gif") repeat-y left top;}
+.txtarea textarea {
+	border: 0;
+	background: none;
+	padding: 0;
+	margin: 5px;
+}
+
+/*Selects*/
+.selectArea {
+	height: 21px;
+	background: url("../img/jforms/select_bg.gif") repeat-x left top;
+}
+.selectArea .left {
+	width: 8px;
+	height: 21px;
+	float: left;
+	background: url("../img/jforms/select_left.gif") no-repeat left top;
+}
+.selectArea .right {
+	width: 21px;
+	height: 21px;
+	float: right;
+	background: url("../img/jforms/select_right.gif") no-repeat left top;
+}
+.selectArea .right a {
+	display: block;
+	width: 21px;
+	height: 21px;
+	position: absolute;
+}
+.selectArea .right i {display: none;}
+.selectArea .center {
+	width: 160px;
+	color: #fff;
+	padding-top: 3px;
+	overflow: hidden;
+	white-space: nowrap;
+	border: 0px;
+	vertical-align: middle;
+	background: transparent;
+}
+
+/*Selects drop-down*/
+.fake_list {
+	background: #6f7074;
+	padding: 2px;
+	z-index: 1000;
+	list-style-type: none;
+	font-size: 11px;
+	margin: 0px;
+	position: absolute;
+	float: left;
+	overflow: auto;
+}
+
+ul.fake_list li {
+	clear: none;
+	margin: 0;
+	border: 1px solid #6f7074;
+	padding: 0px 2px 0px 10px;
+	color: #f2f2f2;
+}
+	.fake_list li.selected {
+		border-color: #cfd0d6;
+		color: #fff;
+		background: #5f6062;
+	}
+
+/*Buttons*/
+.niceforms .buttonImg { vertical-align: bottom; }
+/* blue */
+.niceforms .blueButtonSubmit, .niceforms .blueButtonSubmitHovered {
+	width: 150px;
+	height: 42px;
+	color: #fff;
+	font-weight: bold;
+	padding: 0;
+	background: url("../img/jforms/boto_blau_gran_2_off.jpg") repeat-x left top;
+	cursor: pointer;
+}
+.niceforms .blueButtonSubmitHovered { background: url("../img/jforms/boto_blau_gran_2_on.jpg") repeat-x left top; }
+/* green */
+.niceforms .greenButtonSubmit, .niceforms .greenButtonSubmitHovered {
+	width: 150px;
+	height: 42px;
+	color: #fff;
+	font-weight: bold;
+	padding: 0;
+	background: url("../img/jforms/boto_verd_gran_2_off.jpg") repeat-x left top;
+	cursor: pointer;
+}
+.niceforms .greenButtonSubmitHovered { background: url("../img/jforms/boto_verd_gran_2_on.jpg") repeat-x left top; }
+/* smallblue */
+.niceforms .smallblueButtonSubmit, .niceforms .smallblueButtonSubmitHovered {
+	width: auto;
+	height: 34px;
+	color: #fff;
+	font-weight: bold;
+	padding: 0;
+	background: url("../img/jforms/boto_blau_mini_2_off.jpg") repeat-x left top;
+	cursor: pointer;
+}
+.niceforms .smallblueButtonSubmitHovered { background: url("../img/jforms/boto_blau_mini_2_on.jpg") repeat-x left top; }
+/* smallgreen */
+.niceforms .smallgreenButtonSubmit, .niceforms .smallgreenButtonSubmitHovered {
+	width: auto;
+	height: 34px;
+	color: #fff;
+	font-weight: bold;
+	padding: 0;
+	background: url("../img/jforms/boto_verd_mini_2_off.jpg") repeat-x left top;
+	cursor: pointer;
+}
+.niceforms .smallgreenButtonSubmitHovered { background: url("../img/jforms/boto_verd_mini_2_on.jpg") repeat-x left top; }

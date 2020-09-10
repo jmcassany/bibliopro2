@@ -1,0 +1,257 @@
+|PHP_VARS||block-static-gestioUsuaris|<?php
+
+	// tablas usuarios
+	$usersTable = 'Usuarios';
+	$houdiniUsersTable = 'USERS';
+
+ // simple captcha
+	if (!isset ($_SESSION)) { session_start(); }
+	$captcha = array();
+	$captcha['seconds'] = 6;
+	if (!isset($_SESSION['SUM1']) or !isset($_SESSION['SUM2'])) {
+		$captcha['sum1'] = $_SESSION['SUM1'] = rand(0, 98);
+		$captcha['sum2'] = $_SESSION['SUM2'] = rand(0, (99 - $captcha['sum1']));
+	}
+	else {
+		$captcha['sum1'] = $_SESSION['SUM1'];
+		$captcha['sum2'] = $_SESSION['SUM2'];
+	}
+	$captcha['timestamp'] = time();
+
+	$continueBrowsing = '
+					<p>Para continuar navegando puede:</p>
+					<ul>
+						<li><a href="javascript:history.go(-1)">Volver al formulario</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/buscador">Ir al buscador de cuestionarios</a></li>
+						<li><a href="|CONFIG_NOMCARPETA|/">Ir a la portada de BiblioPRO</a></li>
+					</ul>
+	';
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="|IDIOMA_PAG|" lang="|IDIOMA_PAG|">
+
+	<head>
+
+|block-static-metas_css|
+
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="|CONFIG_NOMCARPETA|/media/js/jquery.validate.messages_es.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				// form validation
+				$('#emailForm').validate();
+				// fill and hide simple captcha
+				var sum1 = <?php echo $captcha['sum1']; ?>;
+				var sum2 = <?php echo $captcha['sum2']; ?>;
+				var captcha = $('#captchaContainer');
+				captcha.find('input[type="text"]').val(sum1 + sum2);
+				captcha.hide();
+			});
+		</script>
+
+	</head>
+
+	<body>
+
+|block-static-header|
+
+		<div id="menu">
+|block-static-mbp|
+|MENUSUPERIOR|
+		</div>
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+<?php
+
+	// si s'han enviat les dades del formulari, processem el registre
+	if (isset($_POST['enviar'])) {
+
+		// comprovem que totes les dades siguin vàlides
+		if (
+			!empty($_POST['EMAIL']) and
+			isValidEmail($_POST['EMAIL']) and
+			$captcha['timestamp'] > ($_POST['timestamp'] + $captcha['seconds']) and
+			$_POST['captcha'] == ($captcha['sum1'] + $captcha['sum2'])
+		) {
+
+			// comprovem si existeix cap usuari actiu amb l'email introduït
+			$checkEmailQuery = db_query("
+				SELECT LOGIN
+				FROM `$houdiniUsersTable`
+				WHERE
+					LOGIN = '" . mysql_real_escape_string($_POST['EMAIL']) . "'
+					AND STATUS = 0
+			");
+			if (db_num_rows($checkEmailQuery) > 0) {
+
+				// creem nova contrasenya i la gravem a la base de dades
+				$chars = "abcdefghijkmnopqrstuvwxyz023456789";
+				srand((double)microtime() * 1000000);
+				for ($pass = '', $i = 0; $i <= 7; $i++) {
+					$num = rand() % 33;
+					$tmp = substr($chars, $num, 1);
+					$pass .= $tmp;
+				}
+
+				// enviem email amb la contrasenya
+				include_once ("mail.php");
+
+				$cos = '
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+		<h1>Modificación de contraseña de usuario en BiblioPRO</h1>
+		<hr />
+		<p>Usted ha pedido la modificación de la contraseña para su usuario de BiblioPRO.</p>
+		<p>Su nueva contraseña es <strong>' . htmlspecialchars($pass) . '</strong>. Ya puede usarla para identificarse en el sitio y, si lo desea, modificarla en la sección <strong>Mis datos</strong> de Mi BiblioPRO.</p>
+		<hr />
+		<p>Si usted no ha pedido la modificación de su contraseña, por favor tenga en cuenta que para poder acceder como usuario en la web de BiblioPRO deberá usar la que se indica en este correo.</p>
+	</body>
+</html>';
+
+				$destinatari = $_POST['EMAIL'];
+				$from = '|Email|';
+				$assumpte = 'Modificación de contraseña de usuario en BiblioPRO';
+// 				$cos = utf8_decode($cos);
+// 				$assumpte = utf8_decode($assumpte);
+				// si el correu s'envia correctament...
+				if (sendMail($destinatari, $assumpte, $cos, $from, null, true)) {
+
+					// encriptar contrasenya
+					require_once('aw/dbusers.php');
+					$pwd = $CONFIG_ENCRIPTAR($pass);
+
+					// modifiquem la contrasenya de l'usuari
+					$houdiniUserInfoUpdateQuery = db_query("
+						UPDATE `$houdiniUsersTable`
+						SET
+							PASSWD = '$pwd'
+						WHERE LOGIN = '" . mysql_real_escape_string($_POST['EMAIL']) . "'
+					");
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="ok">
+						|Missatge contrasenya modificada|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+				}
+				// si el correu NO s'envia correctament, mostrem error
+				else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge error enviament contrasenya|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+				}
+
+			}
+			// si no hi ha cap usuari amb l'email introduït, mostrem error
+			else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="error">
+						|Missatge usuari no existeix|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+			}
+
+		}
+		// si les dades no són correctes, mostrem error
+		else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					<div class="warning">
+						|Missatge dades incorrectes|
+						<?php echo $continueBrowsing; ?>
+					</div>
+				</div>
+<?php
+
+		}
+
+	}
+	// si no s'ha enviat el formulari, el mostrem
+	else {
+
+?>
+				<div class="broken border clearfix">
+					<h2>|Titol|</h2>
+					|Introduccio|
+				</div>
+
+				<form action="" method="post" enctype="multipart/form-data" accept-charset="UTF-8" id="emailForm">
+
+					<div class="broken border clearfix">
+						<!-- email -->
+						<label for="EMAIL">
+							<span>Correo electrónico</span>
+							<input type="text" name="EMAIL" id="EMAIL" class="required email" maxlength="128" />
+						</label>
+						<!-- confirmar email -->
+						<label for="EMAIL_CONFIRM">
+							<span>Confirmar correo electrónico <em>(repetir campo anterior)</em></span>
+							<input type="text" name="EMAIL_CONFIRM" id="EMAIL_CONFIRM" class="required email" maxlength="128" />
+						</label>
+					</div>
+
+					<div id="captchaContainer" class="clearfix">
+						<label for="captcha">
+							<span>¿Cuánto suman <?php echo $captcha['sum1']; ?> + <?php echo $captcha['sum2']; ?>?</span>
+							<input type="text" id="captcha" name="captcha" class="required" />
+						</label>
+						<input type="hidden" name="timestamp" id="timestamp" value="<?php echo $captcha['timestamp']; ?>" />
+					</div>
+
+					<div class="broken border clearfix">
+						<p><strong>NOTA:</strong> Una nueva contraseña generada aleatoriamente será enviada al correo electrónico indicado. Podrá acceder de nuevo con ella y modificarla por la que desee en la sección <strong>Mis datos</strong> de Mi BiblioPRO.</p>
+					</div>
+
+					<div><input type="submit" name="enviar" value="Enviar contraseña" class="buttonSubmit send" /></div>
+
+				</form>
+<?php
+
+	}
+
+?>
+
+				<p class="top"><a href="#content">Subir</a></p>
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+|block-static-footer|
+
+|block-static-supporters|
+
+	</body>
+
+</html>

@@ -1,0 +1,153 @@
+<?php include ('../../../../../../config_admin.inc') ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<!--
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Bulleted List dialog window.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="noindex, nofollow" name="robots" />
+<script type="text/javascript">
+	var dialog	= window.parent ;
+	var oEditor = dialog.InnerDialogLoaded() ;
+	var FCKLang = oEditor.FCKLang ;
+	document.write(unescape("%3Cscript src=\'"+oEditor.FCKConfig.BasePath+"dialog/common/fck_dialog_common.js\' type=\'text/javascript\'%3E%3C/script%3E"));
+</script>
+	<script type="text/javascript">
+
+<?php
+if (isset($_POST['tag'])) {
+  $tag = strtoupper($_POST['tag']);
+}
+else if (isset($_GET['tag'])) {
+  $tag = strtoupper($_GET['tag']);
+}
+
+switch ($tag) {
+  case 'P':
+    $classList = $EDITOR_pclass;
+    break;
+  case 'H3':
+    $classList = $EDITOR_h3class;
+    break;
+  case 'H4':
+    $classList = $EDITOR_h4class;
+    break;
+  case 'H5':
+    $classList = $EDITOR_h5class;
+    break;
+  case 'H6':
+    $classList = $EDITOR_h6class;
+    break;
+  case 'LI':
+    $classList = $EDITOR_liclass;
+    break;
+  case 'OL':
+    $classList = $EDITOR_olclass;
+    break;
+  case 'UL':
+    $classList = $EDITOR_ulclass;
+    break;
+}
+
+echo 'var oClassList = new Array();';
+$i = 0;
+foreach ($classList as $value) {
+  echo 'oClassList['.$i.'] = "'.$value.'";';
+  $i++;
+}
+echo 'var sType = \''.$tag.'\';';
+?>
+
+// Gets the document DOM
+var oDOM = oEditor.FCK.EditorDocument ;
+
+var oActiveEl = dialog.Selection.GetSelection().MoveToAncestorNode( sType ) ;
+var oActiveSel ;
+
+window.onload = function()
+{
+	oAttrib = oActiveEl.attributes.getNamedItem("class");
+	oclass = '';
+	if (oAttrib) {
+		oclass = oActiveEl.attributes.getNamedItem("class").value;
+	}
+	oclass = ' '+oclass+' ';
+	for(oname in oClassList) {
+		reClass = new RegExp(' '+oClassList[oname]+' ');
+		if (reClass.test(oclass)) {
+			document.getElementById('class_'+oClassList[oname]).checked = true
+		}
+	}
+
+	dialog.SetOkButton( true ) ;
+	dialog.SetAutoSize( true ) ;
+}
+
+function Ok()
+{
+	if ( oActiveEl ) {
+		var oClass = ' ';
+		for(oname in oClassList) {
+			if (document.getElementById('class_'+oClassList[oname]).checked) {
+				oClass = oClass + oClassList[oname] + ' ';
+			}
+		}
+
+/*		if ( oEditor.FCKBrowserInfo.IsIE )
+		{
+			oEditor.SetAttribute( oActiveEl, 'className', oClass) ;
+		}
+		else
+		{
+			oEditor.SetAttribute( oActiveEl, 'class', oClass) ;
+		}*/
+		oActiveEl.className = oClass;
+
+	}
+	return true ;
+}
+	</script>
+</head>
+<body style="overflow: hidden">
+	<table id="otable" cellspacing="0" cellpadding="0" width="100%" border="0" style="height: 100%">
+		<tr>
+			<td style="text-align:center; vertical-align:top">
+				<table cellspacing="0" cellpadding="0" border="0" style="margin-left: auto; margin-right: auto;">
+					<tr>
+						<td style="padding-right: 5px; padding-left: 5px">
+							<span>Classe</span><br />
+<?php
+
+foreach ($classList as $key => $value) {
+	echo '<input type="checkbox" name="class[]" id="class_'.$value.'" value="'.$value.'" /><label>'.$key.'</label><br />';
+}
+?>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

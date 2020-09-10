@@ -1,0 +1,45 @@
+body {
+	font-family: Verdana,Arial,Helvetica, Sans-Serif;
+	font-size: 11px;
+	padding: 5px 5px 5px 5px;
+	margin: 0px;
+	border-style: none;
+	background-color: #ffffff;
+}
+p.destacat, ul.llista_fons {
+	padding: 10px;
+	background-color:#EEE;
+}
+p.primer {
+	background: url(../comu/kland_p_primer.gif) left 5px no-repeat;
+	text-indent:8px;
+}
+p.linia {
+	border-bottom: #999 1px dashed;
+	padding-bottom:.9em;
+}
+	ul.duesCol li {
+		display: inline;
+		float: left;
+		width: 48%;
+		margin: 0 1% .5em 0;
+	}
+ul.llista_caixa {
+	border: 1px solid #ccc;
+	padding: 10px;
+}
+	ul.llista_separadors li {
+		border-bottom: 1px solid #ccc;
+		padding: 0 0 5px 0;
+	}
+			/* imatges dreta/esquerra */
+				p.txtImgDr img, p.txtImgEsq img, div.txtImgDr img, div.txtImgEsq img {
+					display: inline; /* ie6fh */
+					float: right;
+					margin: 0 0 8px 20px;
+				}
+			/* imatge esquerra */
+				p.txtImgEsq img, div.txtImgEsq img {
+					float: left;
+					margin: 0 20px 8px 0;
+				}

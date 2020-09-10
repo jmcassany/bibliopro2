@@ -1,0 +1,18 @@
+#loginContainer,
+#header div.identification,
+#cycle,
+#menu,
+#content_nav,
+div.pager,
+div.searchDinamic,
+p.frontpageNewsButton,
+p.otherVersions,
+p.rss,
+p.top,
+ul.buttons,
+#footer {
+	display: none;
+}
+#content_main {
+	width: 931px;
+}

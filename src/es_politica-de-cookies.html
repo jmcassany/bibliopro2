@@ -1,0 +1,324 @@
+<?php
+require_once('/var/www/html//config.php');
+$id = '154';
+$idioma = 'es';
+$pare = '1';
+$filAriadnaArray = array(0 => array('link' => '//index.html' , 'title' => 'Portada' , 'nom' => 'Portada') , 1 => array('link' => '' , 'title' => 'Política de cookies' , 'nom' => 'Política de cookies'));
+$folderArray = array();
+$folderIds = array();
+$folderUrl = '/';
+$pageUrl = '/es_politica-de-cookies.html';
+
+
+?><?php
+
+	// gestió usuaris
+	$LOGIN_page = '/login.php';
+	include_once('/var/www/html//media/php//gestio_usuaris.php');
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+
+		<meta name="author" content="Can Antaviana" />
+		<meta name="Copyright" content="BiblioPRO" />
+		<?php
+			require_once ("funcions_base.inc");
+			require_once ("formatting.php");
+			if(isset($pageUrl) && $pageUrl=="/buscador/ver.html"){
+				echo '<title>'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO</title>
+			<meta name="description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español" />
+			<meta name="Keywords" content="'.htmlspecialchars($row['PALABRAS_CLAVE']).','.htmlspecialchars($row['SIGLAS']).'" />
+			<meta property="og:locale" content="es_ES" />
+			<meta property="og:title" content="'.htmlspecialchars($row['SIGLAS']).' - '.htmlspecialchars($row['NOM_CAST']).' - BiblioPRO"/>
+			<meta property="og:description" content="'.htmlspecialchars($row['NOM_ORIGINAL']).' - Versión en español"/>			
+			<meta property="og:site_name" content="BiblioPRO" />
+			<meta property="og:url" content="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">
+			<link rel="canonical" href="http://www.bibliopro.org'.$folderUrl.'/'.$row['ID'].'/'.sanitize_title($row['NOM_CAST']).'">  		
+				';
+			}else{
+		?>
+		<title>BiblioPRO - BiblioPRO</title>
+		<meta name="description" content="Política de cookies" />
+		<meta name="Keywords" content="" />
+		<meta name="google-site-verification" content="q6MqBy0Joeng23ZiYqyvcmvuh1qop3DOB-W1oIlRHXE" />
+		<?php
+			}
+		?>
+		<link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon" />
+		<link rel="start" href="http://www.bibliopro.org" title="BiblioPRO" />
+		<link href="/media/css/style.css" rel="stylesheet" media="all" type="text/css" />
+		<link href="/media/css/print.css" rel="stylesheet" media="print" type="text/css" />
+
+		<script type="text/javascript">
+			urlBase = '';
+		</script>
+		<script type="text/javascript" src="/media/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/media/js/base.js"></script>
+		<script type="text/javascript" src="/media/js/politicacookies.js"></script>
+
+<?php
+
+	if (!getenv('testserver')) {
+
+?>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-1194516-2']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+<?php
+
+	}
+
+?>
+
+	</head>
+
+	<body>
+
+		<div id="acc">
+			<ul>
+				<li><a href="#menu">Acceso directo al menú</a></li>
+				<li><a href="#content_main" accesskey="S">Acceso directo al contenido</a></li>
+				<li><a href="#content_sub">Acceso directo al subcontenido</a></li>
+			</ul>
+		</div>
+		<!-- /acc -->
+
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+		<form action="/login.php" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div id="loginContainer">
+				<label for="username">
+					<span>Usuario:</span>
+					<input type="text" name="LOGIN" id="username" />
+				</label>
+				<label for="pwd">
+					<span>Contraseña:</span>
+					<input type="password" name="PASSWD" id="pwd" />
+				</label>
+				<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" />
+				<div><input type="submit" value="Entrar" name="action" id="action" class="send" /></div>
+				<div><a href="/contrasena-olvidada.html">¿Contraseña olvidada?</a></div>
+			</div>
+			<!-- /loginContainer -->
+		</form>
+<?php
+
+	}
+
+?>
+
+		<div id="header"><div class="wrapper clearfix">
+			<h1><a href="/" accesskey="1"><span>BiblioPRO</span></a></h1>
+			<div class="identification">
+				<div class="options"><div class="b"><div class="l"><div class="r"><div class="tl"><div class="tr"><div class="bl"><div class="br clearfix">
+					<ul class="clearfix">
+<?php
+
+	if (!is_callable('accessGetLogin') or accessGetLogin() == '') {
+
+?>
+						<li class="login"><a href="#loginContainer" class="toggleLoginContainer">Login</a></li>
+						<li class="register last"><a href="/registro-usuario.html">Registro</a></li>
+<?php
+
+	}
+	else {
+
+		$logoutPrefix = strpos($_SERVER['REQUEST_URI'], '?') ? '&amp;' : '?';
+
+?>
+						<li class="login"><strong><?php echo accessGetValue('USER_NAME'); ?></strong></li>
+						<li class="register last"><a href="<?php echo $_SERVER['REQUEST_URI'] . $logoutPrefix; ?>logout">Desconectar</a></li>
+<?php
+
+	}
+
+?>
+					</ul>
+				</div></div></div></div></div></div></div></div>
+			</div>
+			<!-- /identification -->
+			<ul class="logos">
+				<li><a href="http://www.imim.es"><img src="/media/img/logo_imim.jpg" alt="IMIM" id="header-imim" /></a></li>
+				<li><a href="http://www.ciberesp.es/"><img src="/media/img/logo-ciberesp.jpg" alt="Ciber - Epidemiología y Salud Pública" /></a></li>
+			</ul>
+		</div></div>
+		<!-- /header -->
+
+		<div id="menu">
+<?php
+
+	if (accessGetLogin() != '') {
+
+		$link = '/mbp';
+
+?>
+			<ul class="right">
+<?php
+
+	if (strpos($_SERVER['REQUEST_URI'], $link) !== false) {
+
+?>
+				<li class="current"><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+	else {
+
+?>
+				<li><a href="<?php echo $link; ?>">Mi BiblioPRO</a></li>
+<?php
+
+	}
+
+?>
+			</ul>
+<?php
+
+	}
+
+?>
+<?php
+$directori = '';
+$url = '/es_politica-de-cookies.html';
+$rutaplana = ($pos = strpos('/es_politica-de-cookies.html', '?')) ? substr('/es_politica-de-cookies.html', 0, ($pos-1)) : '/es_politica-de-cookies.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_principal.inc")
+?>
+		</div>
+		<!-- /menu -->
+
+		<div id="page">
+
+			<div id="content" class="clearfx">
+
+				<div id="content_nav" class="clearfix">
+
+<?php
+$directori = '';
+$url = '/es_politica-de-cookies.html';
+$rutaplana = ($pos = strpos('/es_politica-de-cookies.html', '?')) ? substr('/es_politica-de-cookies.html', 0, ($pos-1)) : '/es_politica-de-cookies.html';
+$directoris = explode(',', $directori);
+@include("/var/www/html//media/menus//menu_que_es.inc")
+?>
+
+					<p class="button"><a href="/buscador/">Buscar cuestionario</a></p>
+
+				</div>
+				<!-- /content_nav -->
+
+				<div id="content_main">
+
+					<div class="heading"><div class="wrapper clearfix">
+						<div class="breadcrumbs clearfix"><a href="/index.html" title="Portada">Portada</a></div>
+						<h2><span>Política de cookies</span></h2>
+					</div></div>
+
+					<p>La web que está visitando hace uso de <em>cookies</em>, que son pequeños conjuntos de datos que se almacenan como archivos de texto en su ordenador. Su función es permitir a los sitios web recordar determinadas acciones que ha realizado en el pasado para ofrecer una mejor experiencia de usuario. Como su objetivo principal es mejorar o posibilitar el uso o los procesos del sitio web, inutilizar las<em> cookies </em>podría impedir que los usuarios ejecutasen algunas funciones de esta web.</p>
+<p>Las <em>cookies</em> se crean cuando un usuario accede a un sitio web desde un navegador. Si no hay ninguna <em>cookie</em> guardada, se crea un archivo de texto con los datos que se necesitan. Cada vez que el usuario vuelve al mismo sitio web, el navegador recupera y envía este archivo al servidor de la página web. En este sentido hay que tener en cuenta que las <em>cookies</em> no contienen nunca información personal que pueda identificar a la persona.</p>
+<p>Las cookies son esenciales para el funcionamiento de internet y en ningún caso pueden dañar el equipo. A cambio, el hecho de que estén activadas nos ayuda a identificar y resolver posibles errores.</p>
+<h3><span id="result_box">Cookies</span> que utilizamos en nuestra página web</h3>
+<table>
+    <tbody>
+        <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Finalidad</th>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td>PHPSESSID</td>
+            <td>Sessión</td>
+            <td><span id="result_box">Esta</span> cookie se utiliza para guardar los datos de la sesión del usuario. Es esencial para el funcionamiento de la web.</td>
+        </tr>
+        <tr>
+            <td>cookies, cookiesNav</td>
+            <td>Personalización</td>
+            <td><span id="result_box">Cookie</span> que identifica si el usuario ha aceptado el uso de cookies.</td>
+        </tr>
+        <tr>
+            <td>_utma, _utmb,<br />
+            _utmc, _utmd, _utmt, _utmz</td>
+            <td>Analíticas</td>
+            <td><span id="result_box">Estas</span> cookies son establecidas por Google Analytics para rastrear el uso de la web. Estas cookies no se utilizan si desactiva las cookies para esta web.</td>
+        </tr>
+    </tbody>
+</table>
+<h3><span id="result_box">Cómo controlar</span> y eliminar las cookies</h3>
+<p><span id="result_box">En cualquier momento</span> puede ejercer su derecho de desactivación o eliminación de cookies de este sitio web. Estas acciones se realizan de forma diferente en función del navegador que utilice. Bloquear el uso de las cookies en tu navegación puede hacer que algunos servicios o características del sitio web no estén disponibles.<br />
+<br />
+En estos vínculos puede encontrar información de cómo hacerlo para los navegadores:</p>
+<ul>
+    <li><a href="http://windows.microsoft.com/es-es/windows7/how-to-manage-cookies-in-internet-explorer-9">Internet Explorer</a></li>
+    <li><a href="http://support.apple.com/kb/ph5042">Safari</a></li>
+    <li><a href="http://help.opera.com/Windows/11.50/es-ES/cookies.html">Opera</a></li>
+    <li><a href="http://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-que-los-sitios-we">Firefox</a></li>
+    <li><a href="http://support.google.com/chrome/bin/answer.py?hl=es&amp;answer=95647">Google Chrome</a><br />
+    &nbsp;</li>
+</ul>
+<h3><span id="result_box">Notas</span> adicionales</h3>
+<p><span id="result_box"><span title="Ni aquesta web ni els seus representants legals es fan responsables ni del contingut ni de la veracitat de les polítiques de privacitat que puguin tenir els tercers mencionats en aquesta política de cookies.">Ni esta web ni sus representantes legales se hacen responsables ni del contenido ni de la veracidad de las políticas de privacidad que puedan tener los terceros mencionados en esta política de cookies.</span><br />
+<br />
+<span title="Els navegadors web són les eines encarregades d'emmagatzemar les cookies i des d'aquest lloc d'efectuar el seu dret a eliminació o desactivació de les mateixes.">Los navegadores web son las herramientas encargadas de almacenar las cookies y desde estos puede efectuar su derecho a eliminación o desactivación de las mismas. </span><span title="Ni aquest web ni els seus representants legals poden garantir la correcta o incorrecta manipulació de les cookies per part dels esmentats navegadors.">Ni esta web ni sus representantes legales pueden garantizar la correcta o incorrecta manipulación de las cookies por parte de dichos navegadores. </span><span title="En alguns casos es necessari instal&middot;lar cookies perquè el navegador no oblidi la vostra decisió de no acceptació de les mateixes.">En algunos casos es necesario instalar cookies para que el navegador no olvide su decisión de no aceptación de las mismas.</span><br />
+<br />
+<span title="En el cas de les cookies de Google Analytics, aquesta empresa emmagatzema les cookies en els servidors en Estats Units i es compromet a no compartir-la amb tercers, excepte en els casos en què sigui necessari per el funcionament del sistema o quan la llei obligui">En el caso de las cookies de Google Analytics, esta empresa almacena las cookies en los servidores en Estados Unidos y se compromete a no compartirla con terceros, salvo en los casos en que sea necesario para el funcionamiento del sistema o cuando la ley obligue </span><span title="a aquest efecte.">al efecto. </span><span title="Google Inc.">Google Inc. </span><span title="és una companyia adherida a l'Escut de privacitat (Privacy Shield) que garanteix que totes les dades transferides seran tractades amb un nivell de protecció d'acord amb la normativa europea.">es una compañía adherida al Escudo de privacidad (<a href="http://www.privacyshield.gov/welcome">Privacy Shield</a>) que garantiza que todos los datos transferidos serán tratados con un nivel de protección de acuerdo con la normativa europea. </span><span title="A l'utilitzar aquest lloc web esteu consentint el tractament d'informació a Google.">Al utilizar este sitio web está consintiendo el tratamiento de información en Google. </span><span title="En conseqüència, l'exercici de qualsevol dret en aquest sentit s'haurà comunicar directament a Google.">En consecuencia, el ejercicio de cualquier derecho en este sentido se deberá comunicar directamente a Google. </span><span title="Si desitgeu podeu consultar més informació sobre l'ús que Google fa de les cookies.">Si desea puede consultar más información sobre el <a href="http://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage">uso que Google hace de las cookies</a>.</span></span></p>
+
+				</div>
+				<!-- /content_main -->
+
+			</div>
+			<!-- /content -->
+
+		</div>
+		<!-- /page -->
+
+		<div id="footer">
+			<ul class="clearfix">
+				<li><a href="/avisos-legales.html">Avisos legales</a></li>
+				<li><a href="/accesibilidad.html">Accesibilidad</a></li>
+				<li><a href="/servicios/preguntas-frecuentes">Preguntas frecuentes</a></li>
+				<li><a href="/contacto.html">Contacto</a></li>
+			</ul>
+		</div>
+
+		<div id="supporters"><div class="wrapper clearfix">
+			<div class="clearfix">
+				<div class="institutional left">
+					<ul>
+						<li><a href="http://www.mineco.es" rel="external"><img src="/media/img/logo_ministerio_economia_competitividad.jpg" alt="Ministerio de Economía y Competitividad. Gobierno de España" /></a></li>
+						<li><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue.jpg" alt="Fondo Europeo de Desarrollo Regional" /></a></li>
+						<li class="nomargin"><a href="http://www.isciii.es" rel="external"><img src="/media/img/logo_salud_carlos_3.jpg" alt="Instituto de Salud Carlos III" /></a></li>
+						<li class="text"><a href="http://europa.eu/legislation_summaries/employment_and_social_policy/job_creation_measures/l60015_es.htm" rel="external"><img src="/media/img/logo_ue_texto.jpg" alt="Fondo Europeo de Desarrollo Regional. Una manera de hacer Europa" /></a></li>
+					</ul>
+				</div>
+				<div class="disclaimer right">
+					<p>Acción de Soporte a la Investigación y de Transferencia del CIBER en Epidemiología y Salud Pública (CIBERESP), dirigida y desarrollada por el Grupo de investigación en Servicios Sanitarios del IMIM-Hospital del Mar, con el apoyo de la Fundación IMIM.</p>
+					<p>© Todos los derechos reservados</p>
+				</div>
+			</div>
+			<div class="entities clearfix">
+				
+			</div>
+		</div></div>
+
+	</body>
+
+</html>
