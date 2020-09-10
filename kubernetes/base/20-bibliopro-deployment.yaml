@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: apache
+  name: bibliopro
   namespace: bibliopro
   labels:
-    app: apache
+    app: bibliopro
     version: 1.0.7
 spec:
   selector:

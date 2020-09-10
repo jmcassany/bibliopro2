@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibliopro
+  namespace: bibliopro
+  labels:
+    app: bibliopro
+spec:
+  template:
+    spec:
+      containers:
+      - image: registry.io.imim.cloud/bibliopro:1.2
+        name: webserver
+        volumeMounts:
+        - name: apache-pvc
+          mountPath: /var/www/html
+          subPath: data4/bibliopro/src
+        - name: apache-pvc
+          mountPath: /data
+         #securityContext:
+         #runAsUser: 104 # git-sync user
+      imagePullSecrets:
+      - name: registryioimimcloud
+      volumes:
+      - name: apache-pvc
+        persistentVolumeClaim:
+          claimName: apache-addoms-claim

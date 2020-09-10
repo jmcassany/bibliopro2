@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - 00-namespace-bibliopro.yaml	
+  - 01-mysql-service.yaml		  
+  - 01-bibliopro-service.yaml		
+  - 01-php-service.yaml		
+  - 01-git-secret.yaml			
+  - 01-registryioimimcloud-secret.yaml
+  - 10-php-pvc.yaml
+  - 10-apache-pvc.yaml
+  - 10-mysql-pvc.yaml			
+  - 20-php-deployment.yaml
+  - 20-bibliopro-deployment.yaml
+  - 20-mysql-deployment.yaml
+

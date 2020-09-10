@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - 50-bibliopro-certificate.yaml
+  - 60-bibliopro-ingress-route.yaml
+patchesStrategicMerge:
+  - 20-bibliopro-deployment.yaml
+namePrefix: production-
