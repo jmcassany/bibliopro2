@@ -1,5 +1,7 @@
 build:
 	docker build -t registry.io.imim.cloud/bibliopro-data:1.1 .
+
+push:
 	docker push registry.io.imim.cloud/bibliopro-data:1.1
 
 run:

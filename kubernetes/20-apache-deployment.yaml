@@ -25,7 +25,7 @@ spec:
         image: k8s.gcr.io/git-sync:v3.1.5
         args:
         - "-ssh"
-        - "-repo=git@git.imim.cat:sri/bibliopro.git"
+        - "-repo=git@git.imim.cat:antaviana/bibliopro.git"
         - "-dest=bibliopro"
         - "-branch=master"
         - "-depth=1"
@@ -62,9 +62,15 @@ spec:
                 fi
                 chown -R www-data:www-data /data/$f
             fi 
-            ln -s /data/$f /data/data4/bibliopro/src/$f
+            if [ -d /data/data4/bibliopro/src ];
+            then
+                ln -s /data/$f /data/data4/bibliopro/src/$f
+            fi
           done
-          chown -R www-data:www-data /data/data4/bibliopro/src
+          if [ -d /data/data4/bibliopro/src ];
+          then
+            chown -R www-data:www-data /data/data4/bibliopro/src
+          fi
         volumeMounts:
         - name: apache-pvc
           mountPath: /data

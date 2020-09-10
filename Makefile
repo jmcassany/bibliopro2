@@ -30,7 +30,7 @@ status/helm_done.txt: status/config_done.txt
 	touch status/helm_done.txt
 # aquí instal·lem un servidor nfs dins de Kubernetes que ens permet crear carpetes amb ReadWriteMany
 status/nfs_done: status/helm_done.txt
-	KUBECONFIG=~/.k3d/kubeconfig-default.yaml helm install nfs-server stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=60Gi,storageClass.mountOptions={vers\=4}
+#	KUBECONFIG=~/.k3d/kubeconfig-default.yaml helm install nfs-server stable/nfs-server-provisioner --set persistence.enabled=true,persistence.size=60Gi,storageClass.mountOptions={vers\=4}
 	touch status/nfs_done
 
 status/images_done: $(wildcard docker/*)
@@ -40,7 +40,7 @@ status/images_done: $(wildcard docker/*)
 	
 status/loadimages_done: status/images_done status/nfs_done
 	k3d image import -c default registry.io.imim.cloud/bibliopro:1.2
-	k3d image import -c default registry.io.imim.cloud/bibliopro:1.2
+	k3d image import -c default registry.io.imim.cloud/bibliopro-data:1.1
 	touch status/loadimages_done
 
 push: 

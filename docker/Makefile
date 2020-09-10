@@ -1,5 +1,7 @@
-image:
+build:
 	docker build -t registry.io.imim.cloud/bibliopro:1.2 .
+
+push:
 	docker push registry.io.imim.cloud/bibliopro:1.2
 	
 
