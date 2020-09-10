@@ -12,7 +12,7 @@ status/cluster_init.txt:
 	touch status/cluster_init.txt
 
 status/cluster_done.txt: status/cluster_init.txt
-	k3d cluster create default
+	k3d cluster create default -v "$$(pwd)/src:/data@server[0]"
 	touch status/cluster_done.txt
 
 deletecluster:
