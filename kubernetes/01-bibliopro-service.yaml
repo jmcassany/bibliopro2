@@ -4,7 +4,7 @@ metadata:
   name: bibliopro
   namespace: bibliopro
   labels:
-    app: apache
+    app: bibliopro
 spec:
   ports:
     - port: 80
@@ -12,4 +12,4 @@ spec:
     - port: 443
       name: tcp-443
   selector:
-    app: apache
+    app: bibliopro

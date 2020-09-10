@@ -2,6 +2,8 @@ export KUBECONFIG=~/.k3d/kubeconfig-default.yaml
 .PHONY: status
 
 allinit: status status/init_done
+	kubectl wait --for=condition=ready pod -l app=bibliopro -n bibliopro
+	kubectl wait --for=condition=running pod -l app=bibliopro -n bibliopro
 
 status: 
 	mkdir -p status  
@@ -26,7 +28,7 @@ status/config_done.txt: status/cluster_done.txt
 status/helm_done.txt: status/config_done.txt
 	KUBECONFIG=~/.k3d/kubeconfig-default.yaml helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 	KUBECONFIG=~/.k3d/kubeconfig-default.yaml helm repo update
-	KUBECONFIG=~/.k3d/kubeconfig-default.yaml helm search repo stable
+	#KUBECONFIG=~/.k3d/kubeconfig-default.yaml helm search repo stable
 	touch status/helm_done.txt
 # aquí instal·lem un servidor nfs dins de Kubernetes que ens permet crear carpetes amb ReadWriteMany
 status/nfs_done: status/helm_done.txt
@@ -57,7 +59,7 @@ status/init_done: status/loadimages_done $(wildcard kubernetes/*)
 get:
 	KUBECONFIG=~/.k3d/kubeconfig-default.yaml kubectl get all -n bibliopro
 
-run:
+run: 
 	kubectl port-forward service/bibliopro -n bibliopro 8080:80
 
 

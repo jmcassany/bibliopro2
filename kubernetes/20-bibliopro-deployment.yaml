@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: apache
+      app: bibliopro
   strategy:
     type: Recreate
   template:
@@ -17,7 +17,7 @@ spec:
       annotations:
         backup.velero.io/backup-volumes: apache-pvc
       labels:
-        app: apache
+        app: bibliopro
         version: "1.0.7"
     spec:
       initContainers:
