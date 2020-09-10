@@ -55,10 +55,11 @@ spec:
             then 
                 if [ -d /data/data4/bibliopro/src/$f ];
                 then
-                        cp -r /data/data4/bibliopro/src/$f /data 
-                        rm -rf /data/data4/bibliopro/src/$f 
+                  mkdir -p /data/$(dirname $f)
+                  cp -r /data/data4/bibliopro/src/$f /data/$(dirname $f) 
+                  rm -rf /data/data4/bibliopro/src/$f 
                 else
-                        mkdir -p /data/$f
+                  mkdir -p /data/$f
                 fi
                 chown -R www-data:www-data /data/$f
             fi 

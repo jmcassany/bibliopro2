@@ -2,8 +2,8 @@ export KUBECONFIG=~/.k3d/kubeconfig-default.yaml
 .PHONY: status
 
 allinit: status status/init_done
-	kubectl wait --for=condition=ready pod -l app=bibliopro -n bibliopro
-	kubectl wait --for=condition=running pod -l app=bibliopro -n bibliopro
+	kubectl wait --for=condition=ready pod -l app=bibliopro -n bibliopro --timeout=160s
+	kubectl wait --for=condition=ready pod -l app=mysql -n bibliopro --timeout=160s
 
 status: 
 	mkdir -p status  
@@ -12,7 +12,7 @@ status/cluster_init.txt:
 	touch status/cluster_init.txt
 
 status/cluster_done.txt: status/cluster_init.txt
-	k3d cluster create default -a 2
+	k3d cluster create default
 	touch status/cluster_done.txt
 
 deletecluster:
