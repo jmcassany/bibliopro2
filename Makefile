@@ -53,7 +53,7 @@ nodes:
 	KUBECONFIG=~/.k3d/kubeconfig-default.yaml kubectl get nodes
 
 status/init_done: status/loadimages_done $(wildcard kubernetes/*)
-	KUBECONFIG=~/.k3d/kubeconfig-default.yaml kubectl apply -f kubernetes -n bibliopro || \
+	KUBECONFIG=~/.k3d/kubeconfig-default.yaml kustomize build kubernetes/overlays/development | kubectl apply -f - || \
 	touch status/init_done
 
 get:

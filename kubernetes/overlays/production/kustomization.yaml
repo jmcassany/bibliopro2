@@ -4,6 +4,7 @@ resources:
   - ../../base
   - 50-bibliopro-certificate.yaml
   - 60-bibliopro-ingress-route.yaml
+namespace: bibliopro
 patchesStrategicMerge:
   - 20-bibliopro-deployment.yaml
-namePrefix: production-
+#namePrefix: production-

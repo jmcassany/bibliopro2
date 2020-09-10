@@ -3,11 +3,66 @@ kind: Deployment
 metadata:
   name: bibliopro
   namespace: bibliopro
-  labels:
-    app: bibliopro
 spec:
   template:
     spec:
+      initContainers:
+      - name: git-sync
+        image: k8s.gcr.io/git-sync:v3.1.5
+        args:
+        - "-ssh"
+        - "-repo=git@git.imim.cat:antaviana/bibliopro.git"
+        - "-dest=bibliopro"
+        - "-branch=master"
+        - "-depth=1"
+        - "-timeout=500"
+        - "-add-user"
+        - "-root=/tmp/git"
+        - "-one-time"
+        volumeMounts:
+        - name: apache-pvc
+          mountPath: /tmp/git
+          subPath: data4
+        - name: git-secret
+          mountPath: /etc/git-secret
+          readOnly: true
+        securityContext:
+          runAsUser: 104 # git-sync user
+      - name: init-folders
+        image: ubuntu:18.04
+        args:
+        - "bash"
+        - "-c"
+        - |
+          folders=( media/upload )
+          for f in "${folders[@]}"
+          do
+            if [ ! -d /data/$f ]; 
+            then 
+                if [ -d /data/data4/bibliopro/src/$f ];
+                then
+                  mkdir -p /data/$(dirname $f)
+                  cp -r /data/data4/bibliopro/src/$f /data/$(dirname $f) 
+                  rm -rf /data/data4/bibliopro/src/$f 
+                else
+                  mkdir -p /data/$f
+                fi
+                chown -R www-data:www-data /data/$f
+            fi 
+            if [ -d /data/data4/bibliopro/src ];
+            then
+                ln -s /data/$f /data/data4/bibliopro/src/$f
+            fi
+          done
+          if [ -d /data/data4/bibliopro/src ];
+          then
+            chown -R www-data:www-data /data/data4/bibliopro/src
+          fi
+        volumeMounts:
+        - name: apache-pvc
+          mountPath: /data
+      securityContext:
+        fsGroup: 65533 # to make SSH key readable
       containers:
       - image: registry.io.imim.cloud/bibliopro:1.2
         name: webserver
@@ -25,3 +80,7 @@ spec:
       - name: apache-pvc
         persistentVolumeClaim:
           claimName: apache-addoms-claim
+      - name: git-secret
+        secret:
+          secretName: git-secret
+          defaultMode: 0400
