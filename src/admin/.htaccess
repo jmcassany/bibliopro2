@@ -48,3 +48,8 @@ php_value magic_quotes_sybase     0
 
 php_value arg_separator.output    "&amp;"
 php_value track_vars              1
+
+LimitRequestBody 302400000
+php_value memory_limit 100M
+php_value post_max_size 100M
+php_value upload_max_filesize 100M
