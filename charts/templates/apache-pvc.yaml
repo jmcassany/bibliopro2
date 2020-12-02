@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: apache-addoms-claim
   namespace: bibliopro
+  createNamespace: true
   labels:
     app: apache
 spec:

@@ -1,0 +1,26 @@
+repositories:
+  - name: bibliopro
+    url: https://git.imim.cat/antaviana/bibliopro.git
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+#  - name: bitnami
+#    url: https://charts.bitnami.com/bitnami
+  
+releases:
+  - name: bibliopro
+    chart: bibliopro/charts
+    namespace: bibliopro
+    createNamespace: true
+    values:
+
+  - name: mysql
+    chart: bitnami/mysql
+    namespace: mysql
+    createNamespace: true
+    values:
+
+  - name: php
+    chart: bitnami/phpmyadmin
+    namespace: php
+    createNamespace: true
+    values:
