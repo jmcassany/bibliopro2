@@ -7,13 +7,11 @@ clusterdelete:
 	k3d cluster delete
 
 bibliopro:
-	helmfile --file helm-files/bibliopro/bibliopro-helmfile.yaml apply
+	helmfile --file helmfiles/bibliopro/bibliopro-helmfile.yaml apply
 
 php:
-	helmfile --file helm-files/php/php-helmfile.yaml apply
+	helmfile --file helmfiles/php/php-helmfile.yaml apply
 
 mysql:
-	helmfile --file helm-files/mysql/mysql-helmfile.yaml apply
+	helmfile --file helmfiles/mysql/mysql-helmfile.yaml apply
 
-traefik:
-	helmfile --file helm-files/traefik/traefik-helmfile.yaml apply
