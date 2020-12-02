@@ -1,6 +1,6 @@
 repositories:
   - name: bibliopro
-    url: https://git.imim.cat/antaviana/bibliopro.git
+    url: https://git.imim.cat/antaviana/bibliopro
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
 #  - name: bitnami
