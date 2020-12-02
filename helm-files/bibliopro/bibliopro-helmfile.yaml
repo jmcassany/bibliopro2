@@ -4,7 +4,7 @@ repositories:
 
 releases:
   - name: bibliopro
-    chart: bibliopro/bibliopro-charts
+    chart: bibliopro/charts
     namespace: bibliopro
     createNamespace: true
     values:
