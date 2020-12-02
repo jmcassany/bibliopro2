@@ -1,10 +1,13 @@
 repositories:
   - name: bibliopro
+    #url: https://git.imim.cat/antaviana/bibliopro.git
     url: https://git.imim.cat/antaviana/bibliopro
+    #url: https://git.imim.cat/antaviana/bibliopro/charts
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
 #  - name: bitnami
 #    url: https://charts.bitnami.com/bitnami
+
   
 releases:
   - name: bibliopro
