@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bibliopro
+  namespace: bibliopro
+  labels:
+    app: bibliopro
+    version: 1.0.7
+spec:
+  selector:
+    matchLabels:
+      app: bibliopro
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        backup.velero.io/backup-volumes: apache-pvc
+      labels:
+        app: bibliopro
+        version: "1.0.7"
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - image: registry.io.imim.cloud/bibliopro:1.2
+        name: webserver
+        env:
+        - name: PASSWORD
+          value: o6ejbbmGbeXhdSemSEhb
+        - name: DATABASE
+          value: biblioprodatabase
+        - name: USERNAME
+          value: biblioprouser
+        - name: HOSTNAME
+          value: mysql
+        - name: HTTPS
+          value: "true"
