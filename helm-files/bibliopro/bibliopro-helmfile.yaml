@@ -1,0 +1,11 @@
+repositories:
+  - name: bibliopro
+    url: https://git.imim.cat/antaviana/bibliopro.git
+
+releases:
+  - name: bibliopro
+    chart: bibliopro/bibliopro-charts
+    namespace: bibliopro
+    createNamespace: true
+    values:
+      - ./bibliopro-values.yaml
