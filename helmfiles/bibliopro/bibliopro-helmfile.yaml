@@ -1,8 +1,8 @@
 repositories:
   - name: bibliopro
-    url: git+https://git.imim.cat/antaviana/bibliopro.git
+    #url: git+https://git.imim.cat/antaviana/bibliopro.git
     #url: git+https://git.imim.cat/antaviana/bibliopro/charts
-    #url: git+https://git.imim.cat/antaviana/bibliopro
+    url: git+https://git.imim.cat/antaviana/bibliopro
     #url: git+https://git.imim.cloud/jcassany/biblioprocharts.git
 
 releases:
