@@ -1,14 +1,11 @@
 repositories:
   - name: bibliopro
-    #url: git+https://git.imim.cat/antaviana/bibliopro.git
-    #url: git+https://git.imim.cat/antaviana/bibliopro/charts
-    url: git+https://git.imim.cat/antaviana/bibliopro
-    #url: git+https://git.imim.cloud/jcassany/biblioprocharts.git
+    url: git+https://git.imim.cat/antaviana/bibliopro@bibliopro/chart?ref=main
 
 releases:
   - name: bibliopro
     chart: bibliopro/charts
     namespace: bibliopro
     createNamespace: true
-#    values:
+    values:
 #      - ./bibliopro-values.yaml
