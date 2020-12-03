@@ -35,3 +35,13 @@ spec:
           value: mysql
         - name: HTTPS
           value: "true"
+      imagePullSecrets:
+      - name: registryioimimcloud
+      volumes:
+      - name: apache-pvc
+        persistentVolumeClaim:
+          claimName: apache-addoms-claim
+      - name: git-secret
+        secret:
+          secretName: git-secret
+          defaultMode: 0400
