@@ -1,11 +1,9 @@
 repositories:
-  - name: bibliopro
-    url: helm repo add bibliopro git+https://git.imim.cat/antaviana/bibliopro@bibliopro/bibliopro-chart?ref=main --debug
-
+  - name: bibliopro2
+    url: git+https://github.com/jmcassany/bibliopro2@biblipro2-chart?ref=main
+        
 releases:
   - name: bibliopro
-    chart: bibliopro/bibliopro
+    chart: bibliopro2/bibliopro
     namespace: bibliopro
     createNamespace: true
-    values:
-#      - ./bibliopro-values.yaml
