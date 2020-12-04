@@ -3,7 +3,7 @@ repositories:
     url: git+https://github.com/jmcassany/bibliopro2@biblipro2-chart?ref=main
         
 releases:
-  - name: bibliopro
-    chart: bibliopro2/bibliopro
+  - name: bibliopro2
+    chart: bibliopro2/bibliopro2
     namespace: bibliopro
     createNamespace: true
